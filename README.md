@@ -1,12 +1,13 @@
 # Slippers
 
-Slippers is a lightweight library for Django that generates template tags for your HTML components.
+Slippers is a lightweight library for Django that makes your HTML components available as template tags.
 
 ```django
 {% card variant="small" %}
   <h1>Slippers is cool</h1>
-  {% button text="Super cool" %}
-  {% button text="Lit af" variant="secondary" %}
+
+  {% button %}Super cool{% endbutton %}
+  {% button variant="secondary" %}Lit af{% endbutton %}
 {% endcard %}
 ```
 
