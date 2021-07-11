@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "slippers"
+version = "0.1.0"
+description = "Slippers is a lightweight library for Django that makes your HTML components available as template tags."
+authors = ["Mitchel Cabuloy <mixxorz@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.6.2"
+Django = "^3.0"
+
+[tool.poetry.dev-dependencies]
+black = "^21.6b0"
+isort = "^5.9.2"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
