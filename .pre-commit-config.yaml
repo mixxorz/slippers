@@ -1,0 +1,20 @@
+repos:
+  - repo: https://github.com/asottile/seed-isort-config
+    # adds/updates known_third_party isort config in setup.cfg
+    rev: v1.9.4
+    hooks:
+      - id: seed-isort-config
+  - repo: https://github.com/pre-commit/mirrors-isort
+    # isort config is in setup.cfg
+    rev: v5.9.2
+    hooks:
+      - id: isort
+  - repo: https://gitlab.com/pycqa/flake8
+    # flake8 config is in setup.cfg
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+  - repo: https://github.com/python/black
+    rev: 21.6b0
+    hooks:
+      - id: black
