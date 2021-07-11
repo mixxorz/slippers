@@ -24,6 +24,7 @@ First create your template. Wherever you would normally put it is fine.
 <div class="card">
   <h1 class="card__header">{{ heading }}</h1>
   <div class="card__body">
+    {# Child elements are rendered by `{{ children }}` #}
     {{ children }}
   </div>
 </div>
@@ -71,7 +72,7 @@ pip install slippers
 
 Add it to your `INSTALLED_APPS`:
 
-```
+```python
 INSTALLED_APPS = [
     ...
     'slippers',
@@ -92,7 +93,7 @@ The structure of the file is as follows:
 block_components:
   # The key determines the name of the template tag. So `card` would generate
   # `{% card %}{% endcard %}`
-  # The value is the path to the template file as it would be if used with {% # include %}
+  # The value is the path to the template file as it would be if used with {% include %}
   card: "myapp/card.html"
  
 # Components that don't have child elements are called "inline" components
