@@ -44,7 +44,7 @@ inline_components:
 You can now use the components like so:
 
 ```django
-{% load components %}
+{% load slippers %}
 
 {% card heading="Slippers is awesome" %}
   <span>Hello {{ request.user.full_name }}!</span>
