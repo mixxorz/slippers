@@ -30,10 +30,10 @@ First create your template. Wherever you would normally put it is fine.
 </div>
 ```
 
-Next, create a `components.yml` file. By default, Slippers looks for this file in the root template folder.
+Next, create a `components.yaml` file. By default, Slippers looks for this file in the root template folder.
 
 ```yaml
-# myapp/templates/components.yml
+# myapp/templates/components.yaml
 # Components that have child elements
 block_components:
   card: "myapp/card.html"
@@ -82,9 +82,9 @@ INSTALLED_APPS = [
 
 ## Documentation
 
-### The `components.yml` file
+### The `components.yaml` file
 
-This file should be placed at the root template directory. E.g. `myapp/templates/components.yml`.
+This file should be placed at the root template directory. E.g. `myapp/templates/components.yaml`.
 
 The structure of the file is as follows:
 
