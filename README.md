@@ -1,6 +1,6 @@
 # Slippers
 
-Slippers is a library for Django that generates template tags for your HTML components.
+Slippers is a lightweight library for Django that generates template tags for your HTML components.
 
 ```django
 {% card variant="small" %}
@@ -32,16 +32,13 @@ Next, create a `components.yml` file. By default, Slippers looks for this file i
 
 ```yaml
 # myapp/templates/components.yml
-# Components that can have children
+# Components that have child elements
 block_components:
-  card:
-    # Template name as if you were using {% include %}
-    template: "myapp/card.html"
+  card: "myapp/card.html"
  
 # Components that don't have child elements
 inline_components: 
-  avatar:
-    template: "myapp/avatar.html"
+  avatar: "myapp/avatar.html"
 ```
 
 You can now use the components like so:
@@ -51,11 +48,18 @@ You can now use the components like so:
 
 {% card heading="Slippers is awesome" %}
   <span>Hello {{ request.user.full_name }}!</span>
-
-  <div>
-    This is what you look like {% avatar user=request.user %}
-  </div>
 {% endcard %}
+```
+
+And the output:
+
+```html
+<div class="card">
+  <h1 class="card__header">Slippers is awesome</h1>
+  <div class="card__body">
+    <span>Hello Ryland Grace!</span>
+  </div>
+</div>
 ```
 
 ## Installation
@@ -72,6 +76,42 @@ INSTALLED_APPS = [
     'slippers',
     ...
 ]
+```
+
+## Documentation
+
+### The `components.yml` file
+
+This file should be placed at the root template directory. E.g. `myapp/templates/components.yml`.
+
+The structure of the file is as follows:
+
+```yaml
+# Components that have child elements are called "block" components
+block_components:
+  # The key determines the name of the template tag. So `card` would generate
+  # `{% card %}{% endcard %}`
+  # The value is the path to the template file as it would be if used with {% # include %}
+  card: "myapp/card.html"
+ 
+# Components that don't have child elements are called "inline" components
+inline_components: 
+  avatar: "myapp/avatar.html"
+```
+
+This file also doubles as an index of available components which is handy.
+
+### Context
+
+Unlike `{% include %}`, using the component template tag **will not** pass the
+current context to the child component. This is a design decision. If you need
+something from the parent context, you have to explicitly pass it in via keyword
+arguments, or use `{% include %}` instead.
+
+```django
+{% with not_passed_in="Lorem ipsum" %}
+  {% button is_passed_in="Dolor amet" %}Hello{% endbutton %}
+{% endwith %}
 ```
 
 ## License
