@@ -4,7 +4,7 @@
 [![PyPI Supported Python Versions](https://img.shields.io/pypi/pyversions/slippers.svg)](https://pypi.python.org/pypi/slippers/)
 [![GitHub Actions (Code quality and tests)](https://github.com/mixxorz/slippers/workflows/Code%20quality%20and%20tests/badge.svg)](https://github.com/mixxorz/slippers)
 
-Slippers is a lightweight library for Django that makes your HTML components available as template tags.
+Slippers allows you to build reusable components in Django without writing a single line of Python.
 
 ```django
 {% card variant="small" %}
