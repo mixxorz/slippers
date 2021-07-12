@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/slippers.svg)](https://badge.fury.io/py/slippers)
 [![PyPI Supported Python Versions](https://img.shields.io/pypi/pyversions/slippers.svg)](https://pypi.python.org/pypi/slippers/)
-[![GitHub Actions (Code quality and tests)](https://github.com/mixxorz/slippers/workflows/Code quality and tests/badge.svg)](https://github.com/mixxorz/slippers)
+[![GitHub Actions (Code quality and tests)](https://github.com/mixxorz/slippers/workflows/Code%20quality%20and%20tests/badge.svg)](https://github.com/mixxorz/slippers)
 
 Slippers is a lightweight library for Django that makes your HTML components available as template tags.
 
