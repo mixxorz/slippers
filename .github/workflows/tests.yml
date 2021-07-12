@@ -1,4 +1,4 @@
-name: Tests
+name: Code quality and tests
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  code-checks:
     runs-on: ubuntu-latest
     strategy:
       matrix:
