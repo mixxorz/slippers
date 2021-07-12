@@ -33,6 +33,7 @@ black = "^21.6b0"
 isort = "^5.9.2"
 flake8 = "^3.9.2"
 ipdb = "^0.13.9"
+tox = "^3.23.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
