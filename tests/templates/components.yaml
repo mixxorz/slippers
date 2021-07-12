@@ -1,0 +1,6 @@
+block_components:
+  card: "card.html"
+  button: "button.html"
+
+inline_components:
+  avatar: "avatar.html"
