@@ -139,3 +139,4 @@ cython_debug/
 {"mode":"full","isActive":false}
 
 .vim
+.nvimrc
