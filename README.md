@@ -1,4 +1,6 @@
-# Slippers
+[![Slippers](https://user-images.githubusercontent.com/3102758/125623857-02364192-ad2d-4a45-8106-376817a92d3f.png)](https://github.com/mixxorz/slippers)
+
+---
 
 [![PyPI version](https://badge.fury.io/py/slippers.svg)](https://badge.fury.io/py/slippers)
 [![PyPI Supported Python Versions](https://img.shields.io/pypi/pyversions/slippers.svg)](https://pypi.python.org/pypi/slippers/)
