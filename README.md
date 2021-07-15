@@ -4,6 +4,7 @@
 
 [![PyPI version](https://badge.fury.io/py/slippers.svg)](https://badge.fury.io/py/slippers)
 [![PyPI Supported Python Versions](https://img.shields.io/pypi/pyversions/slippers.svg)](https://pypi.python.org/pypi/slippers/)
+[![PyPI Supported Django Versions](https://img.shields.io/pypi/djversions/slippers.svg)](https://docs.djangoproject.com/en/dev/releases/)
 [![GitHub Actions (Code quality and tests)](https://github.com/mixxorz/slippers/workflows/Code%20quality%20and%20tests/badge.svg)](https://github.com/mixxorz/slippers)
 
 Slippers allows you to build reusable components in Django without writing a single line of Python.
