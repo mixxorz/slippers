@@ -161,7 +161,7 @@ class AttrsTagTest(TestCase):
             """
             {% load slippers %}
 
-            <input {% attrs type=input_type name %}>
+            <input {% attrs type=input_type id name %}>
             """
         )
 
