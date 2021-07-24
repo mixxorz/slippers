@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Any, Dict
 
 from django import template
 from django.template import Context
@@ -7,10 +7,22 @@ from django.template.base import token_kwargs
 register = template.Library()
 
 
+##
+# Inline components
 def do_inline_component(**kwargs):
     return kwargs
 
 
+def register_inline_components(components: Dict[str, str]) -> None:
+    for tag_name, template_path in components.items():
+        # Inline components use Django's built-in `inclusion_tag`
+        register.inclusion_tag(name=tag_name, filename=template_path)(
+            do_inline_component
+        )
+
+
+##
+# Block components
 def create_block_component_tag(template_path):
     def do_block_component(parser, token):
         tag_name, *remaining_bits = token.split_contents()
@@ -32,21 +44,46 @@ class BlockComponentNode(template.Node):
         children = self.nodelist.render(context)
         t = context.template.engine.get_template(self.template)
 
-        values = {key: val.resolve(context) for key, val in self.extra_context.items()}
+        values = {
+            key: value.resolve(context) for key, value in self.extra_context.items()
+        }
 
         return t.render(
             Context({**values, "children": children}, autoescape=context.autoescape)
         )
 
 
-def register_inline_components(components: Dict[str, str]) -> None:
-    for tag_name, template_path in components.items():
-        # Inline components use Django's built-in `inclusion_tag`
-        register.inclusion_tag(name=tag_name, filename=template_path)(
-            do_inline_component
-        )
-
-
 def register_block_components(components: Dict[str, str]) -> None:
     for tag_name, template_path in components.items():
         register.tag(tag_name, create_block_component_tag(template_path))
+
+
+##
+# attr tag
+def attr_string(key: str, value: Any):
+    if isinstance(value, bool):
+        return key if value else ""
+
+    return f'{key}="{value}"'
+
+
+class AttrsNode(template.Node):
+    def __init__(self, attr_map: Dict):
+        self.attr_map = attr_map
+
+    def render(self, context):
+        values = {key: value.resolve(context) for key, value in self.attr_map.items()}
+        attr_strings = [
+            attr_string(key, value) for key, value in values.items() if value
+        ]
+        return " ".join(attr_strings)
+
+
+@register.tag(name="attrs")
+def do_attrs(parser, token):
+    tag_name, *attrs = token.split_contents()
+
+    # Format all tokens to be attr=attr so we can use token_kwargs() on it
+    all_attrs = [attr if "=" in attr else f"{attr}={attr}" for attr in attrs]
+    attr_map = token_kwargs(all_attrs, parser)
+    return AttrsNode(attr_map)

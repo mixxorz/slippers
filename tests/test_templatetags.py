@@ -96,3 +96,79 @@ class BlockComponentTest(TestCase):
         )
 
         self.assertHTMLEqual(expected, template.render(Context()))
+
+
+class AttrsTagTest(TestCase):
+    def test_basic(self):
+        context = Context(
+            {
+                "type": "text",
+                "id": "the_id",
+                "name": "the_name",
+            }
+        )
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            <input {% attrs type id name %}>
+            """
+        )
+
+        expected = dedent(
+            """
+            <input type="text" id="the_id" name="the_name">
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_boolean_values(self):
+        context = Context(
+            {
+                "autofocus": False,
+                "disabled": True,
+            }
+        )
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            <button {% attrs autofocus disabled %}>Click me</button>
+            """
+        )
+
+        expected = dedent(
+            """
+            <button disabled>Click me</button>
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_source_name(self):
+        context = Context(
+            {
+                "input_type": "text",
+                "id": "the_id",
+                "name": "the_name",
+            }
+        )
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            <input {% attrs type=input_type name %}>
+            """
+        )
+
+        expected = dedent(
+            """
+            <input type="text" id="the_id" name="the_name">
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
