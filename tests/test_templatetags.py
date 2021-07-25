@@ -1,7 +1,7 @@
 from textwrap import dedent
 
-from django.template import Context, Template
-from django.test import TestCase
+from django.template import Context, Template, TemplateSyntaxError
+from django.test import TestCase, override_settings
 
 
 class InlineComponentTest(TestCase):
@@ -219,3 +219,43 @@ class VarTagTest(TestCase):
         )
 
         self.assertHTMLEqual(expected, Template(template).render(context))
+
+
+class MatchFilterTest(TestCase):
+    def test_basic(self):
+        context = Context({"first": "outline", "second": "ghost", "third": "square"})
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            <button class="{{ first|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
+            <button class="{{ second|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
+            <button class="{{ third|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
+            """
+        )
+
+        expected = dedent(
+            """
+            <button class="btn-outline">Click me</button>
+            <button class="btn-ghost">Click me</button>
+            <button class="">Click me</button>
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    @override_settings(DEBUG=True)
+    def test_syntax_error(self):
+        context = Context()
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            <button class="{{ "foo"|match:"outline:btn-outline,foo:bar:baz,,," }}">Click me</button>
+            """
+        )
+
+        with self.assertRaises(TemplateSyntaxError):
+            Template(template).render(context)

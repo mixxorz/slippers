@@ -1,6 +1,7 @@
 from typing import Any, Dict
 
 from django import template
+from django.conf import settings
 from django.template import Context
 from django.template.base import token_kwargs
 
@@ -112,3 +113,24 @@ def do_var(parser, token):
         )
     var_map = token_kwargs([var], parser)
     return VarNode(var_map)
+
+
+##
+# match filter
+@register.filter(name="match")
+def do_match(match_key, mapping):
+    items = mapping.split(",")
+    values_map = {}
+
+    for item in items:
+        try:
+            key, value = item.split(":")
+            values_map[key] = value.strip()
+        except ValueError:
+            if settings.DEBUG:
+                raise template.TemplateSyntaxError(
+                    'The syntax for match is {{ variable|match:"key1:value1,key2:value2,key3:value3" }}'
+                )
+            continue
+
+    return values_map.get(match_key, "")
