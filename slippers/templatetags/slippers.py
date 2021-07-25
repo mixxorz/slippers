@@ -14,10 +14,15 @@ def do_inline_component(**kwargs):
     return kwargs
 
 
-def register_inline_components(components: Dict[str, str]) -> None:
+def register_inline_components(
+    components: Dict[str, str], target_register: template.Library = None
+) -> None:
+    if target_register is None:
+        target_register = register
+
     for tag_name, template_path in components.items():
         # Inline components use Django's built-in `inclusion_tag`
-        register.inclusion_tag(name=tag_name, filename=template_path)(
+        target_register.inclusion_tag(name=tag_name, filename=template_path)(
             do_inline_component
         )
 
@@ -54,9 +59,14 @@ class BlockComponentNode(template.Node):
         )
 
 
-def register_block_components(components: Dict[str, str]) -> None:
+def register_block_components(
+    components: Dict[str, str], target_register: template.Library = None
+) -> None:
+    if target_register is None:
+        target_register = register
+
     for tag_name, template_path in components.items():
-        register.tag(tag_name, create_block_component_tag(template_path))
+        target_register.tag(tag_name, create_block_component_tag(template_path))
 
 
 ##
@@ -125,7 +135,7 @@ def do_match(match_key, mapping):
     for item in items:
         try:
             key, value = item.split(":")
-            values_map[key] = value.strip()
+            values_map[key.strip()] = value.strip()
         except ValueError:
             if settings.DEBUG:
                 raise template.TemplateSyntaxError(

@@ -259,3 +259,22 @@ class MatchFilterTest(TestCase):
 
         with self.assertRaises(TemplateSyntaxError):
             Template(template).render(context)
+
+    def test_ignore_spaces(self):
+        context = Context({"variant": "ghost"})
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            <button class="{{ variant|match:"outline:btn-outline, ghost:btn-ghost" }}">Click me</button>
+            """
+        )
+
+        expected = dedent(
+            """
+            <button class="btn-ghost">Click me</button>
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
