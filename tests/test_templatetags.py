@@ -182,7 +182,7 @@ class VarTagTest(TestCase):
             """
             {% load slippers %}
 
-            {% var "foo" "Hello, World!" %}
+            {% var foo="Hello, World!" %}
 
             <div>{{ foo }}</div>
             """
@@ -203,8 +203,8 @@ class VarTagTest(TestCase):
             """
             {% load slippers %}
 
-            {% var "foo" foo|default:"Default value" %}
-            {% var "bar" "Hello, World!"|upper %}
+            {% var foo=foo|default:"Default value" %}
+            {% var bar="Hello, World!"|upper %}
 
             <div>{{ foo }}</div>
             <div>{{ bar }}</div>

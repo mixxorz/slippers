@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from django import template
 from django.template import Context
-from django.template.base import FilterExpression, token_kwargs
+from django.template.base import token_kwargs
 
 register = template.Library()
 
@@ -92,21 +92,23 @@ def do_attrs(parser, token):
 ##
 # var tag
 class VarNode(template.Node):
-    def __init__(self, var_name: FilterExpression, value: FilterExpression):
-        self.var_name = var_name
-        self.value = value
+    def __init__(self, var_map: Dict):
+        self.var_map = var_map
 
     def render(self, context):
-        context[self.var_name.resolve(context)] = self.value.resolve(context)
+        context.update(
+            {name: value.resolve(context) for name, value in self.var_map.items()}
+        )
         return ""
 
 
 @register.tag(name="var")
 def do_var(parser, token):
     try:
-        tag_name, var_name, value = token.split_contents()
+        tag_name, var = token.split_contents()
     except ValueError:
         raise template.TemplateSyntaxError(
-            f'The syntax for {token.contents.split()[0]} is {{% var "var_name" var_value %}}'
+            f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
         )
-    return VarNode(parser.compile_filter(var_name), parser.compile_filter(value))
+    var_map = token_kwargs([var], parser)
+    return VarNode(var_map)
