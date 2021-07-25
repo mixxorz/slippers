@@ -97,9 +97,7 @@ class VarNode(template.Node):
         self.value = value
 
     def render(self, context):
-        var_name = self.var_name.resolve(context)
-        value = self.value.resolve(context)
-        context[var_name] = value
+        context[self.var_name.resolve(context)] = self.value.resolve(context)
         return ""
 
 

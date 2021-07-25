@@ -204,14 +204,17 @@ class VarTagTest(TestCase):
             {% load slippers %}
 
             {% var "foo" foo|default:"Default value" %}
+            {% var "bar" "Hello, World!"|upper %}
 
             <div>{{ foo }}</div>
+            <div>{{ bar }}</div>
             """
         )
 
         expected = dedent(
             """
             <div>Default value</div>
+            <div>HELLO, WORLD!</div>
             """
         )
 
