@@ -44,9 +44,9 @@ Next, create a `components.yaml` file. By default, Slippers looks for this file 
 # Components that have child elements
 block_components:
   card: "myapp/card.html"
- 
+
 # Components that don't have child elements
-inline_components: 
+inline_components:
   avatar: "myapp/avatar.html"
 ```
 
@@ -102,9 +102,9 @@ block_components:
   # `{% card %}{% endcard %}`
   # The value is the path to the template file as it would be if used with {% include %}
   card: "myapp/card.html"
- 
+
 # Components that don't have child elements are called "inline" components
-inline_components: 
+inline_components:
   avatar: "myapp/avatar.html"
 ```
 
@@ -121,6 +121,57 @@ arguments, or use `{% include %}` instead.
 {% with not_passed_in="Lorem ipsum" %}
   {% button is_passed_in="Dolor amet" %}Hello{% endbutton %}
 {% endwith %}
+```
+
+### Additional tags and filters
+
+In addition to generating template tags for your components, Slippers also includes template tags and filters that make building reusable components easier.
+
+#### `attrs` tag
+
+The `attrs` tag allows you to "forward" attributes to your components.
+
+```django
+{# Component #}
+<input {% attrs type id name %}>
+
+{# Usage #}
+{% input_field type="text" id="first_name" name="first_name" %}
+
+{# Output #}
+<input type="text" id="first_name" name="first_name" />
+```
+
+**Boolean values**
+
+True values become empty attributes, and false values aren't returned at all.
+
+```django
+{# Component #}
+<button {% attrs disabled %}>{{ children }}</button>
+
+{# Usage #}
+{% button disabled=True %}Can't click me{% endbutton %}
+{% button disabled=False %}Click me{% endbutton %}
+
+{# Output #}
+<button disabled>Can't click me</button>
+<button>Click me</button>
+```
+
+**Specify source**
+
+It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.
+
+```django
+{# Component #}
+<input {% attrs type id=field_id name %}>
+
+{# Usage #}
+{% input_field type="text" field_id="first_name" name="first_name" %}
+
+{# Output #}
+<input type="text" id="first_name" name="first_name" />
 ```
 
 ## License
