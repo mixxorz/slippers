@@ -172,3 +172,47 @@ class AttrsTagTest(TestCase):
         )
 
         self.assertHTMLEqual(expected, Template(template).render(context))
+
+
+class VarTagTest(TestCase):
+    def test_basic(self):
+        context = Context()
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            {% var "foo" "Hello, World!" %}
+
+            <div>{{ foo }}</div>
+            """
+        )
+
+        expected = dedent(
+            """
+            <div>Hello, World!</div>
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_value_filter(self):
+        context = Context()
+
+        template = dedent(
+            """
+            {% load slippers %}
+
+            {% var "foo" foo|default:"Default value" %}
+
+            <div>{{ foo }}</div>
+            """
+        )
+
+        expected = dedent(
+            """
+            <div>Default value</div>
+            """
+        )
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
