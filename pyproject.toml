@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "slippers"
-version = "0.1.4"
-description = "Slippers allows you to build reusable components in Django without writing a single line of Python."
+version = "0.1.5"
+description = "Slippers lets you to build reusable components in Django without writing a single line of Python."
 authors = ["Mitchel Cabuloy <mixxorz@gmail.com>"]
 keywords = ["django", "components"]
 readme = "README.md"
