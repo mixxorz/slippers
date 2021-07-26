@@ -278,7 +278,7 @@ class MatchFilterTest(TestCase):
             """
             {% load slippers %}
 
-            <button class="{{ "foo"|match:"outline:btn-outline,foo:bar:baz,,," }}">Click me</button>
+            <button class="{{ "foo"|match:"outline:btn-outline,foo:bar:baz,,:apple,:orange" }}">Click me</button>
             """
         )
 

@@ -145,15 +145,22 @@ def do_match(match_key, mapping):
     items = mapping.split(",")
     values_map = {}
 
+    error_message = 'The syntax for match is {{ variable|match:"key1:value1,key2:value2,key3:value3" }}'
+
     for item in items:
         try:
-            key, value = item.split(":")
-            values_map[key.strip()] = value.strip()
+            key, *value = item.split(":")
+
+            key = key.strip()
+            value = ":".join(value).strip()
+
+            if not key or not value:
+                raise template.TemplateSyntaxError(error_message)
+
+            values_map[key] = value
         except ValueError:
             if settings.DEBUG:
-                raise template.TemplateSyntaxError(
-                    'The syntax for match is {{ variable|match:"key1:value1,key2:value2,key3:value3" }}'
-                )
+                raise template.TemplateSyntaxError(error_message)
             continue
 
     return values_map.get(match_key, "")
