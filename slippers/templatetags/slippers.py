@@ -9,31 +9,16 @@ register = template.Library()
 
 
 ##
-# Inline components
-def do_inline_component(**kwargs):
-    return kwargs
-
-
-def register_inline_components(
-    components: Dict[str, str], target_register: template.Library = None
-) -> None:
-    if target_register is None:
-        target_register = register
-
-    for tag_name, template_path in components.items():
-        # Inline components use Django's built-in `inclusion_tag`
-        target_register.inclusion_tag(name=tag_name, filename=template_path)(
-            do_inline_component
-        )
-
-
-##
-# Block components
-def create_block_component_tag(template_path):
-    def do_block_component(parser, token):
+# Component tags
+def create_component_tag(template_path):
+    def do_component(parser, token):
         tag_name, *remaining_bits = token.split_contents()
-        nodelist = parser.parse((f"end{tag_name}",))
-        parser.delete_first_token()
+
+        if tag_name[0] == "#":
+            nodelist = parser.parse((f"/{tag_name[1:]}",))
+            parser.delete_first_token()
+        else:
+            nodelist = None
 
         extra_context = token_kwargs(remaining_bits, parser)
 
@@ -41,12 +26,12 @@ def create_block_component_tag(template_path):
         if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
             target_var = remaining_bits[-1]
 
-        return BlockComponentNode(nodelist, template_path, extra_context, target_var)
+        return ComponentNode(nodelist, template_path, extra_context, target_var)
 
-    return do_block_component
+    return do_component
 
 
-class BlockComponentNode(template.Node):
+class ComponentNode(template.Node):
     def __init__(self, nodelist, template, extra_context, target_var=None):
         self.nodelist = nodelist
         self.template = template
@@ -54,13 +39,13 @@ class BlockComponentNode(template.Node):
         self.target_var = target_var
 
     def render(self, context):
-        children = self.nodelist.render(context)
-        t = context.template.engine.get_template(self.template)
+        children = self.nodelist.render(context) if self.nodelist else ""
 
         values = {
             key: value.resolve(context) for key, value in self.extra_context.items()
         }
 
+        t = context.template.engine.get_template(self.template)
         output = t.render(
             Context({**values, "children": children}, autoescape=context.autoescape)
         )
@@ -72,14 +57,18 @@ class BlockComponentNode(template.Node):
         return output
 
 
-def register_block_components(
+def register_components(
     components: Dict[str, str], target_register: template.Library = None
 ) -> None:
     if target_register is None:
         target_register = register
 
     for tag_name, template_path in components.items():
-        target_register.tag(tag_name, create_block_component_tag(template_path))
+        # Inline component
+        target_register.tag(f"{tag_name}", create_component_tag(template_path))
+
+        # Block component
+        target_register.tag(f"#{tag_name}", create_component_tag(template_path))
 
 
 ##

@@ -8,10 +8,7 @@ from django.utils.autoreload import autoreload_started, file_changed
 
 import yaml
 
-from slippers.templatetags.slippers import (
-    register_block_components,
-    register_inline_components,
-)
+from slippers.templatetags.slippers import register_components
 
 
 def register_tags():
@@ -19,8 +16,7 @@ def register_tags():
     try:
         template = get_template("components.yaml")
         components = yaml.safe_load(template.template.source)
-        register_inline_components(components.get("inline_components", {}))
-        register_block_components(components.get("block_components", {}))
+        register_components(components.get("components", {}))
     except TemplateDoesNotExist:
         pass
 

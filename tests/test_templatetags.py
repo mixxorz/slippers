@@ -4,8 +4,8 @@ from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
 
 
-class InlineComponentTest(TestCase):
-    def test_render(self):
+class ComponentTest(TestCase):
+    def test_render_inline_component(self):
         template = Template(
             dedent(
                 """
@@ -24,38 +24,13 @@ class InlineComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, template.render(Context()))
 
-    def test_render_as_variable(self):
+    def test_render_block_component(self):
         template = Template(
             dedent(
                 """
             {% load slippers %}
 
-            {% avatar user="mixxorz" as my_avatar %}
-
-            <div>{{ my_avatar }}</div>
-            """
-            )
-        )
-
-        expected = dedent(
-            """
-            <div>
-                <div>I am avatar for mixxorz</div>
-            </div>
-            """
-        )
-
-        self.assertHTMLEqual(expected, template.render(Context()))
-
-
-class BlockComponentTest(TestCase):
-    def test_render(self):
-        template = Template(
-            dedent(
-                """
-            {% load slippers %}
-
-            {% button %}I am button{% endbutton %}
+            {% #button %}I am button{% /button %}
             """
             )
         )
@@ -68,15 +43,36 @@ class BlockComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, template.render(Context()))
 
+    def test_render_without_children(self):
+        template = Template(
+            dedent(
+                """
+            {% load slippers %}
+
+            {% icon_button icon="envelope" %}
+            {% #icon_button icon="envelope" %}Submit{% /icon_button %}
+            """
+            )
+        )
+
+        expected = dedent(
+            """
+            <button class="icon-button envelope"></button>
+            <button class="icon-button envelope">Submit</button>
+            """
+        )
+
+        self.assertHTMLEqual(expected, template.render(Context()))
+
     def test_render_nested(self):
         template = Template(
             dedent(
                 """
             {% load slippers %}
 
-            {% card heading="I am heading" %}
-                {% button %}I am button{% endbutton %}
-            {% endcard %}
+            {% #card heading="I am heading" %}
+                {% #button %}I am button{% /button %}
+            {% /card %}
             """
             )
         )
@@ -94,15 +90,15 @@ class BlockComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, template.render(Context()))
 
-    def test_render_filter_kwargs(self):
+    def test_kwargs_with_filters(self):
         template = Template(
             dedent(
                 """
             {% load slippers %}
 
-            {% card heading="I am heading"|upper %}
-                {% button %}I am button{% endbutton %}
-            {% endcard %}
+            {% #card heading="I am heading"|upper %}
+                {% #button %}I am button{% /button %}
+            {% /card %}
             """
             )
         )
@@ -126,9 +122,12 @@ class BlockComponentTest(TestCase):
                 """
             {% load slippers %}
 
-            {% button as my_button %}I am button{% endbutton %}
+            {% avatar user="mixxorz" as my_avatar %}
+            {% #button as my_button %}I am button{% /button %}
+
 
             <div>
+                {{ my_avatar }}
                 {{ my_button }}
             </div>
             """
@@ -138,12 +137,16 @@ class BlockComponentTest(TestCase):
         expected = dedent(
             """
             <div>
+                <div>I am avatar for mixxorz</div>
                 <button>I am button</button>
             </div>
             """
         )
 
         self.assertHTMLEqual(expected, template.render(Context()))
+
+    def test_pass_boolean_flags(self):
+        self.fail()
 
 
 class AttrsTagTest(TestCase):

@@ -7,24 +7,35 @@
 [![PyPI Supported Django Versions](https://img.shields.io/pypi/djversions/slippers.svg)](https://docs.djangoproject.com/en/dev/releases/)
 [![GitHub Actions (Code quality and tests)](https://github.com/mixxorz/slippers/workflows/Code%20quality%20and%20tests/badge.svg)](https://github.com/mixxorz/slippers)
 
-Slippers allows you to build reusable components in Django without writing a single line of Python.
+Slippers lets you build reusable components in Django without writing a single line of Python.
 
 ```django
-{% card variant="small" %}
-  <h1>Slippers is cool</h1>
+{% #quote %}
+  {% quote_photo src="/django.jpg" %}
 
-  {% button %}Super cool{% endbutton %}
-  {% button variant="secondary" %}Lit af{% endbutton %}
-{% endcard %}
+  {% #quote_text %}
+    The Django template system recognizes that templates are most often written
+    by designers, not programmers, and therefore should not assume Python
+    knowledge.
+  {% /quote_text %}
+
+  {% #quote_attribution %}
+    Design philosophies – Django
+  {% /quote_attribution %}
+{% /quote %}
 ```
 
 ## Why?
 
-I want to be able to make reusable components, but the syntax for `{% include %}` is too verbose. Plus it doesn't allow me to specify child elements.
+The Django Template Language is awesome. It's fast, rich in features, and overall pretty great to work with.
+
+Slippers aims to be a superset of the Django Template Language, adding just enough functionality to make building interfaces just that bit more _comfortable_.
+
+Its headline feature is **reusable components**.
 
 ## Show me how it works
 
-First create your template. Wherever you would normally put it is fine.
+Let's create a card component that accepts a `heading` parameter and child elements.
 
 ```django
 {# myapp/templates/myapp/card.html #}
@@ -37,28 +48,25 @@ First create your template. Wherever you would normally put it is fine.
 </div>
 ```
 
-Next, create a `components.yaml` file. By default, Slippers looks for this file in the root template folder.
+Next, we'll create a `components.yaml` file in the root template folder. This file tells slippers which templates to register as components. As a bonus, it serves as a useful index for all available components.
 
 ```yaml
 # myapp/templates/components.yaml
-# Components that have child elements
-block_components:
+components:
   card: "myapp/card.html"
-
-# Components that don't have child elements
-inline_components:
-  avatar: "myapp/avatar.html"
 ```
 
-You can now use the components like so:
+The name of the component in `components.yaml` becomes the template tag for that component.
 
 ```django
 {% load slippers %}
 
-{% card heading="Slippers is awesome" %}
+{% #card heading="Slippers is awesome" %}
   <span>Hello {{ request.user.full_name }}!</span>
-{% endcard %}
+{% /card %}
 ```
+
+Notice that we use `#` to denote the start of a component block and `/` to denote the end.
 
 And the output:
 
@@ -96,32 +104,17 @@ This file should be placed at the root template directory. E.g. `myapp/templates
 The structure of the file is as follows:
 
 ```yaml
-# Components that have child elements are called "block" components
-block_components:
+components:
   # The key determines the name of the template tag. So `card` would generate
-  # `{% card %}{% endcard %}`
+  # `{% #card %}{% /card %}`
   # The value is the path to the template file as it would be if used with {% include %}
-  card: "myapp/card.html"
-
-# Components that don't have child elements are called "inline" components
-inline_components:
   avatar: "myapp/avatar.html"
+  card: "myapp/card.html"
 ```
-
-This file also doubles as an index of available components which is handy.
 
 ### Context
 
-Unlike `{% include %}`, using the component template tag **will not** pass the
-current context to the child component. This is a design decision. If you need
-something from the parent context, you have to explicitly pass it in via keyword
-arguments, or use `{% include %}` instead.
-
-```django
-{% with not_passed_in="Lorem ipsum" %}
-  {% button is_passed_in="Dolor amet" %}Hello{% endbutton %}
-{% endwith %}
-```
+Unlike `{% include %}`, using the component template tag **will not** pass the current context to the child component. This is a deliberate design decision. Components should be self-sufficient and not reliant on external state. If you find you need something from the parent context, you have to explicitly pass it in via keyword arguments. You can of course still use `{% include %}` for those cases.
 
 ### Additional tags and filters
 
@@ -142,8 +135,6 @@ The `attrs` tag allows you to "forward" attributes to your components.
 <input type="text" id="first_name" name="first_name" />
 ```
 
-**Boolean values**
-
 True values become empty attributes, and false values aren't returned at all.
 
 ```django
@@ -158,8 +149,6 @@ True values become empty attributes, and false values aren't returned at all.
 <button disabled>Can't click me</button>
 <button>Click me</button>
 ```
-
-**Specify source**
 
 It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.
 
