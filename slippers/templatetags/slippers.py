@@ -3,7 +3,7 @@ from typing import Any, Dict
 from django import template
 from django.conf import settings
 from django.template import Context
-from django.template.base import token_kwargs
+from django.template.base import Variable, token_kwargs
 
 register = template.Library()
 
@@ -14,6 +14,8 @@ def create_component_tag(template_path):
     def do_component(parser, token):
         tag_name, *remaining_bits = token.split_contents()
 
+        # Block components start with `#`
+        # Expect a closing tag
         if tag_name[0] == "#":
             nodelist = parser.parse((f"/{tag_name[1:]}",))
             parser.delete_first_token()
@@ -22,9 +24,20 @@ def create_component_tag(template_path):
 
         extra_context = token_kwargs(remaining_bits, parser)
 
+        # Bits that are not keyword args are interpreted as `True` values
+        boolean_args = [
+            bit for bit in remaining_bits if bit not in extra_context.keys()
+        ]
+
+        # Allow component fragment to be assigned to a variable
         target_var = None
         if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
             target_var = remaining_bits[-1]
+
+            # Strip "as variable" from being part of boolean args
+            boolean_args = remaining_bits[:-2]
+
+        extra_context.update({key: Variable("True") for key in boolean_args})
 
         return ComponentNode(nodelist, template_path, extra_context, target_var)
 
