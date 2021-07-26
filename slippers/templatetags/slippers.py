@@ -32,19 +32,26 @@ def register_inline_components(
 def create_block_component_tag(template_path):
     def do_block_component(parser, token):
         tag_name, *remaining_bits = token.split_contents()
-        extra_context = token_kwargs(remaining_bits, parser)
         nodelist = parser.parse((f"end{tag_name}",))
         parser.delete_first_token()
-        return BlockComponentNode(nodelist, template_path, extra_context)
+
+        extra_context = token_kwargs(remaining_bits, parser)
+
+        target_var = None
+        if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
+            target_var = remaining_bits[-1]
+
+        return BlockComponentNode(nodelist, template_path, extra_context, target_var)
 
     return do_block_component
 
 
 class BlockComponentNode(template.Node):
-    def __init__(self, nodelist, template, extra_context):
+    def __init__(self, nodelist, template, extra_context, target_var=None):
         self.nodelist = nodelist
         self.template = template
         self.extra_context = extra_context
+        self.target_var = target_var
 
     def render(self, context):
         children = self.nodelist.render(context)
@@ -54,9 +61,15 @@ class BlockComponentNode(template.Node):
             key: value.resolve(context) for key, value in self.extra_context.items()
         }
 
-        return t.render(
+        output = t.render(
             Context({**values, "children": children}, autoescape=context.autoescape)
         )
+
+        if self.target_var:
+            context[self.target_var] = output
+            return ""
+
+        return output
 
 
 def register_block_components(

@@ -97,6 +97,31 @@ class BlockComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, template.render(Context()))
 
+    def test_render_as_variable(self):
+        template = Template(
+            dedent(
+                """
+            {% load slippers %}
+
+            {% button as my_button %}I am button{% endbutton %}
+
+            <div>
+                {{ my_button }}
+            </div>
+            """
+            )
+        )
+
+        expected = dedent(
+            """
+            <div>
+                <button>I am button</button>
+            </div>
+            """
+        )
+
+        self.assertHTMLEqual(expected, template.render(Context()))
+
 
 class AttrsTagTest(TestCase):
     def test_basic(self):
