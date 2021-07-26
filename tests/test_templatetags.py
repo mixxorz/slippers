@@ -24,6 +24,29 @@ class InlineComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, template.render(Context()))
 
+    def test_render_as_variable(self):
+        template = Template(
+            dedent(
+                """
+            {% load slippers %}
+
+            {% avatar user="mixxorz" as my_avatar %}
+
+            <div>{{ my_avatar }}</div>
+            """
+            )
+        )
+
+        expected = dedent(
+            """
+            <div>
+                <div>I am avatar for mixxorz</div>
+            </div>
+            """
+        )
+
+        self.assertHTMLEqual(expected, template.render(Context()))
+
 
 class BlockComponentTest(TestCase):
     def test_render(self):
