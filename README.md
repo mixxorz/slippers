@@ -114,7 +114,7 @@ components:
 
 ### Context
 
-Unlike `{% include %}`, using the component template tag **will not** pass the current context to the child component. This is a deliberate design decision. Components should be self-sufficient and not reliant on external state. If you find you need something from the parent context, you have to explicitly pass it in via keyword arguments. You can of course still use `{% include %}` for those cases.
+Unlike `{% include %}`, using the component template tag **will not** pass the current context to the child component. This is a deliberate design decision. Components should be self-sufficient and not reliant on external state. If you find you need something from the parent context, you have to explicitly pass it in via keyword arguments. You can of course still use `{% include %}` as an alternative.
 
 ### Additional tags and filters
 
@@ -122,7 +122,21 @@ In addition to generating template tags for your components, Slippers also inclu
 
 #### `attrs` tag
 
-The `attrs` tag allows you to "forward" attributes to your components.
+The `attrs` tag is a handy shortcut that outputs template variables as element attributes.
+
+```django
+{# Usage #}
+{% with foo="one" bar="two" baz="three" %}
+  {% attrs foo bar baz %}
+{% endwith %}
+
+{# Output #}
+foo="one" bar="two" baz="three"
+```
+
+The parameters passed to `attrs` are used for both the "key" of the attribute and the name of variable to source its value from.
+
+Another example:
 
 ```django
 {# Component #}
@@ -142,8 +156,8 @@ True values become empty attributes, and false values aren't returned at all.
 <button {% attrs disabled %}>{{ children }}</button>
 
 {# Usage #}
-{% button disabled=True %}Can't click me{% endbutton %}
-{% button disabled=False %}Click me{% endbutton %}
+{% #button disabled=True %}Can't click me{% /button %}
+{% #button disabled=False %}Click me{% /button %}
 
 {# Output #}
 <button disabled>Can't click me</button>
