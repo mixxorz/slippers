@@ -1,4 +1,4 @@
-[![Slippers](https://user-images.githubusercontent.com/3102758/125623857-02364192-ad2d-4a45-8106-376817a92d3f.png)](https://github.com/mixxorz/slippers)
+[![Slippers](./slippers.svg)](https://github.com/mixxorz/slippers)
 
 ---
 
@@ -7,7 +7,7 @@
 [![PyPI Supported Django Versions](https://img.shields.io/pypi/djversions/slippers.svg)](https://docs.djangoproject.com/en/dev/releases/)
 [![GitHub Actions (Code quality and tests)](https://github.com/mixxorz/slippers/workflows/Code%20quality%20and%20tests/badge.svg)](https://github.com/mixxorz/slippers)
 
-Slippers lets you build reusable components in Django without writing a single line of Python.
+Build reusable components in Django without writing a single line of Python.
 
 ```django
 {% #quote %}
