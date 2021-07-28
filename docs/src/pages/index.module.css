@@ -7,9 +7,17 @@
 
 .heroBanner {
     background-color: var(--almost-black);
+    display: flex;
+    align-items: flex-end;
+    min-height: 30vh;
     overflow: hidden;
-    padding: 4rem 0;
+    padding: 12% 0 8em 0;
     position: relative;
+}
+
+.heroSubtitle {
+    color: #fff;
+    line-height: 1.25;
 }
 
 @media screen and (max-width: 966px) {

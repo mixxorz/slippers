@@ -11,9 +11,16 @@ function HomepageHeader() {
     return (
         <header className={clsx("hero hero--primary", styles.heroBanner)}>
             <div className="container">
-                <h1 className="hero__title">{siteConfig.title}</h1>
-                <p className="hero__subtitle">{siteConfig.tagline}</p>
-                <div className={styles.buttons}>
+                <img src="img/slippers.svg" alt="slippers" />
+                <p
+                    className={clsx(
+                        "hero__subtitle margin-top--md",
+                        styles.heroSubtitle
+                    )}
+                >
+                    {siteConfig.tagline}
+                </p>
+                <div className={clsx("margin-top--lg", styles.buttons)}>
                     <Link
                         className="button button--primary button--lg"
                         to="/docs/intro"
@@ -33,11 +40,12 @@ function HomepageHeader() {
 }
 
 export default function Home() {
-    const { siteConfig } = useDocusaurusContext();
     return (
         <Layout
-            title={`Hello from ${siteConfig.title}`}
-            description="Description will go into a meta tag in <head />"
+            title={
+                "Build reusable components in Django without writing a single line of Python."
+            }
+            description="Build reusable components in Django without writing a single line of Python."
         >
             <HomepageHeader />
             <main>

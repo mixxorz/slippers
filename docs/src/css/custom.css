@@ -7,20 +7,28 @@
 
 /* You can override the default Infima variables here. */
 :root {
-    --ifm-color-primary: #1fffd6;
+    --rich-black: #070A0D;
+    --almost-black: #0d1117;
+    --primary: #1fffd6;
+
+    --ifm-color-primary: var(--primary);
     --ifm-color-primary-dark: #0affd2;
     --ifm-color-primary-darker: #00f5c8;
-    --ifm-color-primary-darkest: #00e0b7;
-    --ifm-color-primary-light: #33ffda;
+    --ifm-color-primary-darkest: #00e0b7; --ifm-color-primary-light: #33ffda;
     --ifm-color-primary-lighter: #47ffdd;
     --ifm-color-primary-lightest: #5cffe1;
     --ifm-code-font-size: 95%;
+    --ifm-font-color-base: #0d1117;
+    --ifm-font-color-base-inverse: #fff;
 
-    --almost-black: #0d1117;
+
+    --ifm-navbar-background-color: var(--rich-black);
+    --ifm-navbar-link-color: #fff;
 }
 
-body {
-    color: var(--almost-black);
+html[data-theme='dark'] {
+    --ifm-font-color-base: #fff;
+    --ifm-font-color-base-inverse: #0d1117;
 }
 
 .docusaurus-highlight-code-line {
@@ -48,4 +56,12 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
 
 .button--secondary:not(.button--outline) {
     --ifm-button-background-color: #fff;
+}
+
+.navbar__brand {
+    color: var(--primary);
+}
+
+.navbar__brand:hover {
+    color: #fff;
 }
