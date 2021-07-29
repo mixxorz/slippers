@@ -15,10 +15,10 @@ module.exports = {
     projectName: "slippers", // Usually your repo name.
     themeConfig: {
         navbar: {
-            title: "slippers",
+            title: "",
             logo: {
                 alt: "slippers",
-                src: "img/logo.svg",
+                src: "img/slippers.svg",
             },
             items: [
                 {

@@ -10,9 +10,9 @@ export default function Home() {
     return (
         <Layout
             title={
-                "Build reusable components in Django without writing a single line of Python."
+                siteConfig.tagline
             }
-            description="Build reusable components in Django without writing a single line of Python."
+            description={siteConfig.tagline}
         >
             <main className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">

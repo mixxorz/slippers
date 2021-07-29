@@ -72,6 +72,10 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
     --ifm-button-background-color: #fff;
 }
 
+.navbar__logo {
+    height: 1.35rem;
+}
+
 .navbar__brand {
     color: var(--primary);
 }
