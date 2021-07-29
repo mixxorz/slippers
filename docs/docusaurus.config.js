@@ -18,7 +18,6 @@ module.exports = {
             title: "slippers",
             logo: {
                 alt: "slippers",
-
                 src: "img/logo.svg",
             },
             items: [

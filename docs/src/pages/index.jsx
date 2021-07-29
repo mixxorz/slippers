@@ -20,15 +20,15 @@ function HomepageHeader() {
                 >
                     {siteConfig.tagline}
                 </p>
-                <div className={clsx("margin-top--lg", styles.buttons)}>
+                <div className={styles.buttons}>
                     <Link
-                        className="button button--primary button--lg"
+                        className="button button--primary button--lg margin-top--md"
                         to="/docs/intro"
                     >
                         Quick start
                     </Link>
                     <Link
-                        className="button button--secondary button--lg margin-left--md"
+                        className={clsx("button button--secondary button--lg margin-top--md", styles.secondaryButton)}
                         to="/docs/intro"
                     >
                         Docs

@@ -9,20 +9,21 @@
 :root {
     --rich-black: #070A0D;
     --almost-black: #0d1117;
-    --primary: #1fffd6;
+    --primary: #08ffc8;
 
     --ifm-color-primary: var(--primary);
-    --ifm-color-primary-dark: #0affd2;
-    --ifm-color-primary-darker: #00f5c8;
-    --ifm-color-primary-darkest: #00e0b7; --ifm-color-primary-light: #33ffda;
-    --ifm-color-primary-lighter: #47ffdd;
-    --ifm-color-primary-lightest: #5cffe1;
+    --ifm-color-primary-dark: #00f5c0;
+    --ifm-color-primary-darker: #00e0b0;
+    --ifm-color-primary-darkest: #00cca0;
+    --ifm-color-primary-light: #1fffce;
+    --ifm-color-primary-lighter: #33ffd3;
+    --ifm-color-primary-lightest: #47FFD7;
     --ifm-code-font-size: 95%;
     --ifm-font-color-base: #0d1117;
     --ifm-font-color-base-inverse: #fff;
 
 
-    --ifm-navbar-background-color: var(--rich-black);
+    --ifm-navbar-background-color: var(--almost-black);
     --ifm-navbar-link-color: #fff;
 }
 
@@ -63,5 +64,9 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
 }
 
 .navbar__brand:hover {
+    color: #fff;
+}
+
+.navbar__toggle {
     color: #fff;
 }
