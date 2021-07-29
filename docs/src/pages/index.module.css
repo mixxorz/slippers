@@ -15,19 +15,29 @@
     position: relative;
 }
 
+.heroBanner pre {
+    background-color: #fff;
+    color: var(--almost-black);
+}
+
+.heroBanner pre span {
+    color: var(--ifm-color-primary-darker);
+}
+
 .heroSubtitle {
     color: #fff;
     line-height: 1.25;
 }
 
-@media screen and (max-width: 966px) {
-    .heroBanner { padding: 2rem;
-    }
-}
-
 .buttons {
     display: flex;
     flex-direction: column;
+}
+
+@media screen and (max-width: 966px) {
+    .heroBanner {
+        padding: 2rem;
+    }
 }
 
 @media screen and (min-width: 480px) {
