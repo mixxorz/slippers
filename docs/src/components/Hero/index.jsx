@@ -41,7 +41,7 @@ export default function Hero() {
                         <div className={styles.buttons}>
                             <Link
                                 className="button button--primary button--lg margin-top--md"
-                                to="/docs/intro"
+                                to="/docs/getting-started"
                             >
                                 Get started
                             </Link>
@@ -52,10 +52,12 @@ export default function Hero() {
                                 )}
                                 to="/docs/intro"
                             >
-                                Learn more
+                                Documentation
                             </Link>
                         </div>
-                        <CodeBlock className="margin-top--lg">$ pip install slippers</CodeBlock>
+                        <CodeBlock className="margin-top--lg">
+                            $ pip install slippers
+                        </CodeBlock>
                     </div>
                     <div
                         className={clsx(
