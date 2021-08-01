@@ -22,7 +22,6 @@ const example = `
 {% /quote %}
 `.trim();
 
-
 export default function Hero() {
     const { siteConfig } = useDocusaurusContext();
     return (
@@ -53,11 +52,17 @@ export default function Hero() {
                                 )}
                                 to="/docs/intro"
                             >
-                                Docs
+                                Learn more
                             </Link>
                         </div>
+                        <CodeBlock className="margin-top--lg">$ pip install slippers</CodeBlock>
                     </div>
-                    <div className={clsx("col col--6 example-column", styles.exampleColumn)}>
+                    <div
+                        className={clsx(
+                            "col col--6 example-column",
+                            styles.exampleColumn
+                        )}
+                    >
                         <CodeBlock className="language-django">
                             {example}
                         </CodeBlock>

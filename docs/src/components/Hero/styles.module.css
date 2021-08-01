@@ -17,6 +17,10 @@
     line-height: 1.25;
 }
 
+.heroBanner :global(.row) {
+    align-items: flex-end;
+}
+
 .buttons {
     display: flex;
     flex-direction: column;
