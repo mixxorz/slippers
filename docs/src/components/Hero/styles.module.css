@@ -7,21 +7,9 @@
 
 .heroBanner {
     background-color: var(--almost-black);
-    display: flex;
-    align-items: flex-end;
-    min-height: 30vh;
-    overflow: hidden;
-    padding: 12% 0 8em 0;
+    flex: 1;
+    padding: 2rem 0;
     position: relative;
-}
-
-.heroBanner pre {
-    background-color: #fff;
-    color: var(--almost-black);
-}
-
-.heroBanner pre span {
-    color: var(--ifm-color-primary-darker);
 }
 
 .heroSubtitle {
@@ -34,11 +22,10 @@
     flex-direction: column;
 }
 
-@media screen and (max-width: 966px) {
-    .heroBanner {
-        padding: 2rem;
-    }
+.exampleColumn {
+    margin-top: 2rem;
 }
+
 
 @media screen and (min-width: 480px) {
     .buttons {
@@ -47,5 +34,15 @@
 
     .secondaryButton {
         margin-left: 1rem;
+    }
+}
+
+@media screen and (min-width: 997px) {
+    .heroBanner {
+        padding: 8rem;
+    }
+
+    .exampleColumn {
+        margin-top: 0;
     }
 }

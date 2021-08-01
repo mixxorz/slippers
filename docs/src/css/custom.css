@@ -7,7 +7,7 @@
 
 /* You can override the default Infima variables here. */
 :root {
-    --rich-black: #070A0D;
+    --rich-black: #070a0d;
     --almost-black: #0d1117;
     --primary: #08ffc8;
 
@@ -17,11 +17,10 @@
     --ifm-color-primary-darkest: #00cca0;
     --ifm-color-primary-light: #1fffce;
     --ifm-color-primary-lighter: #33ffd3;
-    --ifm-color-primary-lightest: #47FFD7;
+    --ifm-color-primary-lightest: #47ffd7;
     --ifm-code-font-size: 95%;
     --ifm-font-color-base: #0d1117;
     --ifm-font-color-base-inverse: #fff;
-
 
     --ifm-navbar-background-color: var(--almost-black);
     --ifm-navbar-link-color: #fff;
@@ -33,7 +32,7 @@
     --ifm-menu-color-active: var(--ifm-color-primary-darkest);
 }
 
-html[data-theme='dark'] {
+html[data-theme="dark"] {
     --ifm-font-color-base: #fff;
     --ifm-font-color-base-inverse: #0d1117;
 
@@ -54,6 +53,11 @@ html[data-theme='dark'] {
 
 html[data-theme="dark"] .docusaurus-highlight-code-line {
     background-color: rgba(0, 0, 0, 0.3);
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
 }
 
 .button {
@@ -92,6 +96,6 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
     color: var(--ifm-color-primary-darkest);
 }
 
-html[data-theme='dark'] .table-of-contents__link--active {
+html[data-theme="dark"] .table-of-contents__link--active {
     color: var(--ifm-color-primary);
 }
