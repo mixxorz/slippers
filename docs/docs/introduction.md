@@ -8,14 +8,11 @@ import Link from "@docusaurus/Link";
 
 ## What is Slippers?
 
-The Django Template Language is awesome. It's fast, rich in features, and
-overall pretty great to work with.
+The Django Template Language is awesome. It's fast, rich in features, and overall pretty great to work with.
 
-Slippers aims to augment DTL, adding just enough functionality to make building
-interfaces just that bit more _comfortable_.
+Slippers aims to augment DTL, adding just enough functionality to make building interfaces just that bit more _comfortable_.
 
-It includes additional template tags and filters, but its headline feature is
-**reusable components**.
+It includes additional template tags and filters, but its headline feature is **reusable components**.
 
 ```django
 {% #button variant="primary" %}See how it works{% /button %}
@@ -25,19 +22,14 @@ It includes additional template tags and filters, but its headline feature is
 
 ## Motivation
 
-With the projects I work on, we usually build the front-end using [Atomic
-Design](https://bradfrost.com/blog/post/atomic-web-design/) principles and
-[django-pattern-library](https://github.com/torchbox/django-pattern-library).
-Templates for buttons, icons, form fields, etc., are built and then included
-wherever they are needed.
+With the projects I work on, we usually build the front-end using [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) principles and [django-pattern-library](https://github.com/torchbox/django-pattern-library). Templates for buttons, icons, form fields, etc., are built and then included wherever they are needed.
 
 ```django
 {% url "project:add_data" as add_data_url %}
 {% include "patterns/molecules/button/button.html" with label="Add data" href=add_data_url %}
 ```
 
-As you can see, the syntax for this is quite verbose. You can just imagine how
-this would be like if we had a template that used many components.
+As you can see, the syntax for this is quite verbose. You can just imagine how this would be like if we had a template that used many components.
 
 What's more, we can't pass HTML down to these components with `{% include %}`.
 
@@ -48,18 +40,12 @@ What's more, we can't pass HTML down to these components with `{% include %}`.
 {% include "patterns/molecules/card/card.html" %}
 ```
 
-We can work around this by creating custom template tags. This, however,
-requires the developer to know Python, and specifically, how to create [advanced
-custom template
-tags](https://docs.djangoproject.com/en/3.2/howto/custom-template-tags/#advanced-custom-template-tags).
-This isn't something we can always assume.
+We can work around this by creating custom template tags. This, however, requires the developer to know Python, and specifically, how to create [advanced custom template tags](https://docs.djangoproject.com/en/3.2/howto/custom-template-tags/#advanced-custom-template-tags). This isn't something we can always assume.
 
 In fact, Django's design philosophy states:
 
-> The Django template system recognizes that templates are most often written by
-> designers, not programmers, and therefore should not assume Python knowledge.
+> The Django template system recognizes that templates are most often written by designers, not programmers, and therefore should not assume Python knowledge.
 
-Moreover, the process of making reusable components by creating a custom template tag is
-also somewhat of a hassle.
+Moreover, the process of making reusable components by creating a custom template tag is also somewhat of a hassle.
 
 The best code is no code as they say. And so, Slippers to the rescue.
