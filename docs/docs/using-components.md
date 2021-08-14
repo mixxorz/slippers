@@ -1,0 +1,37 @@
+---
+sidebar_position: 5
+---
+
+# Using components
+
+Components can be used in two ways: block-level or inline-level.
+
+For example, given an `icon_button` component.
+
+```django title="icon_button.html"
+<button>{{ children }} {% icon name=icon %}</button>
+```
+
+We can use the block syntax to pass the label of the button as `children.`
+
+```django
+{% #icon_button icon="star" %}Favorite{% /icon_button %}
+```
+
+Note that `#` denotes the opening tag and `/` denotes the closing tag.
+
+```html title="Output"
+<button>Favorite <svg>...</svg></button>
+```
+
+If we didn't need to pass a label, or if the component itself doesn't use `{{ children }}`, we can use the inline syntax instead.
+
+```django
+{% icon_button icon="heart" %}
+```
+
+The inline syntax just uses the plain component name. No `#` or `/`.
+
+```html title="Output"
+<button><svg>...</svg></button>
+```

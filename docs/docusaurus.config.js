@@ -21,13 +21,6 @@ module.exports = {
             },
             items: [
                 {
-                    type: "doc",
-                    docId: "intro",
-                    position: "left",
-                    label: "Tutorial",
-                },
-                { to: "/blog", label: "Blog", position: "left" },
-                {
                     href: "https://github.com/mixxorz/slippers",
                     label: "GitHub",
                     position: "right",
@@ -41,8 +34,16 @@ module.exports = {
                     title: "Docs",
                     items: [
                         {
-                            label: "Tutorial",
-                            to: "/docs/intro",
+                            label: "Introduction",
+                            to: "/docs/introduction",
+                        },
+                        {
+                            label: "Installation",
+                            to: "/docs/installation",
+                        },
+                        {
+                            label: "Getting started",
+                            to: "/docs/getting-started",
                         },
                     ],
                 },

@@ -50,9 +50,9 @@ export default function Hero() {
                                     "button button--secondary button--lg margin-top--md",
                                     styles.secondaryButton
                                 )}
-                                to="/docs/intro"
+                                to="/docs/introduction"
                             >
-                                Documentation
+                                Learn more
                             </Link>
                         </div>
                         <CodeBlock className="margin-top--lg">
