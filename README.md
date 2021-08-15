@@ -1,4 +1,4 @@
-[![Slippers](./docs/static/img/slippers.svg)](https://github.com/mixxorz/slippers)
+[![Slippers](https://mitchel.me/slippers/img/slippers.svg)](https://github.com/mixxorz/slippers)
 
 ---
 
