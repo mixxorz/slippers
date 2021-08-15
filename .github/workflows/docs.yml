@@ -1,0 +1,29 @@
+name: Deploy docs to GitHub Pages
+
+on:
+  push:
+    branches: [main, docs]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.1
+
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install and Build
+        run: |
+          cd docs/
+          npm install
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: docs/build
