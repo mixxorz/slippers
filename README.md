@@ -38,7 +38,7 @@ It includes additional template tags and filters, but its headline feature is **
 {% #button variant="primary" %}See how it works{% /button %}
 ```
 
-[See how it works](https://mixxorz.github.io/slippers/getting-started)
+[See how it works](https://mitchel.me/slippers/getting-started)
 
 ## Installation
 
@@ -58,7 +58,7 @@ INSTALLED_APPS = [
 
 ## Documentation
 
-Full documentation can be found on the [Slippers documentation site](https://mixxorz.github.io/slippers).
+Full documentation can be found on the [Slippers documentation site](https://mitchel.me/slippers/).
 
 ## License
 

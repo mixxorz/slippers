@@ -5,7 +5,7 @@ module.exports = {
     title: "slippers",
     tagline:
         "Build reusable components in Django without writing a single line of Python.",
-    url: "https://mixxorz.github.io",
+    url: "https://mitchel.me",
     baseUrl: "/slippers/",
     onBrokenLinks: "throw",
     onBrokenMarkdownLinks: "warn",
