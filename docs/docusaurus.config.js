@@ -66,7 +66,7 @@ module.exports = {
         prism: {
             theme: prismTheme,
             darkTheme: prismTheme,
-            additionalLanguages: ["django"],
+            additionalLanguages: ["django", "twig"],
         },
     },
     presets: [

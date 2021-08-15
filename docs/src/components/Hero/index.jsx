@@ -65,7 +65,7 @@ export default function Hero() {
                             styles.exampleColumn
                         )}
                     >
-                        <CodeBlock className="language-django">
+                        <CodeBlock className="language-twig">
                             {example}
                         </CodeBlock>
                     </div>

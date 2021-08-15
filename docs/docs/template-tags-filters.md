@@ -10,7 +10,7 @@ Slippers includes a number of extra template tags and filters to help template a
 
 The `attrs` tag is a handy shortcut that outputs template variables as element attributes.
 
-```django
+```twig
 {# input_field component #}
 <input {% attrs type id name %}>
 
@@ -25,7 +25,7 @@ The parameters passed to `attrs` are used for both the "key" of the attribute an
 
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 
-```django
+```twig
 {# button component #}
 <button {% attrs disabled %}>{{ children }}</button>
 
@@ -40,7 +40,7 @@ Boolean values are treated differently. `True` values become empty attributes, a
 
 It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.
 
-```django
+```twig
 {# input_field component #}
 <input {% attrs type id=field_id name %}>
 
@@ -55,7 +55,7 @@ It's possible to specify the source of the attribute value by writing it as a ke
 
 The `fragment` tag allows template fragments to be assigned to variables.
 
-```django
+```twig
 {% fragment as my_fragment %}
   <p>Hello, World!</p>
 {% endfragment %}
@@ -70,7 +70,7 @@ The `fragment` tag allows template fragments to be assigned to variables.
 
 One handy use for `fragment` is string interpolation using DTL.
 
-```django
+```twig
 {% fragment as title %}
 {{ items|floatformat:2 }} items found.
 {% endfragment %}
@@ -82,7 +82,7 @@ One handy use for `fragment` is string interpolation using DTL.
 
 The `match` filter outputs a string whose key matches the variable's value.
 
-```django
+```twig
 {% with first="outline" second="ghost" third="square" %}
   <button class="{{ first|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
   <button class="{{ second|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
@@ -97,13 +97,13 @@ The `match` filter outputs a string whose key matches the variable's value.
 
 The syntax is:
 
-```django
+```twig
 {{ variable|match:"key1:value1,key2:value2,key3:value3" }}
 ```
 
 Tip: You can use the `default` filter to set a default value for no matches.
 
-```django
+```twig
 {% with my_variable="nomatch" %}
   <button class="{{ my_variable|match:"outline:btn-outline,ghost:btn-ghost"|default:"btn" }}">Click me</button>
 {% endwith %}
@@ -116,7 +116,7 @@ Tip: You can use the `default` filter to set a default value for no matches.
 
 The `var` tag allows for assigning values to variables.
 
-```django
+```twig
 {% var foo="Hello, World!" %}
 
 <div>{{ foo }}</div>
@@ -127,7 +127,7 @@ The `var` tag allows for assigning values to variables.
 
 The `var` tag is intended to be used inside component templates as a means to document the variables it requires and specify defaults.
 
-```django title="button.html"
+```twig title="button.html"
 {% var variant=variant|default:"primary" %}
 
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>

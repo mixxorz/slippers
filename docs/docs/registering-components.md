@@ -50,7 +50,7 @@ register_components({
 
 Now you can use the components by loading the `my_components` template tags.
 
-```django
+```twig
 {% load my_components %}
 
 {% #button %}My button{% /button %}

@@ -1,97 +1,118 @@
 var theme = {
     plain: {
+        color: "#d6deeb",
         backgroundColor: "#2a2734",
-        color: "#ffffff",
     },
     styles: [
         {
-            types: ["comment", "prolog", "doctype", "cdata"],
+            types: ["changed"],
             style: {
-                color: "#4a5f78",
-            },
-        },
-        {
-            types: ["namespace"],
-            style: {
-                opacity: 0.7,
-            },
-        },
-        {
-            types: ["tag", "operator", "number", "punctuation"],
-            style: {
-                color: "#0aa370",
-            },
-        },
-        {
-            types: ["property", "function"],
-            style: {
-                color: "#57718e",
-            },
-        },
-        {
-            types: ["tag-id", "selector", "atrule-id"],
-            style: {
-                color: "#ebf4ff",
-            },
-        },
-        {
-            types: ["attr-name"],
-            style: {
-                color: "#7eb6f6",
-            },
-        },
-        {
-            types: [
-                "boolean",
-                "string",
-                "entity",
-                "url",
-                "attr-value",
-                "control",
-                "directive",
-                "unit",
-                "statement",
-                "regex",
-                "at-rule",
-            ],
-            style: {
-                color: "#47ebb4",
-            },
-        },
-        {
-            types: ["placeholder", "plain", "keyword", "variable"],
-            style: {
-                color: "#ffffff",
+                color: "rgb(162, 191, 252)",
+                fontStyle: "italic",
             },
         },
         {
             types: ["deleted"],
             style: {
-                textDecorationLine: "line-through",
-            },
-        },
-        {
-            types: ["inserted"],
-            style: {
-                textDecorationLine: "underline",
-            },
-        },
-        {
-            types: ["italic"],
-            style: {
+                color: "rgba(239, 83, 80, 0.56)",
                 fontStyle: "italic",
             },
         },
         {
-            types: ["important", "bold"],
+            types: ["inserted", "attr-name"],
             style: {
-                fontWeight: "bold",
+                color: "#ffe47a",
+                fontStyle: "italic",
             },
         },
         {
-            types: ["important"],
+            types: ["comment"],
             style: {
-                color: "#c4b9fe",
+                color: "rgb(99, 119, 119)",
+                fontStyle: "italic",
+            },
+        },
+        {
+            types: ["string", "url"],
+            style: {
+                color: "#ffe47a",
+            },
+        },
+        {
+            types: ["variable"],
+            style: {
+                color: "rgb(214, 222, 235)",
+            },
+        },
+        {
+            types: ["number"],
+            style: {
+                color: "rgb(247, 140, 108)",
+            },
+        },
+        {
+            types: ["builtin", "char", "constant", "function"],
+            style: {
+                color: "rgb(130, 170, 255)",
+            },
+        },
+        {
+            // This was manually added after the auto-generation
+            // so that punctuations are not italicised
+            types: ["punctuation"],
+            style: {
+                color: "rgb(199, 146, 234)",
+            },
+        },
+        {
+            types: ["selector", "doctype"],
+            style: {
+                color: "rgb(199, 146, 234)",
+                fontStyle: "italic",
+            },
+        },
+        {
+            types: ["class-name"],
+            style: {
+                color: "rgb(255, 203, 139)",
+            },
+        },
+        {
+            types: ["tag", "operator", "keyword"],
+            style: {
+                color: "rgb(127, 219, 202)",
+            },
+        },
+        {
+            types: ["boolean"],
+            style: {
+                color: "rgb(255, 88, 116)",
+            },
+        },
+        {
+            types: ["property"],
+            style: {
+                color: "rgb(128, 203, 196)",
+            },
+        },
+        {
+            types: ["namespace"],
+            style: {
+                color: "rgb(178, 204, 214)",
+            },
+        },
+        {
+            languages: ["twig"],
+            types: ["tag", "keyword", "property"],
+            style: {
+                color: "#47ebb4",
+            },
+        },
+        {
+            languages: ["twig"],
+            types: ["operator"],
+            style: {
+                color: "rgb(199, 146, 234)",
             },
         },
     ],
