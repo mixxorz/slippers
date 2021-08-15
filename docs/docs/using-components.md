@@ -49,3 +49,16 @@ Unlike the `include` tag, using the component template tag **will not** pass the
 This is a deliberate design decision to improve readability and reduce side-effects.
 
 You can of course still use `{% include %}` if you find that more convenient.
+
+## Assigning output to a variable
+
+Similar to a [`fragment`](/docs/template-tags-filters#fragment) tag, a component's output can be assigned to a variable.
+
+```django
+{% card_title title="I am a heading" as my_title %}
+{% #card_content as my_content %}
+  <p>I am content</p>
+{% /card_content %}
+
+{% card title=my_title content=my_content %}
+```

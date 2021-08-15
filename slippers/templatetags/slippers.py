@@ -166,3 +166,33 @@ def do_match(match_key, mapping):
             continue
 
     return values_map.get(match_key, "")
+
+
+##
+# fragment tag
+class FragmentNode(template.Node):
+    def __init__(self, nodelist, target_var):
+        self.nodelist = nodelist
+        self.target_var = target_var
+
+    def render(self, context):
+        fragment = self.nodelist.render(context) if self.nodelist else ""
+        context[self.target_var] = fragment
+        return ""
+
+
+@register.tag(name="fragment")
+def do_fragment(parser, token):
+    error_message = "The syntax for fragment is {% fragment as variable_name %}"
+
+    try:
+        tag_name, _, target_var = token.split_contents()
+
+        nodelist = parser.parse(("endfragment",))
+        parser.delete_first_token()
+    except ValueError:
+        if settings.DEBUG:
+            raise template.TemplateSyntaxError(error_message)
+        return ""
+
+    return FragmentNode(nodelist, target_var)

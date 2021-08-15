@@ -235,3 +235,54 @@ class MatchFilterTest(TestCase):
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
+
+
+class FragmentTagTest(TestCase):
+    def test_basic(self):
+        context = Context({})
+
+        template = """
+            {% fragment as my_fragment %}
+            <p>Hello, World</p>
+            {% endfragment %}
+
+            Text coming after:
+            {{ my_fragment }}
+        """
+
+        expected = """
+            Text coming after:
+            <p>Hello, World</p>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    @override_settings(DEBUG=True)
+    def test_syntax_error(self):
+        template = """
+            {% fragment %}
+            <p>Hello, World</p>
+            {% endfragment %}
+        """
+
+        with self.assertRaises(TemplateSyntaxError):
+            Template(template).render(Context())
+
+    def test_with_variables(self):
+        context = Context({"name": "jonathan wells"})
+
+        template = """
+            {% fragment as my_fragment %}
+                <p>Hello, {{ name|title }}</p>
+            {% endfragment %}
+
+            Text coming after:
+            {{ my_fragment }}
+        """
+
+        expected = """
+            Text coming after:
+            <p>Hello, Jonathan Wells</p>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
