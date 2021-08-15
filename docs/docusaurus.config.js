@@ -10,8 +10,9 @@ module.exports = {
     onBrokenLinks: "throw",
     onBrokenMarkdownLinks: "warn",
     favicon: "img/favicon.ico",
-    organizationName: "mixxorz", // Usually your GitHub org/user name.
-    projectName: "slippers", // Usually your repo name.
+    organizationName: "mixxorz",
+    projectName: "slippers",
+    trailingSlash: true,
     themeConfig: {
         navbar: {
             title: "",
@@ -20,6 +21,10 @@ module.exports = {
                 src: "img/slippers.svg",
             },
             items: [
+                {
+                    href: "/docs/introduction/",
+                    label: "Docs",
+                },
                 {
                     href: "https://github.com/mixxorz/slippers",
                     label: "GitHub",
@@ -77,12 +82,6 @@ module.exports = {
                     // Please change this to your repo.
                     editUrl:
                         "https://github.com/mixxorz/slippers/edit/main/docs/",
-                },
-                blog: {
-                    showReadingTime: true,
-                    // Please change this to your repo.
-                    editUrl:
-                        "https://github.com/mixxorz/slippers/edit/main/docs/blog/",
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),

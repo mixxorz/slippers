@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "slippers"
-version = "0.1.5"
-description = "Slippers lets you to build reusable components in Django without writing a single line of Python."
+version = "0.2.0"
+description = "Build reusable components in Django without writing a single line of Python."
 authors = ["Mitchel Cabuloy <mixxorz@gmail.com>"]
 keywords = ["django", "components"]
 readme = "README.md"
@@ -9,7 +9,7 @@ license = "MIT"
 homepage = "https://github.com/mixxorz/slippers"
 repository = "https://github.com/mixxorz/slippers"
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
