@@ -8,16 +8,17 @@ import styles from "./styles.module.css";
 
 const example = `
 {% #quote %}
-  {% quote_photo src="/django.jpg" %}
+  {% quote_photo src="/project-hail-mary.jpg" %}
 
   {% #quote_text %}
-    The Django template system recognizes that templates are most
-    often written by designers, not programmers, and therefore
-    should not assume Python knowledge.
+    “I penetrated the outer cell membrane with a nanosyringe."
+    "You poked it with a stick?"
+    "No!" I said. "Well. Yes. But it was a scientific poke
+    with a very scientific stick.”
   {% /quote_text %}
 
   {% #quote_attribution %}
-    Design philosophies – Django
+    Andy Weir, Project Hail Mary
   {% /quote_attribution %}
 {% /quote %}
 `.trim();

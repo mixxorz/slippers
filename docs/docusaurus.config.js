@@ -61,7 +61,6 @@ module.exports = {
                     ],
                 },
             ],
-            copyright: `© ${new Date().getFullYear()} Mitchel Cabuloy. Built with Docusaurus.`,
         },
         prism: {
             theme: prismTheme,
