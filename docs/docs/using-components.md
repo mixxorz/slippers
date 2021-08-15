@@ -40,7 +40,7 @@ The inline syntax just uses the plain component name. No `#` or `/`.
 
 ## Passing variables
 
-Unlike the `include` tag, using the component template tag **will not** pass the current context to the child component. Variables need to be passed in explicitly.
+Unlike the `include` tag, using component template tags **will not** pass the current context to the child component. Variables need to be passed in explicitly.
 
 ```django
 {% #button variant="primary" size="large" %}Hello{% /button %}
@@ -48,17 +48,18 @@ Unlike the `include` tag, using the component template tag **will not** pass the
 
 This is a deliberate design decision to improve readability and reduce side-effects.
 
-You can of course still use `{% include %}` if you find that more convenient.
+You can of course still use `{% include %}` if you find that functionality more convenient.
 
 ## Assigning output to a variable
 
 Similar to a [`fragment`](/docs/template-tags-filters#fragment) tag, a component's output can be assigned to a variable.
 
 ```django
-{% card_title title="I am a heading" as my_title %}
-{% #card_content as my_content %}
-  <p>I am content</p>
-{% /card_content %}
+{% #heading variant="large" as my_heading %}Hello, World{% /heading %}
 
-{% card title=my_title content=my_content %}
+{# Render it like a normal variable #}
+{{ my_heading }}
+
+{# Or pass to to another component #}
+{% card_heading heading=my_heading %}
 ```

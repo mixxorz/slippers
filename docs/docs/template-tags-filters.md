@@ -4,23 +4,11 @@ sidebar_position: 6
 
 # Template tags and filters
 
+Slippers includes a number of extra template tags and filters to help template authors build reusable components.
+
 ## attrs
 
 The `attrs` tag is a handy shortcut that outputs template variables as element attributes.
-
-```django
-{# Usage #}
-{% with foo="one" bar="two" baz="three" %}
-  {% attrs foo bar baz %}
-{% endwith %}
-
-{# Output #}
-foo="one" bar="two" baz="three"
-```
-
-The parameters passed to `attrs` are used for both the "key" of the attribute and the name of the variable to source its value from.
-
-Another example:
 
 ```django
 {# input_field component #}
@@ -32,6 +20,8 @@ Another example:
 {# Output #}
 <input type="text" id="first_name" name="first_name" />
 ```
+
+The parameters passed to `attrs` are used for both the "key" of the attribute and the name of the variable to source its value from.
 
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 
@@ -63,7 +53,7 @@ It's possible to specify the source of the attribute value by writing it as a ke
 
 ## fragment
 
-The `fragment` tag allows HTML to be assigned to variables.
+The `fragment` tag allows template fragments to be assigned to variables.
 
 ```django
 {% fragment as my_fragment %}
@@ -107,11 +97,11 @@ The `match` filter outputs a string whose key matches the variable's value.
 
 The syntax is:
 
-```
+```django
 {{ variable|match:"key1:value1,key2:value2,key3:value3" }}
 ```
 
-Tip: You can use the `default` filter if you want a default value.
+Tip: You can use the `default` filter to set a default value for no matches.
 
 ```django
 {% with my_variable="nomatch" %}

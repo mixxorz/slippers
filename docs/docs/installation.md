@@ -27,7 +27,7 @@ You're done. :tada:
 
 ---
 
-Optionally, if you wanted Slippers to be available in all your templates without having to `{% load slippers %}` manually, you can add `slippers.templatetags.slippers` as a built-in in your template settings.
+Optionally, if you want Slippers to be available in all your templates without having to `{% load slippers %}` manually, you can add `slippers.templatetags.slippers` as a built-in in your template settings.
 
 ```python title="settings.py" {13}
 TEMPLATES = [

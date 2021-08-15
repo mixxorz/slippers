@@ -28,7 +28,7 @@ components:
   card: "myapp/card.html"
 ```
 
-The name of the component in `components.yaml` becomes the template tag for that component. In this case, we're telling Slippers to register the `myapp/card.html` template as the `card` component.
+The name of the component in `components.yaml` becomes the template tag for that component. In this case, we're registering the `myapp/card.html` template as the `card` component.
 
 Now we can use our new `card` component.
 
@@ -52,3 +52,5 @@ And here's the output:
   </div>
 </div>
 ```
+
+Tada :tada:
