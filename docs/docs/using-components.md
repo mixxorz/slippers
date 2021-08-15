@@ -4,6 +4,8 @@ sidebar_position: 5
 
 # Using components
 
+## Block and inline component syntax
+
 Components can be used in two ways: block-level or inline-level.
 
 For example, given an `icon_button` component.
@@ -35,3 +37,15 @@ The inline syntax just uses the plain component name. No `#` or `/`.
 ```html title="Output"
 <button><svg>...</svg></button>
 ```
+
+## Passing variables
+
+Unlike the `include` tag, using the component template tag **will not** pass the current context to the child component. Variables need to be passed in explicitly.
+
+```django
+{% #button variant="primary" size="large" %}Hello{% /button %}
+```
+
+This is a deliberate design decision to improve readability and reduce side-effects.
+
+You can of course still use `{% include %}` if you find that more convenient.
