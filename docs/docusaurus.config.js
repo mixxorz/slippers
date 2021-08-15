@@ -14,6 +14,7 @@ module.exports = {
     projectName: "slippers",
     trailingSlash: true,
     themeConfig: {
+        image: "https://repository-images.githubusercontent.com/384881226/b3f17d7e-ba55-4470-b1ea-4c65c4ab2cde",
         navbar: {
             title: "",
             logo: {

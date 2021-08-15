@@ -22,7 +22,7 @@ It includes additional template tags and filters, but its headline feature is **
 
 ## Motivation
 
-With the projects I work on, we usually build the front-end using [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) principles and [django-pattern-library](https://github.com/torchbox/django-pattern-library). Templates for buttons, icons, form fields, etc., are built and then included wherever they are needed.
+On the projects I work on, we usually build the front-end using [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) principles and [django-pattern-library](https://github.com/torchbox/django-pattern-library). Templates for buttons, icons, form fields, etc., are built and then included wherever they are needed.
 
 ```twig
 {% url "project:add_data" as add_data_url %}
