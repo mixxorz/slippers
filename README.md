@@ -38,7 +38,7 @@ It includes additional template tags and filters, but its headline feature is **
 {% #button variant="primary" %}See how it works{% /button %}
 ```
 
-[See how it works](https://mitchel.me/slippers/getting-started)
+[See how it works](https://mitchel.me/slippers/docs/getting-started/)
 
 ## Installation
 
