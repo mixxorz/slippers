@@ -78,6 +78,12 @@ One handy use for `fragment` is string interpolation using DTL.
 {% list_item title=title %}
 ```
 
+:::note
+
+`fragment` can't be used inside of a `with` block.
+
+:::
+
 ## match
 
 The `match` filter outputs a string whose key matches the variable's value.
@@ -101,7 +107,7 @@ The syntax is:
 {{ variable|match:"key1:value1,key2:value2,key3:value3" }}
 ```
 
-Tip: You can use the `default` filter to set a default value for no matches.
+Tip: You can use the `default` filter to set a default value if there are no matches.
 
 ```twig
 {% with my_variable="nomatch" %}
@@ -128,7 +134,19 @@ The `var` tag allows for assigning values to variables.
 The `var` tag is intended to be used inside component templates as a means to document the variables it requires and specify defaults.
 
 ```twig title="button.html"
-{% var variant=variant|default:"primary" %}
+{% var variant=variant|default:"outline" %}
 
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>
 ```
+
+:::note
+
+`var` can't be used inside of a `with` block.
+
+:::
+
+:::note
+
+The `var` tag can be used outside a component's context, however, it is not recommended since it would pollute the global context.
+
+:::

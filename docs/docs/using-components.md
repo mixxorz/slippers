@@ -38,17 +38,26 @@ The inline syntax just uses the plain component name. No `#` or `/`.
 <button><svg>...</svg></button>
 ```
 
-## Passing variables
+## Component context
 
-Unlike the `include` tag, using component template tags **will not** pass the current context to the child component. Variables need to be passed in explicitly.
+Unlike the `include` tag, component template tags **do not** pass the current context to the child component. Variables need to be passed in explicitly.
 
 ```twig
 {% #button variant="primary" size="large" %}Hello{% /button %}
 ```
 
+In addition, any variable set inside of a component template does not leak out to to the global context.
+
+```twig button.html
+{% var class=class|default:"btn btn-primary" %}
+<button {% attrs class %}>{{ children }}</button>
+
+{# The `class` variable will not "leak" out onto the global context #}
+```
+
 This is a deliberate design decision to improve readability and reduce side-effects.
 
-You can of course still use `{% include %}` if you find that functionality more convenient.
+You can of course still use `{% include %}` if its behaviour is more convenient in specific circumstances.
 
 ## Assigning output to a variable
 
@@ -63,3 +72,9 @@ Similar to a [`fragment`](/docs/template-tags-filters#fragment) tag, a component
 {# Or pass to to another component #}
 {% card_heading heading=my_heading %}
 ```
+
+:::note
+
+Assigning component output to a variable cannot be done inside a `with` block.
+
+:::
