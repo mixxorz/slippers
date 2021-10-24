@@ -60,6 +60,10 @@ INSTALLED_APPS = [
 
 Full documentation can be found on the [Slippers documentation site](https://mitchel.me/slippers/).
 
+## Contributors
+
+[![Contributors](https://contrib.rocks/image?repo=mixxorz/slippers)](https://github.com/mixxorz/slippers/graphs/contributors)
+
 ## License
 
 MIT
