@@ -25,7 +25,7 @@ include = [
 [tool.poetry.dependencies]
 python = "^3.7.0"
 Django = ">=2.2, <4.1"
-PyYAML = "^5.4.1"
+PyYAML = "^6.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^21.6b0"
