@@ -14,6 +14,10 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Framework :: Django",
+    "Framework :: Django :: 2.2",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
 ]
 include = [
     "LICENSE",
@@ -21,7 +25,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.7.0"
-Django = ">=2.2, <5.0"
+Django = ">=2.2, <4.2"
 PyYAML = ">=5.4.0, <7.0.0"
 
 [tool.poetry.dev-dependencies]
