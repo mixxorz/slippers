@@ -141,3 +141,4 @@ cython_debug/
 .python-version
 .vim
 .nvimrc
+Session.vim
