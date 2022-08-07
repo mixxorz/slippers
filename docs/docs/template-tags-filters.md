@@ -38,6 +38,19 @@ Boolean values are treated differently. `True` values become empty attributes, a
 <button>Click me</button>
 ```
 
+Underscores in variable names are automatically converted to hyphens. This is useful for `data-`, `aria-`, and custom HTML attributes.
+
+```twig
+{# logo component #}
+<a {% attrs href aria_label %}><img src="logo.png" /></a>
+
+{# Usage #}
+{% logo href="/" aria_label="Slipper's logo" %}
+
+{# Output #}
+<a href="/" aria-label="Slipper's logo"><img src="logo.png" /></a>
+```
+
 It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.
 
 ```twig
