@@ -127,6 +127,23 @@ class AttrsTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(context))
 
+    def test_with_hyphens(self):
+        context = Context(
+            {
+                "aria_label": "Search",
+            }
+        )
+
+        template = """
+            <input {% attrs aria_label %}>
+        """
+
+        expected = """
+            <input aria-label="Search">
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
     def test_boolean_values(self):
         context = Context(
             {

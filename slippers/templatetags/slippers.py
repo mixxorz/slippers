@@ -75,7 +75,6 @@ def register_components(
 ) -> None:
     if target_register is None:
         target_register = register
-
     for tag_name, template_path in components.items():
         # Inline component
         target_register.tag(f"{tag_name}", create_component_tag(template_path))
@@ -89,6 +88,13 @@ def register_components(
 def attr_string(key: str, value: Any):
     if isinstance(value, bool):
         return key if value else ""
+
+    # Replace `_` with `-`
+    # an underscore is not a valid character in an HTML attribute name
+    # a hyphen is not a valid character in a Django template variable name
+    # So we can use an underscore when we want to use a hyphen in an HTML attribute name
+    # e.g. `aria_role` turns into `aria-role`
+    key = key.replace("_", "-")
 
     return f'{key}="{value}"'
 
