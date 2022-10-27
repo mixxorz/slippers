@@ -64,6 +64,20 @@ It's possible to specify the source of the attribute value by writing it as a ke
 <input type="text" id="first_name" name="first_name" />
 ```
 
+It's possible to specify the default value of an attribute by declaring it with the [`var`](#var) tag
+
+```twig
+{# image component #}
+{% var loading="lazy" %}
+<img {% attrs src loading alt %}>
+
+{# Usage #}
+{% image src="..." alt="..." %}
+
+{# Output #}
+<img src="..." alt="..." loading="lazy" />
+```
+
 ## fragment
 
 The `fragment` tag allows template fragments to be assigned to variables.
