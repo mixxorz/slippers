@@ -277,13 +277,20 @@ class VarTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
-    def test_special_characters_disallowed(self):
+    def test_special_characters(self):
         template = """
-            {% var @click="Hello, World!" %}
+            {% var title="My title" %}
+            {% var x-bind:class="foo" %}
+            {% var @click="myHandler" %}
+
+            <div {% attrs x-bind:class @click %}>{{ title }}</div>
         """
 
-        with self.assertRaises(TemplateSyntaxError):
-            Template(template).render(Context())
+        expected = """
+        <div x-bind:class="foo" @click="myHandler">My title</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
 
 
 class MatchFilterTest(TestCase):

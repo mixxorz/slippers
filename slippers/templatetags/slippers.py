@@ -4,7 +4,7 @@ from typing import Any, Dict
 from django import template
 from django.conf import settings
 from django.template import Context
-from django.template.base import Variable, token_kwargs
+from django.template.base import Variable
 
 from slippers.template import slippers_token_kwargs
 
@@ -153,11 +153,7 @@ def do_var(parser, token):
     except ValueError:
         raise template.TemplateSyntaxError(error_message)
 
-    var_map = token_kwargs([var], parser)
-
-    if not var_map:
-        raise template.TemplateSyntaxError(error_message)
-
+    var_map = slippers_token_kwargs([var], parser)
     return VarNode(var_map)
 
 
