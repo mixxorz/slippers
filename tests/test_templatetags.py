@@ -106,6 +106,17 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_pass_boolean_flags_with_other_arguments(self):
+        template = """
+            {% #button disabled class="foo" %}I am button{% /button %}
+        """
+
+        expected = """
+            <button disabled class="foo">I am button</button>
+            """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
     def test_pass_special_symbols(self):
         template = """
             {% special_attributes x-data="controller" x-bind:class="bind-class" @click="myHandler" %}
@@ -223,6 +234,24 @@ class AttrsTagTest(TestCase):
 
         expected = """
             <button disabled>Click me</button>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_boolean_values_with_other_attributes(self):
+        context = Context(
+            {
+                "maxlength": 140,
+                "required": True,
+            }
+        )
+
+        template = """
+            <input type="text" {% attrs required maxlength %}>
+        """
+
+        expected = """
+            <input type="text" required maxlength="140">
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
