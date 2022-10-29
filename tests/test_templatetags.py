@@ -238,24 +238,6 @@ class AttrsTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(context))
 
-    def test_boolean_values_with_other_attributes(self):
-        context = Context(
-            {
-                "maxlength": 140,
-                "required": True,
-            }
-        )
-
-        template = """
-            <input type="text" {% attrs required maxlength %}>
-        """
-
-        expected = """
-            <input type="text" required maxlength="140">
-        """
-
-        self.assertHTMLEqual(expected, Template(template).render(context))
-
     def test_source_name(self):
         context = Context(
             {
