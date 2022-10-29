@@ -61,7 +61,7 @@ You can of course still use `{% include %}` if its behaviour is more convenient 
 
 ## Keyword arguments
 
-Unlike normal template tags, component template tags support special characters as keyword arguments. Specifically `_`, `-`, `@`, and `:`.
+Unlike normal template tags, component template tags support special characters in keyword arguments. Specifically `_`, `-`, `@`, and `:`.
 
 This can be used in conjunction with the [`attrs`](/docs/template-tags-filters#attrs) tag.
 

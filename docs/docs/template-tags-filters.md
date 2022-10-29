@@ -25,7 +25,7 @@ The parameters passed to `attrs` are used as both the "key" of the attribute and
 
 :::tip Changed in Slippers 0.5.0
 
-Support for special characters in keyword arguments added.
+Added support for special characters in keyword arguments.
 
 :::
 
