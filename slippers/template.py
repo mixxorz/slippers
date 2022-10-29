@@ -101,7 +101,7 @@ class SlippersFilterExpression(FilterExpression):
 kwarg_re = _lazy_re_compile(r"(?:([\w\-\:\@]+)=)?(.+)")
 
 
-def token_kwargs(bits, parser, support_legacy=False):
+def slippers_token_kwargs(bits, parser, support_legacy=False):
     """
     Parse token keyword arguments and return a dictionary of the arguments
     retrieved from the ``bits`` token list.

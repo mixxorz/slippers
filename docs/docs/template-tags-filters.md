@@ -12,16 +12,22 @@ The `attrs` tag is a handy shortcut that outputs template variables as element a
 
 ```twig
 {# input_field component #}
-<input {% attrs type id name %}>
+<input {% attrs type id name x-bind:class %}>
 
 {# Usage #}
-{% input_field type="text" id="first_name" name="first_name" %}
+{% input_field type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" %}
 
 {# Output #}
-<input type="text" id="first_name" name="first_name" />
+<input type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" />
 ```
 
-The parameters passed to `attrs` are used for both the "key" of the attribute and the name of the variable to source its value from.
+The parameters passed to `attrs` are used as both the "key" of the attribute and the name of the variable to source its value from.
+
+:::tip Changed in Slippers 0.5.0
+
+Support for special characters in keyword arguments added.
+
+:::
 
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 

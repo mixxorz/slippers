@@ -4,9 +4,9 @@ from typing import Any, Dict
 from django import template
 from django.conf import settings
 from django.template import Context
-from django.template.base import Variable
+from django.template.base import Variable, token_kwargs
 
-from slippers.template import token_kwargs
+from slippers.template import slippers_token_kwargs
 
 register = template.Library()
 
@@ -25,7 +25,7 @@ def create_component_tag(template_path):
         else:
             nodelist = None
 
-        extra_context = token_kwargs(remaining_bits, parser)
+        extra_context = slippers_token_kwargs(remaining_bits, parser)
 
         # Bits that are not keyword args are interpreted as `True` values
         boolean_args = [
@@ -126,7 +126,7 @@ def do_attrs(parser, token):
 
     # Format all tokens to be attr=attr so we can use token_kwargs() on it
     all_attrs = [attr if "=" in attr else f"{attr}={attr}" for attr in attrs]
-    attr_map = token_kwargs(all_attrs, parser)
+    attr_map = slippers_token_kwargs(all_attrs, parser)
     return AttrsNode(attr_map)
 
 
