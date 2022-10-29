@@ -145,13 +145,19 @@ class VarNode(template.Node):
 
 @register.tag(name="var")
 def do_var(parser, token):
+    error_message = (
+        f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
+    )
     try:
         tag_name, var = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-            f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
-        )
+        raise template.TemplateSyntaxError(error_message)
+
     var_map = token_kwargs([var], parser)
+
+    if not var_map:
+        raise template.TemplateSyntaxError(error_message)
+
     return VarNode(var_map)
 
 

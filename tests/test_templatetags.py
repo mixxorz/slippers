@@ -277,6 +277,14 @@ class VarTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_special_characters_disallowed(self):
+        template = """
+            {% var @click="Hello, World!" %}
+        """
+
+        with self.assertRaises(TemplateSyntaxError):
+            Template(template).render(Context())
+
 
 class MatchFilterTest(TestCase):
     def test_basic(self):
