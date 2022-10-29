@@ -1,5 +1,5 @@
-from warnings import warn
 from typing import Any, Dict
+from warnings import warn
 
 from django import template
 from django.conf import settings
