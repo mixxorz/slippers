@@ -34,6 +34,8 @@ filter_raw_string = r"""
  )""" % {
     "constant": constant_string,
     "num": r"[-+\.]?\d[\d\.e]*",
+    # The following is the only difference from the original FilterExpression. We allow variable names to have extra
+    # special characters: -, :, and @
     "var_chars": r"\w\-\:\@\.",
     "filter_sep": re.escape(FILTER_SEPARATOR),
     "arg_sep": re.escape(FILTER_ARGUMENT_SEPARATOR),
@@ -44,6 +46,8 @@ filter_re = _lazy_re_compile(filter_raw_string, re.VERBOSE)
 
 class SlippersFilterExpression(FilterExpression):
     def __init__(self, token, parser):
+        # This method is exactly the same as the original FilterExpression.__init__ method, the only difference being
+        # the value of `filter_re`.
         self.token = token
         matches = filter_re.finditer(token)
         var_obj = None
@@ -140,6 +144,9 @@ def slippers_token_kwargs(bits, parser, support_legacy=False):
                 return kwargs
             key, value = bits[2], bits[0]
             del bits[:3]
+
+        # This is the only difference from the original token_kwargs. We use the SlippersFilterExpression instead of the
+        # original FilterExpression.
         kwargs[key] = SlippersFilterExpression(value, parser)
         if bits and not kwarg_format:
             if bits[0] != "and":
