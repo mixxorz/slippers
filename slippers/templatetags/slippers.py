@@ -1,9 +1,12 @@
+from warnings import warn
 from typing import Any, Dict
 
 from django import template
 from django.conf import settings
 from django.template import Context
-from django.template.base import Variable, token_kwargs
+from django.template.base import Variable
+
+from slippers.template import token_kwargs
 
 register = template.Library()
 
@@ -94,6 +97,12 @@ def attr_string(key: str, value: Any):
     # a hyphen is not a valid character in a Django template variable name
     # So we can use an underscore when we want to use a hyphen in an HTML attribute name
     # e.g. `aria_role` turns into `aria-role`
+    if "_" in key:
+        warn(
+            f"Underscores in attribute names are deprecated. Use hyphens instead. {key}",
+            DeprecationWarning,
+            stacklevel=2,
+        )
     key = key.replace("_", "-")
 
     return f'{key}="{value}"'
