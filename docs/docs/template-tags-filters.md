@@ -23,7 +23,7 @@ The `attrs` tag is a handy shortcut that outputs template variables as element a
 
 The parameters passed to `attrs` are used as both the "key" of the attribute and the name of the variable to source its value from.
 
-:::tip Changed in Slippers 0.5.0
+:::tip New in Slippers 0.5.0
 
 Added support for special characters in keyword arguments.
 

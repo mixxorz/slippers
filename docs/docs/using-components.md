@@ -78,7 +78,7 @@ This can be used in conjunction with the [`attrs`](/docs/template-tags-filters#a
 
 This makes keyword arguments work more like HTML attributes.
 
-:::tip Changed in Slippers 0.5.0
+:::tip New in Slippers 0.5.0
 
 Added support for special characters in keyword arguments.
 
