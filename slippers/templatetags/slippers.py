@@ -4,7 +4,6 @@ from warnings import warn
 from django import template
 from django.conf import settings
 from django.template import Context
-from django.template.base import Variable
 
 from slippers.template import slippers_token_kwargs
 
@@ -25,22 +24,15 @@ def create_component_tag(template_path):
         else:
             nodelist = None
 
-        extra_context = slippers_token_kwargs(remaining_bits, parser)
-
         # Bits that are not keyword args are interpreted as `True` values
-        boolean_args = [
-            bit for bit in remaining_bits if bit not in extra_context.keys()
-        ]
+        all_bits = [bit if "=" in bit else f"{bit}=True" for bit in remaining_bits]
+
+        extra_context = slippers_token_kwargs(all_bits, parser)
 
         # Allow component fragment to be assigned to a variable
         target_var = None
         if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
             target_var = remaining_bits[-1]
-
-            # Strip "as variable" from being part of boolean args
-            boolean_args = remaining_bits[:-2]
-
-        extra_context.update({key: Variable("True") for key in boolean_args})
 
         return ComponentNode(nodelist, template_path, extra_context, target_var)
 

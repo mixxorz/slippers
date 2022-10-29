@@ -106,6 +106,17 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_pass_boolean_flags_with_other_arguments(self):
+        template = """
+            {% #button disabled class="foo" %}I am button{% /button %}
+        """
+
+        expected = """
+            <button disabled class="foo">I am button</button>
+            """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
     def test_pass_special_symbols(self):
         template = """
             {% special_attributes x-data="controller" x-bind:class="bind-class" @click="myHandler" %}
