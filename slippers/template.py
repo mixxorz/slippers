@@ -93,6 +93,7 @@ class SlippersFilterExpression(FilterExpression):
 
         self.filters = filters
         self.var = var_obj
+        self.is_var = isinstance(var_obj, Variable)
 
 
 ########################################################################################################################
