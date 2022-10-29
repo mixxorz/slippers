@@ -106,6 +106,17 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_pass_special_symbols(self):
+        template = """
+            {% special_attributes x-data="controller" x-bind:class="bind-class" @click="myHandler" %}
+        """
+
+        expected = """
+            <div x-data="controller" x-bind:class="bind-class" @click="myHandler"></div>
+            """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
 
 class AttrsTagTest(TestCase):
     def test_basic(self):
@@ -130,6 +141,23 @@ class AttrsTagTest(TestCase):
     def test_with_hyphens(self):
         context = Context(
             {
+                "aria-label": "Search",
+            }
+        )
+
+        template = """
+            <input {% attrs aria-label %}>
+        """
+
+        expected = """
+            <input aria-label="Search">
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_with_hyphens_legacy(self):
+        context = Context(
+            {
                 "aria_label": "Search",
             }
         )
@@ -140,6 +168,43 @@ class AttrsTagTest(TestCase):
 
         expected = """
             <input aria-label="Search">
+        """
+
+        with self.assertWarns(DeprecationWarning):
+            output = Template(template).render(context)
+
+        self.assertHTMLEqual(expected, output)
+
+    def test_with_colons(self):
+        context = Context(
+            {
+                "x-bind:class": "my-class",
+            }
+        )
+
+        template = """
+            <input {% attrs x-bind:class %}>
+        """
+
+        expected = """
+            <input x-bind:class="my-class">
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_with_at_symbol(self):
+        context = Context(
+            {
+                "@click": "myHandler",
+            }
+        )
+
+        template = """
+            <button {% attrs @click %}>Click me</button>
+        """
+
+        expected = """
+            <button @click="myHandler">Click me</button>
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
@@ -208,6 +273,21 @@ class VarTagTest(TestCase):
         expected = """
             <div>Default value</div>
             <div>HELLO, WORLD!</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_special_characters(self):
+        template = """
+            {% var title="My title" %}
+            {% var x-bind:class="foo" %}
+            {% var @click="myHandler" %}
+
+            <div {% attrs x-bind:class @click %}>{{ title }}</div>
+        """
+
+        expected = """
+        <div x-bind:class="foo" @click="myHandler">My title</div>
         """
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))

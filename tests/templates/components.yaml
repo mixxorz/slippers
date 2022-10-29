@@ -3,3 +3,4 @@ components:
   button: "button.html"
   card: "card.html"
   icon_button: "icon_button.html"
+  special_attributes: "special_attributes.html"

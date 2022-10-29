@@ -33,7 +33,7 @@ register_components({
 
 By default, the above methods will register components to the `slippers` tag register. This means that you need to load the `slippers` template tags before being able to use the components (`{% load slippers %}`).
 
-There might be cases where you want to register the components to a different tag register. For instance, if you're building a reusable component library using Slippers.
+There may be cases where you want to register the components to a different tag register; for instance, if you're building a reusable component library.
 
 To do this, you need to pass your own `register` to the `register_components` function.
 

@@ -12,16 +12,22 @@ The `attrs` tag is a handy shortcut that outputs template variables as element a
 
 ```twig
 {# input_field component #}
-<input {% attrs type id name %}>
+<input {% attrs type id name x-bind:class %}>
 
 {# Usage #}
-{% input_field type="text" id="first_name" name="first_name" %}
+{% input_field type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" %}
 
 {# Output #}
-<input type="text" id="first_name" name="first_name" />
+<input type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" />
 ```
 
-The parameters passed to `attrs` are used for both the "key" of the attribute and the name of the variable to source its value from.
+The parameters passed to `attrs` are used as both the "key" of the attribute and the name of the variable to source its value from.
+
+:::tip New in Slippers 0.5.0
+
+Added support for special characters in keyword arguments.
+
+:::
 
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 
@@ -36,19 +42,6 @@ Boolean values are treated differently. `True` values become empty attributes, a
 {# Output #}
 <button disabled>Can't click me</button>
 <button>Click me</button>
-```
-
-Underscores in variable names are automatically converted to hyphens. This is useful for `data-`, `aria-`, and custom HTML attributes.
-
-```twig
-{# logo component #}
-<a {% attrs href aria_label %}><img src="logo.png" /></a>
-
-{# Usage #}
-{% logo href="/" aria_label="Slipper's logo" %}
-
-{# Output #}
-<a href="/" aria-label="Slipper's logo"><img src="logo.png" /></a>
 ```
 
 It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.

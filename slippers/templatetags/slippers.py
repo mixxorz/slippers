@@ -1,9 +1,12 @@
 from typing import Any, Dict
+from warnings import warn
 
 from django import template
 from django.conf import settings
 from django.template import Context
-from django.template.base import Variable, token_kwargs
+from django.template.base import Variable
+
+from slippers.template import slippers_token_kwargs
 
 register = template.Library()
 
@@ -22,7 +25,7 @@ def create_component_tag(template_path):
         else:
             nodelist = None
 
-        extra_context = token_kwargs(remaining_bits, parser)
+        extra_context = slippers_token_kwargs(remaining_bits, parser)
 
         # Bits that are not keyword args are interpreted as `True` values
         boolean_args = [
@@ -94,6 +97,12 @@ def attr_string(key: str, value: Any):
     # a hyphen is not a valid character in a Django template variable name
     # So we can use an underscore when we want to use a hyphen in an HTML attribute name
     # e.g. `aria_role` turns into `aria-role`
+    if "_" in key:
+        warn(
+            f"Underscores in attribute names are deprecated. Use hyphens instead. {key}",
+            DeprecationWarning,
+            stacklevel=2,
+        )
     key = key.replace("_", "-")
 
     return f'{key}="{value}"'
@@ -117,7 +126,7 @@ def do_attrs(parser, token):
 
     # Format all tokens to be attr=attr so we can use token_kwargs() on it
     all_attrs = [attr if "=" in attr else f"{attr}={attr}" for attr in attrs]
-    attr_map = token_kwargs(all_attrs, parser)
+    attr_map = slippers_token_kwargs(all_attrs, parser)
     return AttrsNode(attr_map)
 
 
@@ -136,13 +145,15 @@ class VarNode(template.Node):
 
 @register.tag(name="var")
 def do_var(parser, token):
+    error_message = (
+        f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
+    )
     try:
         tag_name, var = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError(
-            f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
-        )
-    var_map = token_kwargs([var], parser)
+        raise template.TemplateSyntaxError(error_message)
+
+    var_map = slippers_token_kwargs([var], parser)
     return VarNode(var_map)
 
 
