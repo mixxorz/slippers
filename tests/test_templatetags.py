@@ -189,7 +189,21 @@ class FrontMatterTest(TestCase):
                 self.assertIn(warning, cm.output)
 
     def test_warning_for_extra_props(self):
-        self.fail()
+        template = """
+            {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" extra="foo" %}
+        """
+
+        # Message format is:
+        # Extra prop 'key' passed to 'tag_name'.
+        expected_warnings = [
+            "WARNING:slippers:Extra prop `extra` passed to `type_checking`.",
+        ]
+
+        with self.assertLogs("slippers", level="WARNING") as cm:
+            Template(template).render(Context({"numbers": [1, 2, 3]}))
+
+            for warning in expected_warnings:
+                self.assertIn(warning, cm.output)
 
 
 class AttrsTagTest(TestCase):

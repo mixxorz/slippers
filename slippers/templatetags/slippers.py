@@ -73,11 +73,6 @@ class ComponentNode(template.Node):
         # Find front matter
         source_parts = template.source.split("---", 2)
 
-        def foo(numbers: list[int]):
-            pass
-
-        foo([1, "two"])
-
         # If there is front matter...
         if len(source_parts) == 3:
             front_matter_source = source_parts[1]
@@ -91,11 +86,15 @@ class ComponentNode(template.Node):
 
             # Log warnings for invalid props
             for key, value in values.items():
-                # if key not in annotations:
-                #     logger.warn(
-                #         f"Invalid prop `{key}` of type `{type(value).__name__}` supplied to `{self.tag_name}`, "
-                #         f"expected one of `{', '.join(annotations.keys())}`."
-                #     )
+                # Warn on extra props
+                if key not in annotations:
+                    # Message format is:
+                    # Extra prop 'key' passed to 'tag_name'.
+                    logger.warn(
+                        f"Extra prop `{key}` passed to `{self.tag_name}`.",
+                    )
+                    continue
+
                 try:
                     check_type(key, value, annotations[key])
                 except TypeError:
