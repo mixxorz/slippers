@@ -129,6 +129,47 @@ class ComponentTest(TestCase):
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
 
+class FrontMatterTest(TestCase):
+    def test_strips_out_front_matter(self):
+        template = """
+            {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" %}
+        """
+
+        expected = """
+            <div>
+                String: Hello
+                Number: 10
+                List of numbers: [1, 2, 3]
+                Optional string:
+                String or number: ten
+            </div>
+        """
+
+        self.assertHTMLEqual(
+            expected, Template(template).render(Context({"numbers": [1, 2, 3]}))
+        )
+
+    def test_warning_for_invalid_type(self):
+        template = """
+            {% type_checking string=10 number="ten" list_of_numbers=numbers %}
+        """
+
+        expected_warnings = [
+            "WARNING:slippers:Invalid prop `string` of type `int` supplied to `type_checking`, expected `str`.",
+            "WARNING:slippers:Invalid prop `number` of type `django.utils.safestring.SafeString` "
+            "supplied to "
+            "`type_checking`, expected `int`.",
+            "WARNING:slippers:Invalid prop `list_of_numbers` of type `list` supplied to `type_checking`, expected "
+            "`List[int]`.",
+        ]
+
+        with self.assertLogs("slippers", level="WARNING") as cm:
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            for warning in expected_warnings:
+                self.assertIn(warning, cm.output)
+
+
 class AttrsTagTest(TestCase):
     def test_basic(self):
         context = Context(

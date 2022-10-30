@@ -1,11 +1,17 @@
+import logging
 from typing import Any, Dict
 from warnings import warn
 
 from django import template
 from django.conf import settings
 from django.template import Context
+from django.utils.safestring import mark_safe
+
+from typeguard import check_type, get_type_name
 
 from slippers.template import slippers_token_kwargs
+
+logger = logging.getLogger("slippers")
 
 register = template.Library()
 
@@ -34,15 +40,20 @@ def create_component_tag(template_path):
         if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
             target_var = remaining_bits[-1]
 
-        return ComponentNode(nodelist, template_path, extra_context, target_var)
+        return ComponentNode(
+            tag_name, nodelist, template_path, extra_context, target_var
+        )
 
     return do_component
 
 
 class ComponentNode(template.Node):
-    def __init__(self, nodelist, template, extra_context, target_var=None):
+    def __init__(
+        self, tag_name, nodelist, template_path, extra_context, target_var=None
+    ):
+        self.tag_name = tag_name
         self.nodelist = nodelist
-        self.template = template
+        self.template_path = template_path
         self.extra_context = extra_context
         self.target_var = target_var
 
@@ -53,10 +64,61 @@ class ComponentNode(template.Node):
             key: value.resolve(context) for key, value in self.extra_context.items()
         }
 
-        t = context.template.engine.get_template(self.template)
-        output = t.render(
+        template = context.template.engine.get_template(self.template_path)
+
+        raw_output = template.render(
             Context({**values, "children": children}, autoescape=context.autoescape)
         )
+
+        # Find front matter
+        source_parts = template.source.split("---", 2)
+
+        def foo(numbers: list[int]):
+            pass
+
+        foo([1, "two"])
+
+        # If there is front matter...
+        if len(source_parts) == 3:
+            front_matter_source = source_parts[1]
+            front_matter_locals = {}
+            # Make typing module available in front_matter_source
+            exec(
+                f"from typing import *\n{front_matter_source}", {}, front_matter_locals
+            )
+
+            annotations = front_matter_locals.get("__annotations__", {})
+
+            # Log warnings for invalid props
+            for key, value in values.items():
+                # if key not in annotations:
+                #     logger.warn(
+                #         f"Invalid prop `{key}` of type `{type(value).__name__}` supplied to `{self.tag_name}`, "
+                #         f"expected one of `{', '.join(annotations.keys())}`."
+                #     )
+                try:
+                    check_type(key, value, annotations[key])
+                except TypeError:
+                    logger.warn(
+                        f"Invalid prop `{key}` of type `{get_type_name(value)}` supplied to `{self.tag_name}`, "
+                        f"expected `{get_type_name(annotations[key])}`."
+                    )
+            #
+            # # Log warnings for missing props
+            # for key, value in annotations.items():
+            #     # Ignore optional props
+            #     if get_origin(value) is Union and value._name == "Optional":
+            #         continue
+            #
+            #     if key not in values:
+            #         logger.warn(
+            #             f"Missing required prop `{key}` of type `{value.__name__}` supplied to `{self.tag_name}`."
+            #         )
+
+            # Strip front matter from output
+            output = mark_safe(raw_output.split("---", 2)[2])
+        else:
+            output = raw_output
 
         if self.target_var:
             context[self.target_var] = output

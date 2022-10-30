@@ -27,6 +27,7 @@ include = [
 python = "^3.7.0"
 Django = ">=3.2, <4.2"
 PyYAML = ">=5.4.0, <7.0.0"
+typeguard = "^2.13.3"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
