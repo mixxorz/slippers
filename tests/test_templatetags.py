@@ -149,18 +149,19 @@ class FrontMatterTest(TestCase):
             expected, Template(template).render(Context({"numbers": [1, 2, 3]}))
         )
 
-    def test_warning_for_invalid_type(self):
+    def test_warning_for_invalid_prop_types(self):
         template = """
             {% type_checking string=10 number="ten" list_of_numbers=numbers %}
         """
 
+        # Message format is:
+        # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
         expected_warnings = [
-            "WARNING:slippers:Invalid prop `string` of type `int` supplied to `type_checking`, expected `str`.",
-            "WARNING:slippers:Invalid prop `number` of type `django.utils.safestring.SafeString` "
-            "supplied to "
-            "`type_checking`, expected `int`.",
-            "WARNING:slippers:Invalid prop `list_of_numbers` of type `list` supplied to `type_checking`, expected "
-            "`List[int]`.",
+            "WARNING:slippers:Invalid prop `string` passed to `type_checking`. Expected `str`, got `int` instead.",
+            "WARNING:slippers:Invalid prop `number` passed to `type_checking`. Expected `int`, got "
+            "`django.utils.safestring.SafeString` instead.",
+            "WARNING:slippers:Invalid prop `list_of_numbers` passed to `type_checking`. Expected `List[int]`, got "
+            "`list` instead.",
         ]
 
         with self.assertLogs("slippers", level="WARNING") as cm:
@@ -168,6 +169,27 @@ class FrontMatterTest(TestCase):
 
             for warning in expected_warnings:
                 self.assertIn(warning, cm.output)
+
+    def test_warning_for_required_props(self):
+        template = """
+            {% type_checking string="Hello" number=10 %}
+        """
+
+        # Message format is:
+        # Required prop 'key' was not passed to 'tag_name'.
+        expected_warnings = [
+            "WARNING:slippers:Required prop `list_of_numbers` was not passed to `type_checking`.",
+            "WARNING:slippers:Required prop `string_or_number` was not passed to `type_checking`.",
+        ]
+
+        with self.assertLogs("slippers", level="WARNING") as cm:
+            Template(template).render(Context())
+
+            for warning in expected_warnings:
+                self.assertIn(warning, cm.output)
+
+    def test_warning_for_extra_props(self):
+        self.fail()
 
 
 class AttrsTagTest(TestCase):

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Union, get_origin
 from warnings import warn
 
 from django import template
@@ -99,21 +99,25 @@ class ComponentNode(template.Node):
                 try:
                     check_type(key, value, annotations[key])
                 except TypeError:
+                    # Message format is:
+                    # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
                     logger.warn(
-                        f"Invalid prop `{key}` of type `{get_type_name(value)}` supplied to `{self.tag_name}`, "
-                        f"expected `{get_type_name(annotations[key])}`."
+                        f"Invalid prop `{key}` passed to `{self.tag_name}`. Expected "
+                        f"`{get_type_name(annotations[key])}`, got `{get_type_name(value)}` instead."
                     )
-            #
-            # # Log warnings for missing props
-            # for key, value in annotations.items():
-            #     # Ignore optional props
-            #     if get_origin(value) is Union and value._name == "Optional":
-            #         continue
-            #
-            #     if key not in values:
-            #         logger.warn(
-            #             f"Missing required prop `{key}` of type `{value.__name__}` supplied to `{self.tag_name}`."
-            #         )
+
+            # Log warnings for missing props
+            for key, value in annotations.items():
+                # Ignore optional props
+                if get_origin(value) is Union and value._name == "Optional":
+                    continue
+
+                if key not in values:
+                    # Message format is:
+                    # Required prop 'key' was not passed to 'tag_name'.
+                    logger.warn(
+                        f"Required prop `{key}` was not passed to `{self.tag_name}`."
+                    )
 
             # Strip front matter from output
             output = mark_safe(raw_output.split("---", 2)[2])
