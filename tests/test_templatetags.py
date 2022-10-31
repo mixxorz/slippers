@@ -177,7 +177,7 @@ class FrontMatterTest(TestCase):
         """
 
         # Message format is:
-        # Required prop 'key' was not passed to 'tag_name'.
+        # Required prop 'key' missing from 'tag_name'.
         expected_warnings = [
             "WARNING:slippers:Required prop `list_of_numbers` was not passed to `type_checking`.",
             "WARNING:slippers:Required prop `string_or_number` was not passed to `type_checking`.",

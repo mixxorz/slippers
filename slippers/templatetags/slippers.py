@@ -7,6 +7,8 @@ from django.conf import settings
 from django.template import Context
 from django.utils.safestring import mark_safe
 
+from rich.console import Console
+from rich.panel import Panel
 from typeguard import check_type, get_type_name
 
 from slippers.template import slippers_token_kwargs
@@ -14,6 +16,7 @@ from slippers.template import slippers_token_kwargs
 logger = logging.getLogger("slippers")
 
 register = template.Library()
+console = Console()
 
 
 ##
@@ -41,7 +44,13 @@ def create_component_tag(template_path):
             target_var = remaining_bits[-1]
 
         return ComponentNode(
-            tag_name, nodelist, template_path, extra_context, target_var
+            tag_name=tag_name,
+            nodelist=nodelist,
+            template_path=template_path,
+            extra_context=extra_context,
+            origin_template_name=parser.origin.template_name,
+            origin_lineno=token.lineno,
+            target_var=target_var,
         )
 
     return do_component
@@ -49,12 +58,21 @@ def create_component_tag(template_path):
 
 class ComponentNode(template.Node):
     def __init__(
-        self, tag_name, nodelist, template_path, extra_context, target_var=None
+        self,
+        tag_name,
+        nodelist,
+        template_path,
+        extra_context,
+        origin_template_name,
+        origin_lineno,
+        target_var=None,
     ):
         self.tag_name = tag_name
         self.nodelist = nodelist
         self.template_path = template_path
         self.extra_context = extra_context
+        self.origin_template_name = origin_template_name
+        self.origin_lineno = origin_lineno
         self.target_var = target_var
 
     def render(self, context):
@@ -125,10 +143,23 @@ class ComponentNode(template.Node):
             # Strip front matter from output
             content = raw_output.split("---", 2)[2]
 
-            # Add console.warn warnings to HTML
             if warnings:
+                # Display pretty warnings on console
+                console.print(
+                    Panel(
+                        "\n".join(warnings),
+                        style="yellow",
+                        expand=False,
+                        title=(
+                            f"PropTypeError: {self.tag_name} at "
+                            f"{self.origin_template_name}:{self.origin_lineno}"
+                        ),
+                        title_align="left",
+                    )
+                )
+
+                # Add console.warn warnings browser console
                 for warning in warnings:
-                    logger.warn(warning)
                     content = f"""{content}<script>console.warn("{warning}")</script>"""
 
             output = mark_safe(content)
