@@ -1,4 +1,4 @@
-from typing import Any, Dict, Union, get_origin
+from typing import Any, Dict
 from warnings import warn
 
 from django import template
@@ -112,14 +112,22 @@ class ComponentNode(template.Node):
                 f"from typing import *\n{front_matter_source}", {}, front_matter_locals
             )
 
-            annotations = front_matter_locals.get("__annotations__", {})
+            # Variables with type hints are prop types
+            prop_types = front_matter_locals.get("__annotations__", {})
+
+            # Prop declarations with set values are prop defaults
+            prop_defaults = {
+                key: front_matter_locals[key]
+                for key in prop_types.keys()
+                if key in front_matter_locals
+            }
 
             warnings = []
 
             # Log warnings for invalid props
             for key, value in values.items():
                 # Warn on extra props
-                if key not in annotations:
+                if key not in prop_types:
                     # Message format is:
                     # Extra prop 'key' passed to 'tag_name'.
                     warnings.append(
@@ -128,19 +136,19 @@ class ComponentNode(template.Node):
                     continue
 
                 try:
-                    check_type(key, value, annotations[key])
+                    check_type(key, value, prop_types[key])
                 except TypeError:
                     # Message format is:
                     # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
                     warnings.append(
                         f"Invalid prop `{key}` passed to `{self.tag_name}`. Expected "
-                        f"`{get_type_name(annotations[key])}`, got `{get_type_name(value)}` instead."
+                        f"`{get_type_name(prop_types[key])}`, got `{get_type_name(value)}` instead."
                     )
 
             # Log warnings for missing props
-            for key, value in annotations.items():
+            for key, value in prop_types.items():
                 # Ignore optional props
-                if get_origin(value) is Union and value._name == "Optional":
+                if key in prop_defaults:
                     continue
 
                 if key not in values:
