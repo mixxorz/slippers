@@ -1,3 +1,5 @@
+from unittest.mock import ANY, patch
+
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
 
@@ -145,33 +147,37 @@ class FrontMatterTest(TestCase):
             </div>
         """
 
-        self.assertHTMLEqual(
+        self.assertInHTML(
             expected, Template(template).render(Context({"numbers": [1, 2, 3]}))
         )
 
-    def test_warning_for_invalid_prop_types(self):
+    @patch("slippers.templatetags.slippers.print_warnings")
+    def test_warning_for_invalid_prop_types(self, mock_print_warnings):
         template = """
-            {% type_checking string=10 number="ten" list_of_numbers=numbers %}
+            {% type_checking string=10 number="ten" list_of_numbers=numbers string_or_number=10 %}
         """
         # Message format is:
         # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
         expected_warnings = [
-            "WARNING:slippers:Invalid prop `string` passed to `type_checking`. Expected `str`, got `int` instead.",
-            "WARNING:slippers:Invalid prop `number` passed to `type_checking`. Expected `int`, got "
+            "Invalid prop `string` passed to `type_checking`. Expected `str`, got `int` instead.",
+            "Invalid prop `number` passed to `type_checking`. Expected `int`, got "
             "`django.utils.safestring.SafeString` instead.",
-            "WARNING:slippers:Invalid prop `list_of_numbers` passed to `type_checking`. Expected `List[int]`, got "
+            "Invalid prop `list_of_numbers` passed to `type_checking`. Expected `List[int]`, got "
             "`list` instead.",
         ]
 
-        with self.assertLogs("slippers", level="WARNING") as cm:
-            Template(template).render(Context({"numbers": [1, "two"]}))
+        output = Template(template).render(Context({"numbers": [1, "two"]}))
 
-            for warning in expected_warnings:
-                self.assertIn(warning, cm.output)
+        mock_print_warnings.assert_called_once_with(
+            expected_warnings, "type_checking", ANY, ANY
+        )
 
-        self.fail("Check output has the console.warn calls")
+        # Check output has console.warn calls
+        for warning in expected_warnings:
+            self.assertIn(warning, output)
 
-    def test_warning_for_required_props(self):
+    @patch("slippers.templatetags.slippers.print_warnings")
+    def test_warning_for_required_props(self, mock_print_warnings):
         template = """
             {% type_checking string="Hello" number=10 %}
         """
@@ -179,17 +185,22 @@ class FrontMatterTest(TestCase):
         # Message format is:
         # Required prop 'key' missing from 'tag_name'.
         expected_warnings = [
-            "WARNING:slippers:Required prop `list_of_numbers` was not passed to `type_checking`.",
-            "WARNING:slippers:Required prop `string_or_number` was not passed to `type_checking`.",
+            "Required prop `list_of_numbers` was not passed to `type_checking`.",
+            "Required prop `string_or_number` was not passed to `type_checking`.",
         ]
 
-        with self.assertLogs("slippers", level="WARNING") as cm:
-            Template(template).render(Context())
+        output = Template(template).render(Context())
 
-            for warning in expected_warnings:
-                self.assertIn(warning, cm.output)
+        mock_print_warnings.assert_called_once_with(
+            expected_warnings, "type_checking", ANY, ANY
+        )
 
-    def test_warning_for_extra_props(self):
+        # Check output has console.warn calls
+        for warning in expected_warnings:
+            self.assertIn(warning, output)
+
+    @patch("slippers.templatetags.slippers.print_warnings")
+    def test_warning_for_extra_props(self, mock_print_warnings):
         template = """
             {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" extra="foo" %}
         """
@@ -197,14 +208,18 @@ class FrontMatterTest(TestCase):
         # Message format is:
         # Extra prop 'key' passed to 'tag_name'.
         expected_warnings = [
-            "WARNING:slippers:Extra prop `extra` passed to `type_checking`.",
+            "Extra prop `extra` passed to `type_checking`.",
         ]
 
-        with self.assertLogs("slippers", level="WARNING") as cm:
-            Template(template).render(Context({"numbers": [1, 2, 3]}))
+        output = Template(template).render(Context({"numbers": [1, 2, 3]}))
 
-            for warning in expected_warnings:
-                self.assertIn(warning, cm.output)
+        mock_print_warnings.assert_called_once_with(
+            expected_warnings, "type_checking", ANY, ANY
+        )
+
+        # Check output has console.warn calls
+        for warning in expected_warnings:
+            self.assertIn(warning, output)
 
 
 class AttrsTagTest(TestCase):

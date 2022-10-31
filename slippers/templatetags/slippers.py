@@ -1,4 +1,3 @@
-import logging
 from typing import Any, Dict, Union, get_origin
 from warnings import warn
 
@@ -12,8 +11,6 @@ from rich.panel import Panel
 from typeguard import check_type, get_type_name
 
 from slippers.template import slippers_token_kwargs
-
-logger = logging.getLogger("slippers")
 
 register = template.Library()
 console = Console()
@@ -54,6 +51,19 @@ def create_component_tag(template_path):
         )
 
     return do_component
+
+
+def print_warnings(warnings, tag_name, template_name, lineno):
+    """Print warnings to the console"""
+    console.print(
+        Panel(
+            "\n".join(warnings),
+            style="yellow",
+            expand=False,
+            title=(f"PropTypeError: {tag_name} at " f"{template_name}:{lineno}"),
+            title_align="left",
+        )
+    )
 
 
 class ComponentNode(template.Node):
@@ -145,17 +155,11 @@ class ComponentNode(template.Node):
 
             if warnings:
                 # Display pretty warnings on console
-                console.print(
-                    Panel(
-                        "\n".join(warnings),
-                        style="yellow",
-                        expand=False,
-                        title=(
-                            f"PropTypeError: {self.tag_name} at "
-                            f"{self.origin_template_name}:{self.origin_lineno}"
-                        ),
-                        title_align="left",
-                    )
+                print_warnings(
+                    warnings,
+                    self.tag_name,
+                    self.origin_template_name,
+                    self.origin_lineno,
                 )
 
                 # Add console.warn warnings browser console
