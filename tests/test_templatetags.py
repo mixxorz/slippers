@@ -1,7 +1,9 @@
-from unittest.mock import ANY, patch
+from unittest.mock import patch
 
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
+
+from typeguard import get_type_name
 
 
 class ComponentTest(TestCase):
@@ -151,75 +153,135 @@ class FrontMatterTest(TestCase):
             expected, Template(template).render(Context({"numbers": [1, 2, 3]}))
         )
 
-    @patch("slippers.templatetags.slippers.print_warnings")
-    def test_warning_for_invalid_prop_types(self, mock_print_warnings):
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_warning_for_invalid_prop_types(
+        self, mock_render_error_html, mock_print_errors
+    ):
         template = """
             {% type_checking string=10 number="ten" list_of_numbers=numbers string_or_number=10 %}
         """
-        # Message format is:
-        # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
-        expected_warnings = [
-            "Invalid prop `string` passed to `type_checking`. Expected `str`, got `int` instead.",
-            "Invalid prop `number` passed to `type_checking`. Expected `int`, got "
-            "`django.utils.safestring.SafeString` instead.",
-            "Invalid prop `list_of_numbers` passed to `type_checking`. Expected `List[int]`, got "
-            "`list` instead.",
+        expected_errors = [
+            # (prop_name, expected_type, actual_type)
+            ("string", "str", "int"),
+            ("number", "int", "django.utils.safestring.SafeString"),
+            ("list_of_numbers", "List[int]", "list"),
         ]
 
-        output = Template(template).render(Context({"numbers": [1, "two"]}))
+        Template(template).render(Context({"numbers": [1, "two"]}))
 
-        mock_print_warnings.assert_called_once_with(
-            expected_warnings, "type_checking", ANY, ANY
-        )
+        # Check console errors
+        console_errors = mock_print_errors.call_args.kwargs["errors"]
 
-        # Check output has console.warn calls
-        for warning in expected_warnings:
-            self.assertIn(warning, output)
+        self.assertEqual(len(expected_errors), len(console_errors))
 
-    @patch("slippers.templatetags.slippers.print_warnings")
-    def test_warning_for_required_props(self, mock_print_warnings):
+        for expected_error, actual_error in zip(expected_errors, console_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("invalid", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+        # Check browser errors
+        browser_errors = mock_render_error_html.call_args.kwargs["errors"]
+
+        self.assertEqual(len(expected_errors), len(browser_errors))
+
+        for expected_error, actual_error in zip(expected_errors, browser_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("invalid", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_warning_for_required_props(
+        self, mock_render_error_html, mock_print_errors
+    ):
         template = """
             {% type_checking string="Hello" number=10 %}
         """
-
-        # Message format is:
-        # Required prop 'key' missing from 'tag_name'.
-        expected_warnings = [
-            "Required prop `list_of_numbers` was not passed to `type_checking`.",
-            "Required prop `string_or_number` was not passed to `type_checking`.",
+        expected_errors = [
+            # (prop_name, expected_type, actual_type)
+            ("list_of_numbers", "List[int]", "NoneType"),
+            ("string_or_number", "Union[str, int]", "NoneType"),
         ]
 
-        output = Template(template).render(Context())
+        Template(template).render(Context())
 
-        mock_print_warnings.assert_called_once_with(
-            expected_warnings, "type_checking", ANY, ANY
-        )
+        # Check console errors
+        console_errors = mock_print_errors.call_args.kwargs["errors"]
 
-        # Check output has console.warn calls
-        for warning in expected_warnings:
-            self.assertIn(warning, output)
+        self.assertEqual(len(expected_errors), len(console_errors))
 
-    @patch("slippers.templatetags.slippers.print_warnings")
-    def test_warning_for_extra_props(self, mock_print_warnings):
+        for expected_error, actual_error in zip(expected_errors, console_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("missing", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+        # Check browser errors
+        browser_errors = mock_render_error_html.call_args.kwargs["errors"]
+
+        self.assertEqual(len(expected_errors), len(browser_errors))
+
+        for expected_error, actual_error in zip(expected_errors, browser_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("missing", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_warning_for_extra_props(self, mock_render_error_html, mock_print_errors):
         template = """
             {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" extra="foo" %}
         """
-
-        # Message format is:
-        # Extra prop 'key' passed to 'tag_name'.
-        expected_warnings = [
-            "Extra prop `extra` passed to `type_checking`.",
+        expected_errors = [
+            # (prop_name, expected_type, actual_type)
+            ("extra", "NoneType", "django.utils.safestring.SafeString"),
         ]
 
-        output = Template(template).render(Context({"numbers": [1, 2, 3]}))
+        Template(template).render(Context({"numbers": [1, 2, 3]}))
 
-        mock_print_warnings.assert_called_once_with(
-            expected_warnings, "type_checking", ANY, ANY
-        )
+        # Check console errors
+        console_errors = mock_print_errors.call_args.kwargs["errors"]
 
-        # Check output has console.warn calls
-        for warning in expected_warnings:
-            self.assertIn(warning, output)
+        self.assertEqual(len(expected_errors), len(console_errors))
+
+        for expected_error, actual_error in zip(expected_errors, console_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("extra", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+        # Check browser errors
+        browser_errors = mock_render_error_html.call_args.kwargs["errors"]
+
+        self.assertEqual(len(expected_errors), len(browser_errors))
+
+        for expected_error, actual_error in zip(expected_errors, browser_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("extra", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
 
 class AttrsTagTest(TestCase):
