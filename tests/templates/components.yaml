@@ -5,3 +5,4 @@ components:
   icon_button: "icon_button.html"
   special_attributes: "special_attributes.html"
   type_checking: "type_checking.html"
+  component_code: "component_code.html"

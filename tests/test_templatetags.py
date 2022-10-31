@@ -284,6 +284,26 @@ class PropTypesTest(TestCase):
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
 
+class ComponentCodeTest(TestCase):
+    def test_component_code(self):
+        template = """
+            {% component_code required_string="Hello, World" %}
+        """
+
+        expected = """
+            The context contains:
+
+            Required string: Hello, World
+            Optional number:
+            Default number: 10
+            New number: 20
+        """
+
+        output = Template(template).render(Context())
+
+        self.assertHTMLEqual(expected, output)
+
+
 class AttrsTagTest(TestCase):
     def test_basic(self):
         context = Context(
