@@ -133,8 +133,8 @@ class ComponentTest(TestCase):
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
 
-class FrontMatterTest(TestCase):
-    def test_strips_out_front_matter(self):
+class PropTypesTest(TestCase):
+    def test_strips_out_prop_types(self):
         template = """
             {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" %}
         """

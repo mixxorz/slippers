@@ -145,9 +145,9 @@ def check_prop_types(
 
 
 error_message_templates = {
-    "invalid": "Invalid prop '{name}' passed to '{component}'. Expected {expected}, got {actual}.",
-    "missing": "Required prop '{name}' of type {expected} not passed to '{component}'.",
-    "extra": "Extra prop '{name}' of type '{actual}' passed to '{component}'.",
+    "invalid": "Invalid prop '{name}' set on {component}. Expected {expected}, got {actual}.",
+    "missing": "Required prop '{name}' of type {expected} not set on {component}.",
+    "extra": "Extra prop '{name}' of type '{actual}' set on {component}.",
 }
 
 
