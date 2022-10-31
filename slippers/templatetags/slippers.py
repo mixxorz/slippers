@@ -71,10 +71,12 @@ class ComponentNode(template.Node):
         )
 
         # Find front matter
+        # Front matter is used for runtime type checking
         source_parts = template.source.split("---", 2)
 
         # If there is front matter...
         if len(source_parts) == 3:
+            # Execute the front matter code
             front_matter_source = source_parts[1]
             front_matter_locals = {}
             # Make typing module available in front_matter_source
@@ -84,13 +86,15 @@ class ComponentNode(template.Node):
 
             annotations = front_matter_locals.get("__annotations__", {})
 
+            warnings = []
+
             # Log warnings for invalid props
             for key, value in values.items():
                 # Warn on extra props
                 if key not in annotations:
                     # Message format is:
                     # Extra prop 'key' passed to 'tag_name'.
-                    logger.warn(
+                    warnings.append(
                         f"Extra prop `{key}` passed to `{self.tag_name}`.",
                     )
                     continue
@@ -100,7 +104,7 @@ class ComponentNode(template.Node):
                 except TypeError:
                     # Message format is:
                     # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
-                    logger.warn(
+                    warnings.append(
                         f"Invalid prop `{key}` passed to `{self.tag_name}`. Expected "
                         f"`{get_type_name(annotations[key])}`, got `{get_type_name(value)}` instead."
                     )
@@ -114,13 +118,22 @@ class ComponentNode(template.Node):
                 if key not in values:
                     # Message format is:
                     # Required prop 'key' was not passed to 'tag_name'.
-                    logger.warn(
+                    warnings.append(
                         f"Required prop `{key}` was not passed to `{self.tag_name}`."
                     )
 
             # Strip front matter from output
-            output = mark_safe(raw_output.split("---", 2)[2])
+            content = raw_output.split("---", 2)[2]
+
+            # Add console.warn warnings to HTML
+            if warnings:
+                for warning in warnings:
+                    logger.warn(warning)
+                    content = f"""{content}<script>console.warn("{warning}")</script>"""
+
+            output = mark_safe(content)
         else:
+            # No front matter, no type checking
             output = raw_output
 
         if self.target_var:

@@ -153,7 +153,6 @@ class FrontMatterTest(TestCase):
         template = """
             {% type_checking string=10 number="ten" list_of_numbers=numbers %}
         """
-
         # Message format is:
         # Invalid prop 'key' passed to 'tag_name'. Expected 'int', got 'str' instead.
         expected_warnings = [
@@ -169,6 +168,8 @@ class FrontMatterTest(TestCase):
 
             for warning in expected_warnings:
                 self.assertIn(warning, cm.output)
+
+        self.fail("Check output has the console.warn calls")
 
     def test_warning_for_required_props(self):
         template = """
