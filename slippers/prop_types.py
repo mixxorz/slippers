@@ -103,9 +103,9 @@ def check_prop_types(*, prop_types: PropTypes, props: Dict[str, Any]):
 
 
 error_message_templates = {
-    "invalid": "Invalid prop '{name}' set on {component}. Expected {expected}, got {actual}.",
-    "missing": "Required prop '{name}' of type {expected} not set on {component}.",
-    "extra": "Extra prop '{name}' of type '{actual}' set on {component}.",
+    "invalid": "Invalid prop '{name}' set on '{component}'. Expected '{expected}', got '{actual}'.",
+    "missing": "Required prop '{name}' of type '{expected}' not set on '{component}'.",
+    "extra": "Extra prop '{name}' of type '{actual}' set on '{component}'.",
 }
 
 

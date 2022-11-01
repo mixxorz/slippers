@@ -3,10 +3,11 @@ from typing import Any, Dict
 from warnings import warn
 
 from django import template
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.template import Context
 from django.utils.safestring import mark_safe
 
+from slippers.conf import settings
 from slippers.prop_types import (
     PropTypes,
     check_prop_types,
@@ -130,12 +131,13 @@ class ComponentNode(template.Node):
         if source_markup.prop_types_section:
             prop_types = PropTypes.from_source_code(source_markup.prop_types_section)
 
-            prop_errors = check_prop_types(
-                prop_types=prop_types,
-                props=props,
-            )
+            if settings.SLIPPERS_RUNTIME_TYPE_CHECKING:
+                prop_errors = check_prop_types(
+                    prop_types=prop_types,
+                    props=props,
+                )
 
-            if prop_errors:
+            if "shell" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
                 print_errors(
                     errors=prop_errors,
                     tag_name=self.tag_name,
@@ -163,7 +165,7 @@ class ComponentNode(template.Node):
 
         output_markup = ComponentMarkup.from_string(raw_output)
 
-        if prop_errors:
+        if "browser_console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
             # Append prop errors to output
             output = mark_safe(output_markup.template_section) + render_error_html(  # type: ignore
                 errors=prop_errors,
@@ -286,7 +288,7 @@ def do_match(match_key, mapping):
 
             values_map[key] = value
         except ValueError:
-            if settings.DEBUG:
+            if django_settings.DEBUG:
                 raise template.TemplateSyntaxError(error_message)
             continue
 
@@ -316,7 +318,7 @@ def do_fragment(parser, token):
         nodelist = parser.parse(("endfragment",))
         parser.delete_first_token()
     except ValueError:
-        if settings.DEBUG:
+        if django_settings.DEBUG:
             raise template.TemplateSyntaxError(error_message)
         return ""
 

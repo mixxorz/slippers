@@ -1,5 +1,6 @@
 from unittest.mock import patch
 
+from django.conf import settings as django_settings
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
 
@@ -133,6 +134,7 @@ class ComponentTest(TestCase):
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
 
+@override_settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True)
 class PropTypesTest(TestCase):
     def test_strips_out_prop_types(self):
         template = """
@@ -289,11 +291,69 @@ class PropTypesTest(TestCase):
                 )
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
+    @override_settings()
+    @patch("slippers.templatetags.slippers.check_prop_types")
+    def test_runtime_type_checking_settings(self, mock_check_prop_types):
+        template = """
+            {% type_checking string=10 number="ten" list_of_numbers=numbers string_or_number=10 %}
+        """
+        mock_check_prop_types.return_value = []
+
+        # Delete the setting set by override_settings on the class
+        del django_settings.SLIPPERS_RUNTIME_TYPE_CHECKING  # type: ignore
+
+        # SLIPPERS_RUNTIME_TYPE_CHECKING is set
+        with self.subTest(SLIPPERS_RUNTIME_TYPE_CHECKING=False), self.settings(
+            SLIPPERS_RUNTIME_TYPE_CHECKING=False
+        ):
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            self.assertFalse(mock_check_prop_types.called)
+
+        # SLIPPERS_RUNTIME_TYPE_CHECKING is not set, it should fallback to the value of DEBUG
+        with self.subTest(DEBUG=False), self.settings(DEBUG=False):
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            self.assertFalse(mock_check_prop_types.called)
+
+        with self.subTest(DEBUG=True), self.settings(DEBUG=True):
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            self.assertTrue(mock_check_prop_types.called)
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_type_checking_output(self, mock_render_error_html, mock_print_errors):
+        mock_render_error_html.return_value = ""
+
+        template = """
+            {% type_checking %}
+        """
+
+        with self.subTest("shell"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["shell"]
+        ):
+            Template(template).render(Context())
+
+            self.assertTrue(mock_print_errors.called)
+            self.assertFalse(mock_render_error_html.called)
+
+        # Reset mock call count
+        mock_print_errors.reset_mock()
+
+        with self.subTest("browser_console"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["browser_console"]
+        ):
+            Template(template).render(Context())
+
+            self.assertFalse(mock_print_errors.called)
+            self.assertTrue(mock_render_error_html.called)
+
 
 class ComponentCodeTest(TestCase):
     def test_component_code(self):
         template = """
-            {% component_code required_string="Hello, World" %}
+            {% component_code required_string="Hello, World" complex_dict=complex_dict %}
         """
 
         expected = """
