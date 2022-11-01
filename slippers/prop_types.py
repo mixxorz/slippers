@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Dict, List, Literal, Optional, Union, get_origin
 
@@ -11,30 +12,49 @@ from typeguard import check_type, get_type_name
 console = Console()
 
 
-class PropTypes:
-    """Represents the PropTypes of a component"""
+class Props(Mapping):
+    """Props object used in component code"""
 
-    def __init__(self, types: Dict[str, type], defaults: Dict[str, Any]):
+    def __init__(
+        self,
+        attributes: Dict[str, Any],
+        types: Dict[str, type],
+        defaults: Dict[str, Any],
+    ):
+        self.attributes = attributes
         self.types = types
         self.defaults = defaults
 
+    def __getitem__(self, key: str) -> Any:
+        if key in self.attributes:
+            return self.attributes[key]
+
+        if key in self.defaults:
+            return self.defaults[key]
+
+        return None
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        self.attributes[key] = value
+
+    def __iter__(self):
+        return iter({**self.attributes, **self.defaults})
+
+    def __len__(self):
+        return len({**self.attributes, **self.defaults})
+
     @classmethod
-    def from_source_code(cls, source_code: str):
-        """Parse a component's source code to extract PropTypes"""
-        source_locals = {}
+    def from_string(cls, attributes: Dict[str, Any], code: str) -> "Props":
+        """Parse a component's code section to extract PropTypes and defaults"""
+
+        props = cls(attributes, {}, {})
+
+        code_locals = {"props": props}
 
         # Execute the source code in a local scope
-        exec(f"from typing import *\n{source_code}", {}, source_locals)
+        exec(f"from typing import *\n{code}", {}, code_locals)
 
-        # Variables with type hints are prop types
-        types = source_locals.get("__annotations__", {})
-
-        # Prop declarations with set values are prop defaults
-        defaults = {
-            key: source_locals[key] for key in types.keys() if key in source_locals
-        }
-
-        return cls(types, defaults)
+        return props
 
 
 @dataclass
@@ -45,18 +65,18 @@ class PropError:
     actual: Optional[type]
 
 
-def check_prop_types(*, prop_types: PropTypes, props: Dict[str, Any]):
+def check_prop_types(*, props: Props):
     """Check that props are of the correct type"""
 
     errors = []
 
     # Check for missing props
-    for name, expected in prop_types.types.items():
-        if name not in props:
+    for name, expected in props.types.items():
+        if name not in props.attributes:
             if get_origin(expected) is Union and expected.__name__ == "Optional":
                 # Props with Optional types are not required
                 continue
-            elif name in prop_types.defaults:
+            elif name in props.defaults:
                 # Props with defaults are not required
                 continue
             else:
@@ -71,9 +91,9 @@ def check_prop_types(*, prop_types: PropTypes, props: Dict[str, Any]):
                 )
 
     # Check for invalid props
-    for name, actual in props.items():
-        if name in prop_types.types:
-            expected = prop_types.types[name]
+    for name, actual in props.attributes.items():
+        if name in props.types:
+            expected = props.types[name]
             try:
                 check_type(name, actual, expected)
             except TypeError:
@@ -87,8 +107,8 @@ def check_prop_types(*, prop_types: PropTypes, props: Dict[str, Any]):
                 )
 
     # Check for extra props
-    for name, actual in props.items():
-        if name not in prop_types.types:
+    for name, actual in props.attributes.items():
+        if name not in props.types:
             errors.append(
                 PropError(
                     error="extra",

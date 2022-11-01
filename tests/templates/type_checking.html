@@ -1,9 +1,11 @@
 ---
-string: str
-number: int
-list_of_numbers: List[int]
-optional_string: Optional[str]
-string_or_number: Union[str, int]
+props.types = {
+    'string': str,
+    'number': int,
+    'list_of_numbers': List[int],
+    'optional_string': Optional[str],
+    'string_or_number': Union[str, int],
+}
 ---
 <div>
     String: {{ string }}

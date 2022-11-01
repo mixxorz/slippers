@@ -8,12 +8,7 @@ from django.template import Context
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
-from slippers.prop_types import (
-    PropTypes,
-    check_prop_types,
-    print_errors,
-    render_error_html,
-)
+from slippers.prop_types import Props, check_prop_types, print_errors, render_error_html
 from slippers.template import slippers_token_kwargs
 
 register = template.Library()
@@ -36,7 +31,7 @@ def create_component_tag(template_path):
         # Bits that are not keyword args are interpreted as `True` values
         all_bits = [bit if "=" in bit else f"{bit}=True" for bit in remaining_bits]
 
-        extra_context = slippers_token_kwargs(all_bits, parser)
+        raw_attributes = slippers_token_kwargs(all_bits, parser)
 
         # Allow component fragment to be assigned to a variable
         target_var = None
@@ -47,7 +42,7 @@ def create_component_tag(template_path):
             tag_name=tag_name,
             nodelist=nodelist,
             template_path=template_path,
-            extra_context=extra_context,
+            raw_attributes=raw_attributes,
             origin_template_name=parser.origin.template_name,
             origin_lineno=token.lineno,
             target_var=target_var,
@@ -60,45 +55,33 @@ def create_component_tag(template_path):
 class ComponentMarkup:
     """Represents the markup of a component, both pre- and post-rendering"""
 
-    prop_types_section: str
-    component_code_section: str
+    front_matter_section: str
     template_section: str
 
     @classmethod
     def from_string(cls, code: str):
         """Parse code into component markup sections"""
 
-        parts = code.split("---", 3)
+        parts = code.split("---", 2)
 
         # Content only
         if len(parts) == 1:
             return cls(
-                prop_types_section="",
-                component_code_section="",
+                front_matter_section="",
                 template_section=parts[0],
-            )
-
-        # Edge case. Render the template as is.
-        if len(parts) == 2:
-            return cls(
-                prop_types_section="",
-                component_code_section="",
-                template_section=code,
             )
 
         # Prop types and content, no component code
         if len(parts) == 3:
             return cls(
-                prop_types_section=parts[1].strip(),
-                component_code_section="",
+                front_matter_section=parts[1].strip(),
                 template_section=parts[2],  # Don't strip template
             )
 
-        # Prop types, component code, and content
+        # Any other case, just render the template as is
         return cls(
-            prop_types_section=parts[1].strip(),
-            component_code_section=parts[2].strip(),
-            template_section=parts[3],  # Don't strip template
+            front_matter_section="",
+            template_section=code,
         )
 
 
@@ -108,7 +91,7 @@ class ComponentNode(template.Node):
         tag_name,
         nodelist,
         template_path,
-        extra_context,
+        raw_attributes,
         origin_template_name,
         origin_lineno,
         target_var=None,
@@ -116,7 +99,7 @@ class ComponentNode(template.Node):
         self.tag_name = tag_name
         self.nodelist = nodelist
         self.template_path = template_path
-        self.extra_context = extra_context
+        self.raw_attributes = raw_attributes
         self.origin_template_name = origin_template_name
         self.origin_lineno = origin_lineno
         self.target_var = target_var
@@ -124,26 +107,22 @@ class ComponentNode(template.Node):
     def render(self, context):
         children = self.nodelist.render(context) if self.nodelist else ""
 
-        props = {
-            key: value.resolve(context) for key, value in self.extra_context.items()
+        attributes = {
+            key: value.resolve(context) for key, value in self.raw_attributes.items()
         }
 
         template = context.template.engine.get_template(self.template_path)
 
         source_markup = ComponentMarkup.from_string(template.source)
 
-        prop_types = None
         prop_errors = None
 
         # Stage 1: Prop checking
-        if source_markup.prop_types_section:
-            prop_types = PropTypes.from_source_code(source_markup.prop_types_section)
+        if source_markup.front_matter_section:
+            props = Props.from_string(attributes, source_markup.front_matter_section)
 
             if settings.SLIPPERS_RUNTIME_TYPE_CHECKING:
-                prop_errors = check_prop_types(
-                    prop_types=prop_types,
-                    props=props,
-                )
+                prop_errors = check_prop_types(props=props)
 
             if "shell" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
                 print_errors(
@@ -154,21 +133,11 @@ class ComponentNode(template.Node):
                 )
 
             # Load prop defaults into props
-            props = {**prop_types.defaults, **props}
-        else:
-            prop_types = PropTypes(types={}, defaults={})
+            attributes = {**props}
 
-        # Stage 2: Execute component code
-        if source_markup.component_code_section:
-            component_code_locals = {**props}
-
-            exec(source_markup.component_code_section, {}, component_code_locals)
-
-            props = component_code_locals
-
-        # Stage 3: Render template
+        # Stage 2: Render template
         raw_output = template.render(
-            Context({**props, "children": children}, autoescape=context.autoescape)
+            Context({**attributes, "children": children}, autoescape=context.autoescape)
         )
 
         output_markup = ComponentMarkup.from_string(raw_output)

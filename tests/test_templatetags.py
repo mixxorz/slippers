@@ -135,8 +135,8 @@ class ComponentTest(TestCase):
 
 
 @override_settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True)
-class PropTypesTest(TestCase):
-    def test_strips_out_prop_types(self):
+class PropsTest(TestCase):
+    def test_strips_out_front_matter(self):
         template = """
             {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" %}
         """
