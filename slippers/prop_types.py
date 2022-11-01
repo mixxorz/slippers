@@ -1,6 +1,12 @@
+import sys
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Dict, List, Literal, Optional, Union, get_origin
+from typing import Any, Dict, List, Optional, Union
+
+if sys.version_info >= (3, 8):
+    from typing import Literal, get_args, get_origin
+else:
+    from typing_extensions import Literal, get_args, get_origin
 
 from django.utils.html import SafeString
 from django.utils.safestring import mark_safe
@@ -73,7 +79,7 @@ def check_prop_types(*, props: Props):
     # Check for missing props
     for name, expected in props.types.items():
         if name not in props.attributes:
-            if get_origin(expected) is Union and expected.__name__ == "Optional":
+            if get_origin(expected) is Union and type(None) in get_args(expected):
                 # Props with Optional types are not required
                 continue
             elif name in props.defaults:

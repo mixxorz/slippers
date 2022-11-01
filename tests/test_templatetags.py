@@ -175,7 +175,7 @@ class PropsTest(TestCase):
         Template(template).render(Context({"numbers": [1, "two"]}))
 
         # Check console errors
-        console_errors = mock_print_errors.call_args.kwargs["errors"]
+        console_errors = mock_print_errors.call_args[1]["errors"]
 
         self.assertEqual(len(expected_errors), len(console_errors))
 
@@ -189,7 +189,7 @@ class PropsTest(TestCase):
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
         # Check browser errors
-        browser_errors = mock_render_error_html.call_args.kwargs["errors"]
+        browser_errors = mock_render_error_html.call_args[1]["errors"]
 
         self.assertEqual(len(expected_errors), len(browser_errors))
 
@@ -221,7 +221,7 @@ class PropsTest(TestCase):
         Template(template).render(Context())
 
         # Check console errors
-        console_errors = mock_print_errors.call_args.kwargs["errors"]
+        console_errors = mock_print_errors.call_args[1]["errors"]
 
         self.assertEqual(len(expected_errors), len(console_errors))
 
@@ -235,7 +235,7 @@ class PropsTest(TestCase):
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
         # Check browser errors
-        browser_errors = mock_render_error_html.call_args.kwargs["errors"]
+        browser_errors = mock_render_error_html.call_args[1]["errors"]
 
         self.assertEqual(len(expected_errors), len(browser_errors))
 
@@ -264,7 +264,7 @@ class PropsTest(TestCase):
         Template(template).render(Context({"numbers": [1, 2, 3]}))
 
         # Check console errors
-        console_errors = mock_print_errors.call_args.kwargs["errors"]
+        console_errors = mock_print_errors.call_args[1]["errors"]
 
         self.assertEqual(len(expected_errors), len(console_errors))
 
@@ -278,7 +278,7 @@ class PropsTest(TestCase):
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
         # Check browser errors
-        browser_errors = mock_render_error_html.call_args.kwargs["errors"]
+        browser_errors = mock_render_error_html.call_args[1]["errors"]
 
         self.assertEqual(len(expected_errors), len(browser_errors))
 

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slippers"
-version = "0.5.0-alpha.0"
+version = "0.5.0-alpha.1"
 description = "Build reusable components in Django without writing a single line of Python."
 authors = ["Mitchel Cabuloy <mixxorz@gmail.com>"]
 keywords = ["django", "components"]
@@ -29,6 +29,7 @@ Django = ">=3.2, <4.2"
 PyYAML = ">=5.4.0, <7.0.0"
 typeguard = "^2.13.3"
 rich = "^12.6.0"
+typing-extensions = "^4.4.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
