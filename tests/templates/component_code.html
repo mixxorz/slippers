@@ -1,0 +1,14 @@
+---
+required_string: str
+optional_number: int = None
+default_number: int = 10
+---
+new_number = default_number * 2
+---
+
+The context contains:
+
+Required string: {{ required_string }}
+Optional number: {{ optional_number }}
+Default number: {{ default_number }}
+New number: {{ new_number }}

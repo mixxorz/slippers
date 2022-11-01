@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Any, Dict
 from warnings import warn
 
@@ -54,6 +55,42 @@ def create_component_tag(template_path):
     return do_component
 
 
+@dataclass
+class ComponentMarkup:
+    prop_types_section: str
+    component_code_section: str
+    template_section: str
+
+    @classmethod
+    def from_string(cls, code: str):
+        """Parse code into component markup sections"""
+
+        parts = code.split("---", 3)
+
+        # Content only
+        if len(parts) == 1:
+            return cls(
+                prop_types_section="",
+                component_code_section="",
+                template_section=parts[0],
+            )
+
+        # Prop types and content, no component code
+        if len(parts) == 3:
+            return cls(
+                prop_types_section=parts[1],
+                component_code_section="",
+                template_section=parts[2],
+            )
+
+        # Prop types, component code, and content
+        return cls(
+            prop_types_section=parts[1],
+            component_code_section=parts[2],
+            template_section=parts[3],
+        )
+
+
 class ComponentNode(template.Node):
     def __init__(
         self,
@@ -82,46 +119,42 @@ class ComponentNode(template.Node):
 
         template = context.template.engine.get_template(self.template_path)
 
+        source_markup = ComponentMarkup.from_string(template.source)
+
+        prop_errors = None
+
+        # Stage 1: Prop checking
+        if source_markup.prop_types_section:
+            prop_types = PropTypes.from_source_code(source_markup.prop_types_section)
+
+            prop_errors = check_prop_types(
+                prop_types=prop_types,
+                props=values,
+            )
+
+            if prop_errors:
+                print_errors(
+                    errors=prop_errors,
+                    tag_name=self.tag_name,
+                    template_name=self.origin_template_name,
+                    lineno=self.origin_lineno,
+                )
+
+        # Stage 3: Render template
         raw_output = template.render(
             Context({**values, "children": children}, autoescape=context.autoescape)
         )
 
-        # Find front matter
-        # Front matter is used for runtime type checking
-        source_parts = template.source.split("---", 2)
+        output_markup = ComponentMarkup.from_string(raw_output)
+        output = mark_safe(output_markup.template_section)
 
-        # If there is front matter...
-        if len(source_parts) == 3:
-            prop_types = PropTypes.from_source_code(source_parts[1])
-
-            errors = check_prop_types(
-                prop_types=prop_types,
-                props=values,
+        if prop_errors:
+            output = output + render_error_html(
+                errors=prop_errors,
                 tag_name=self.tag_name,
                 template_name=self.origin_template_name,
+                lineno=self.origin_lineno,
             )
-            # Strip front matter from output
-            content = raw_output.split("---", 2)[2]
-
-            if errors:
-                print_errors(
-                    errors=errors,
-                    tag_name=self.tag_name,
-                    template_name=self.origin_template_name,
-                    lineno=self.origin_lineno,
-                )
-
-                content = content + render_error_html(
-                    errors=errors,
-                    tag_name=self.tag_name,
-                    template_name=self.origin_template_name,
-                    lineno=self.origin_lineno,
-                )
-
-            output = mark_safe(content)
-        else:
-            # No front matter, no type checking
-            output = raw_output
 
         if self.target_var:
             context[self.target_var] = output

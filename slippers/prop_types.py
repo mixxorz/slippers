@@ -45,9 +45,7 @@ class PropError:
     actual: Optional[type]
 
 
-def check_prop_types(
-    *, prop_types: PropTypes, props: Dict[str, Any], tag_name, template_name
-):
+def check_prop_types(*, prop_types: PropTypes, props: Dict[str, Any]):
     """Check that props are of the correct type"""
 
     errors = []

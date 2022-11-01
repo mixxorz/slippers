@@ -158,6 +158,8 @@ class PropTypesTest(TestCase):
     def test_warning_for_invalid_prop_types(
         self, mock_render_error_html, mock_print_errors
     ):
+        mock_render_error_html.return_value = ""
+
         template = """
             {% type_checking string=10 number="ten" list_of_numbers=numbers string_or_number=10 %}
         """
@@ -203,6 +205,8 @@ class PropTypesTest(TestCase):
     def test_warning_for_required_props(
         self, mock_render_error_html, mock_print_errors
     ):
+        mock_render_error_html.return_value = ""
+
         template = """
             {% type_checking string="Hello" number=10 %}
         """
@@ -245,6 +249,8 @@ class PropTypesTest(TestCase):
     @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")
     def test_warning_for_extra_props(self, mock_render_error_html, mock_print_errors):
+        mock_render_error_html.return_value = ""
+
         template = """
             {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" extra="foo" %}
         """
