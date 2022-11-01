@@ -78,19 +78,27 @@ class ComponentMarkup:
                 template_section=parts[0],
             )
 
+        # Edge case. Render the template as is.
+        if len(parts) == 2:
+            return cls(
+                prop_types_section="",
+                component_code_section="",
+                template_section=code,
+            )
+
         # Prop types and content, no component code
         if len(parts) == 3:
             return cls(
-                prop_types_section=parts[1],
+                prop_types_section=parts[1].strip(),
                 component_code_section="",
-                template_section=parts[2],
+                template_section=parts[2],  # Don't strip template
             )
 
         # Prop types, component code, and content
         return cls(
-            prop_types_section=parts[1],
-            component_code_section=parts[2],
-            template_section=parts[3],
+            prop_types_section=parts[1].strip(),
+            component_code_section=parts[2].strip(),
+            template_section=parts[3],  # Don't strip template
         )
 
 

@@ -21,7 +21,6 @@ class PropTypes:
     @classmethod
     def from_source_code(cls, source_code: str):
         """Parse a component's source code to extract PropTypes"""
-
         source_locals = {}
 
         # Execute the source code in a local scope
