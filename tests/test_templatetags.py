@@ -149,9 +149,9 @@ class PropTypesTest(TestCase):
             </div>
         """
 
-        self.assertInHTML(
-            expected, Template(template).render(Context({"numbers": [1, 2, 3]}))
-        )
+        output = Template(template).render(Context({"numbers": [1, 2, 3]}))
+
+        self.assertInHTML(expected, output)
 
     @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")

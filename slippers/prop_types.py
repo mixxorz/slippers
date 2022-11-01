@@ -1,6 +1,7 @@
 from dataclasses import dataclass
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Literal, Optional, Union, get_origin
 
+from django.utils.html import SafeString
 from django.utils.safestring import mark_safe
 
 from rich.console import Console
@@ -53,8 +54,11 @@ def check_prop_types(*, prop_types: PropTypes, props: Dict[str, Any]):
     # Check for missing props
     for name, expected in prop_types.types.items():
         if name not in props:
-            if name in prop_types.defaults:
-                # Prop is missing but has a default value
+            if get_origin(expected) is Union and expected.__name__ == "Optional":
+                # Props with Optional types are not required
+                continue
+            elif name in prop_types.defaults:
+                # Props with defaults are not required
                 continue
             else:
                 # Prop is missing and has no default value
@@ -137,7 +141,7 @@ def print_errors(
 
 def render_error_html(
     *, errors: List[PropError], tag_name: str, template_name: str, lineno: int
-):
+) -> SafeString:
     """Output errors to the browser console"""
 
     error_messages = [
@@ -156,4 +160,4 @@ def render_error_html(
 
     error_message += "\\n  ".join(error_messages)
 
-    return mark_safe(f"""<script>console.error("{error_message}")</script>""")
+    return mark_safe(f"""<script>console.error("{error_message}")</script>""")  # type: ignore

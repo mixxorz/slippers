@@ -57,6 +57,8 @@ def create_component_tag(template_path):
 
 @dataclass
 class ComponentMarkup:
+    """Represents the markup of a component, both pre- and post-rendering"""
+
     prop_types_section: str
     component_code_section: str
     template_section: str
@@ -113,7 +115,7 @@ class ComponentNode(template.Node):
     def render(self, context):
         children = self.nodelist.render(context) if self.nodelist else ""
 
-        values = {
+        props = {
             key: value.resolve(context) for key, value in self.extra_context.items()
         }
 
@@ -121,6 +123,7 @@ class ComponentNode(template.Node):
 
         source_markup = ComponentMarkup.from_string(template.source)
 
+        prop_types = None
         prop_errors = None
 
         # Stage 1: Prop checking
@@ -129,7 +132,7 @@ class ComponentNode(template.Node):
 
             prop_errors = check_prop_types(
                 prop_types=prop_types,
-                props=values,
+                props=props,
             )
 
             if prop_errors:
@@ -140,21 +143,36 @@ class ComponentNode(template.Node):
                     lineno=self.origin_lineno,
                 )
 
+            # Load prop defaults into props
+            props = {**prop_types.defaults, **props}
+        else:
+            prop_types = PropTypes(types={}, defaults={})
+
+        # Stage 2: Execute component code
+        if source_markup.component_code_section:
+            component_code_locals = {**props}
+
+            exec(source_markup.component_code_section, {}, component_code_locals)
+
+            props = component_code_locals
+
         # Stage 3: Render template
         raw_output = template.render(
-            Context({**values, "children": children}, autoescape=context.autoescape)
+            Context({**props, "children": children}, autoescape=context.autoescape)
         )
 
         output_markup = ComponentMarkup.from_string(raw_output)
-        output = mark_safe(output_markup.template_section)
 
         if prop_errors:
-            output = output + render_error_html(
+            # Append prop errors to output
+            output = mark_safe(output_markup.template_section) + render_error_html(  # type: ignore
                 errors=prop_errors,
                 tag_name=self.tag_name,
                 template_name=self.origin_template_name,
                 lineno=self.origin_lineno,
             )
+        else:
+            output = mark_safe(output_markup.template_section)
 
         if self.target_var:
             context[self.target_var] = output
