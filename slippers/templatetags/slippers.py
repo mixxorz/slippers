@@ -1,6 +1,5 @@
 import re
-from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 from warnings import warn
 
 from django import template
@@ -52,52 +51,26 @@ def create_component_tag(template_path):
     return do_component
 
 
-@dataclass
-class ComponentMarkup:
-    """Represents the markup of a component, both pre- and post-rendering"""
+def extract_template_parts(code: str) -> Tuple[str, str]:
+    """Extract the front matter and template sections from a component's code"""
 
-    front_matter_section: str
-    template_section: str
+    # Components that have front matter must start with `---`
+    if not code.strip().startswith("---"):
+        return "", code
 
-    @classmethod
-    def from_string(cls, code: str):
-        """Parse code into component markup sections"""
+    # Split the code into front matter and template
+    parts = re.split(r"^---\s*$", code, maxsplit=2, flags=re.MULTILINE)
 
-        # Components that have front matter must start with `---`
-        if not code.strip().startswith("---"):
-            return cls(
-                front_matter_section="",
-                template_section=code,
-            )
+    # Content only
+    if len(parts) == 1:
+        return "", parts[0]
 
-        parts = re.split(r"^---\s*$", code, maxsplit=2, flags=re.MULTILINE)
+    # Front matter and content
+    if len(parts) == 3:
+        return parts[1].strip(), parts[2]  # Don't strip template
 
-        # Content only
-        if len(parts) == 1:
-            return cls(
-                front_matter_section="",
-                template_section=parts[0],
-            )
-
-        # Content only
-        if len(parts) == 1:
-            return cls(
-                front_matter_section="",
-                template_section=parts[0],
-            )
-
-        # Front matter and content
-        if len(parts) == 3:
-            return cls(
-                front_matter_section=parts[1].strip(),
-                template_section=parts[2],  # Don't strip template
-            )
-
-        # Any other case, just render the template as is
-        return cls(
-            front_matter_section="",
-            template_section=code,
-        )
+    # Any other case, just render the template as is
+    return "", code
 
 
 class ComponentNode(template.Node):
@@ -128,13 +101,13 @@ class ComponentNode(template.Node):
 
         template = context.template.engine.get_template(self.template_path)
 
-        source_markup = ComponentMarkup.from_string(template.source)
+        source_front_matter = extract_template_parts(template.source)[0]
 
         prop_errors = None
 
         # Stage 1: Prop checking
-        if source_markup.front_matter_section:
-            props = Props.from_string(attributes, source_markup.front_matter_section)
+        if source_front_matter:
+            props = Props.from_string(attributes, source_front_matter)
 
             if settings.SLIPPERS_RUNTIME_TYPE_CHECKING:
                 prop_errors = check_prop_types(props=props)
@@ -155,18 +128,18 @@ class ComponentNode(template.Node):
             Context({**attributes, "children": children}, autoescape=context.autoescape)
         )
 
-        output_markup = ComponentMarkup.from_string(raw_output)
+        output_template_section = mark_safe(extract_template_parts(raw_output)[1])
 
         if "browser_console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
             # Append prop errors to output
-            output = mark_safe(output_markup.template_section) + render_error_html(  # type: ignore
+            output = output_template_section + render_error_html(  # type: ignore
                 errors=prop_errors,
                 tag_name=self.tag_name,
                 template_name=self.origin_template_name,
                 lineno=self.origin_lineno,
             )
         else:
-            output = mark_safe(output_markup.template_section)
+            output = output_template_section
 
         if self.target_var:
             context[self.target_var] = output
