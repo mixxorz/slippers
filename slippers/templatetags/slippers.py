@@ -8,7 +8,7 @@ from django.template import Context
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
-from slippers.prop_types import Props, check_prop_types, print_errors, render_error_html
+from slippers.props import Props, check_prop_types, print_errors, render_error_html
 from slippers.template import slippers_token_kwargs
 
 register = template.Library()
