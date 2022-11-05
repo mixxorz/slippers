@@ -353,7 +353,7 @@ class PropsTest(TestCase):
 class ComponentCodeTest(TestCase):
     def test_component_code(self):
         template = """
-            {% component_code required_string="Hello, World" complex_dict=complex_dict %}
+            {% component_code required_string="Hello, World" %}
         """
 
         expected = """
