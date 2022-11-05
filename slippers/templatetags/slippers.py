@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from typing import Any, Dict
 from warnings import warn
@@ -62,7 +63,14 @@ class ComponentMarkup:
     def from_string(cls, code: str):
         """Parse code into component markup sections"""
 
-        parts = code.split("---", 2)
+        # Components that have front matter must start with `---`
+        if not code.strip().startswith("---"):
+            return cls(
+                front_matter_section="",
+                template_section=code,
+            )
+
+        parts = re.split(r"^---\s*$", code, maxsplit=2, flags=re.MULTILINE)
 
         # Content only
         if len(parts) == 1:
@@ -71,7 +79,14 @@ class ComponentMarkup:
                 template_section=parts[0],
             )
 
-        # Prop types and content, no component code
+        # Content only
+        if len(parts) == 1:
+            return cls(
+                front_matter_section="",
+                template_section=parts[0],
+            )
+
+        # Front matter and content
         if len(parts) == 3:
             return cls(
                 front_matter_section=parts[1].strip(),
