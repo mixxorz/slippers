@@ -1,56 +1,77 @@
 ---
-sidebar_position: 3
+sidebar_position: 1
 ---
 
 # Getting started
 
-Before we start, first make sure to [install slippers](/docs/installation/).
+Slippers is a UI component framework for Django. It extends Django’s template
+language to provide better ergonomics around writing and using reusable UI
+components.
 
-## Creating our first component
+## Install
 
-Let's create a card component that accepts a `heading` parameter and child elements.
-
-```twig title="myapp/templates/myapp/card.html"
-<div class="card">
-  <h1 class="card__header">{{ heading }}</h1>
-  <div class="card__body">
-    {{ children }}
-  </div>
-</div>
+```
+pip install slippers
 ```
 
-This is just a normal Django template; not too dissimilar from one that you would use with an `include` tag. Something you may have noticed is `{{ children }}`. This is where any child elements are rendered when this component is used.
+Add `slippers` to `INSTALLED_APPS` and `slippers.templatetags.slippers` to
+`TEMPLATES['OPTIONS']['builtins']`.
 
-Before we can use our new component, we need to register it. The easiest way to do this is to create a `components.yaml` file. This file should live in the root template folder. It tells Slippers which templates to register as components. It also serves as a handy directory for all components available in your app.
+```python title="settings.py" {3,19}
+INSTALLED_APPS = [
+    ...,
+    'slippers',
+    ...,
+]
 
-```yaml title="myapp/templates/components.yaml"
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ],
+            "builtins": ["slippers.templatetags.slippers"],
+        },
+    },
+]
+```
+
+## Basic example
+
+This is how you can create a `Button` component with Slippers.
+
+```twig title="components/Button.html"
+<button class="button button--{{ variant }}">{{ children }}</button>
+```
+
+`children` is a special prop that contains the rendered template fragment passed
+into the component block.
+
+Next create a `components.yaml` file to register your component.
+
+```yaml
 components:
-  card: "myapp/card.html"
+  Button: "components/Button.html"
 ```
 
-The name of the component in `components.yaml` becomes the template tag for that component. In this case, we're registering the `myapp/card.html` template as the `card` component.
+The `components` object contains all of your registered components. The key is
+what the component will be called and the value is the path to its template.
 
-Now we can use our new `card` component.
+You can use the `Button` component like this:
 
 ```twig
-{% load slippers %}
-
-{% #card heading="I am the heading" %}
-  <span>Hello {{ name|title }}!</span>
-{% /card %}
+{% #Button variant="primary" %}Click me{% /Button %}
 ```
 
-Notice that we use `#` to denote the opening tag of a component and `/` to denote the closing tag. Anything within the opening and closing tags is passed to the component as `children`.
+The opening tag is the component name prefixed with a `#` and the closing tag is
+the component name prefixed with a `/`. Other props can be passed in as usual.
 
-And here's the output:
-
-```html
-<div class="card">
-  <h1 class="card__header">I am the heading</h1>
-  <div class="card__body">
-    <span>Hello Ryland Grace!</span>
-  </div>
-</div>
+```twig title="Output"
+<button class="button button--primary">Click me</button>
 ```
-
-Tada :tada:

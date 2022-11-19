@@ -1,36 +1,33 @@
 ---
-sidebar_position: 1
+sidebar_position: 2
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
-# Introduction
-
-Slippers is a UI component framework for Django. It extends Django’s template language to provide better ergonomics around writing and using reusable UI components.
-
-## Examples
+# Examples
 
 ### Hello World
 
+A very simple component that doesn't use `children`. It can be used like a
+normal template tag.
+
 ```twig title='Greeting: "greeting.html"'
-<h1>Hello, World!</h1>
+<h1>Hello, {{ name }}!</h1>
 ```
 
 ```twig title="Template"
-{% Greeting %}
+{% Greeting name="World" %}
 ```
 
 ```html title="Output"
 <h1>Hello, World!</h1>
 ```
 
-### Nested components
+### Children
+
+You can use the `children` prop to access the rendered template fragment passed
+into the component block.
 
 ```twig title='Alert: "alert.html"'
-<div class="alert">
-  <span class="alert__icon"> {% AlertIcon severity=severity %} </span>
-
+<div class="alert alert--{{ severity }}">
   <p class="alert__message">{{ children }}</p>
 </div>
 ```
@@ -39,17 +36,43 @@ Slippers is a UI component framework for Django. It extends Django’s template 
 {% #Alert severity="error" %}This is an error message{% /Alert %}
 ```
 
-```twig title="Output"
-<div class="alert">
-  <span class="alert__icon">
-    <svg>...</svg>
-  </span>
+The opening tag is the component name prefixed with a `#` and the closing tag is
+the component name prefixed with a `/`. Other props can be passed in as usual.
 
+```twig title="Output"
+<div class="alert alert--error">
   <p class="alert__message">This is an error message</p>
 </div>
 ```
 
+### Front matter
+
+Components can include Python front matter. Code in the front matter is executed
+immediately before the component is rendered.
+
+```twig title='Answer: "answer.html"'
+---
+props['answer'] = props['number'] * 42
+---
+
+<h1>{{ number }} times 42 is {{ answer }}</h1>
+```
+
+`props` is a special object that you can use to access the props passed to your
+component. It can also be used to modify the props available in the template.
+
+```twig title="Template"
+{% Answer number=7 %}
+```
+
+```twig title="Output"
+<h1>7 times 42 is 294</h1>
+```
+
 ### Default values
+
+Default values for your props can be specified using the `props.defaults`
+dictionary.
 
 ```twig title='Button: "button.html"'
 ---
@@ -71,25 +94,11 @@ props.defaults = {
 <button class="button button-secondary">Secondary button</button>
 ```
 
-### Custom logic
-
-```twig title='Answer: "answer.html"'
----
-props['answer'] = props['number'] * 42
----
-
-<h1>{{ number }} times 42 is {{ answer }}</h1>
-```
-
-```twig title="Template"
-{% Answer number=7 %}
-```
-
-```twig title="Output"
-<h1>7 times 42 is 294</h1>
-```
-
 ### Prop types
+
+Slippers can also type check your props at runtime. By default this is only
+enabled when `DEBUG` is `True`. The error messages will appear in your terminal
+and browser console.
 
 ```twig title='Icon: "icon.html"'
 ---
