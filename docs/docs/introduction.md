@@ -2,50 +2,127 @@
 sidebar_position: 1
 ---
 
-import Link from "@docusaurus/Link";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 # Introduction
 
-## What is Slippers?
+Slippers is a UI component framework for Django. It extends Django’s template language to provide better ergonomics around writing and using reusable UI components.
 
-The Django Template Language is awesome. It's fast, rich in features, and overall pretty great to work with.
+## Examples
 
-Slippers aims to augment DTL, adding just enough functionality to make building interfaces just that bit more _comfortable_.
+### Hello World
 
-It includes additional template tags and filters, but its headline feature is **reusable components**.
-
-```twig
-{% #button variant="primary" %}See how it works{% /button %}
+```twig title='Greeting: "greeting.html"'
+<h1>Hello, World!</h1>
 ```
 
-<Link className="button button--primary" to="/docs/getting-started">See how it works </Link>
-
-## Motivation
-
-On the projects I work on, we usually build the front-end using [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) principles and [django-pattern-library](https://github.com/torchbox/django-pattern-library). Templates for buttons, icons, form fields, etc., are built and then included wherever they are needed.
-
-```twig
-{% url "project:add_data" as add_data_url %}
-{% include "patterns/molecules/button/button.html" with label="Add data" href=add_data_url %}
+```twig title="Template"
+{% Greeting %}
 ```
 
-As you can see, the syntax for this is quite verbose. You can just imagine how this would be like if we had a template that used many components.
-
-What's more, we can't pass HTML down to these components with `{% include %}`.
-
-```twig
-<p>I want this to be my content.</p>
-
-{# How do I pass the HTML to the component?? #}
-{% include "patterns/molecules/card/card.html" %}
+```html title="Output"
+<h1>Hello, World!</h1>
 ```
 
-We can work around this by creating custom template tags. This, however, requires the developer to know Python, and specifically, how to create [advanced custom template tags](https://docs.djangoproject.com/en/3.2/howto/custom-template-tags/#advanced-custom-template-tags). This isn't something we can always assume.
+### Nested components
 
-In fact, Django's design philosophy states:
+```twig title='Alert: "alert.html"'
+<div class="alert">
+  <span class="alert__icon"> {% AlertIcon severity=severity %} </span>
 
-> The Django template system recognizes that templates are most often written by designers, not programmers, and therefore should not assume Python knowledge.
+  <p class="alert__message">{{ children }}</p>
+</div>
+```
 
-Moreover, the process of making reusable components by creating a custom template tag is also somewhat of a hassle.
+```twig title="Template"
+{% #Alert severity="error" %}This is an error message{% /Alert %}
+```
 
-The best code is no code as they say. And so, Slippers to the rescue.
+```twig title="Output"
+<div class="alert">
+  <span class="alert__icon">
+    <svg>...</svg>
+  </span>
+
+  <p class="alert__message">This is an error message</p>
+</div>
+```
+
+### Default values
+
+```twig title='Button: "button.html"'
+---
+props.defaults = {
+    'variant': 'primary',
+}
+---
+
+<button class="button button-{{ variant }}">{{ children }}</button>
+```
+
+```twig title="Template"
+{% #Button %}Primary button{% /Button %}
+{% #Button variant="secondary" %}Secondary button{% /Button %}
+```
+
+```twig title="Output"
+<button class="button button-primary">Primary button</button>
+<button class="button button-secondary">Secondary button</button>
+```
+
+### Custom logic
+
+```twig title='Answer: "answer.html"'
+---
+props['answer'] = props['number'] * 42
+---
+
+<h1>{{ number }} times 42 is {{ answer }}</h1>
+```
+
+```twig title="Template"
+{% Answer number=7 %}
+```
+
+```twig title="Output"
+<h1>7 times 42 is 294</h1>
+```
+
+### Prop types
+
+```twig title='Icon: "icon.html"'
+---
+props.types = {
+    'name': Literal['error', 'warning'],
+    'variant': Literal['light', 'dark'],
+    'size': int,
+}
+props.defaults = {
+    'variant': 'light',
+    'size': 16,
+}
+---
+
+<span class="icon icon--{{ variant }}">
+  {% if name == 'checkmark' %}
+  <svg width="{{ size }}" height="{{ size }}">...checkmark svg...</svg>
+  {% elif name == 'cross' %}
+  <svg width="{{ size }}" height="{{ size }}">...cross svg...</svg>
+  {% endif %}
+</span>
+```
+
+```twig title="Template"
+{% Icon name="checkmark" %}
+{% Icon name="cross" variant="dark" size=24 %}
+```
+
+```twig title="Output"
+<span class="icon icon--light">
+  <svg width="16" height="16">...checkmark svg...</svg>
+</span>
+<span class="icon icon--dark">
+  <svg width="24" height="24">...cross svg...</svg>
+</span>
+```
