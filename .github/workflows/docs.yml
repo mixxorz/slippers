@@ -1,8 +1,8 @@
 name: Deploy docs to GitHub Pages
 
 on:
-  push:
-    branches: [main]
+  release:
+    types: [published]
 
 jobs:
   build-and-deploy:
