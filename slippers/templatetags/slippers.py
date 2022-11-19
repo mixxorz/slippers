@@ -1,10 +1,14 @@
-from typing import Any, Dict
+import re
+from typing import Any, Dict, Tuple
 from warnings import warn
 
 from django import template
-from django.conf import settings
+from django.conf import settings as django_settings
 from django.template import Context
+from django.utils.safestring import mark_safe
 
+from slippers.conf import settings
+from slippers.props import Props, check_prop_types, print_errors, render_error_html
 from slippers.template import slippers_token_kwargs
 
 register = template.Library()
@@ -27,36 +31,115 @@ def create_component_tag(template_path):
         # Bits that are not keyword args are interpreted as `True` values
         all_bits = [bit if "=" in bit else f"{bit}=True" for bit in remaining_bits]
 
-        extra_context = slippers_token_kwargs(all_bits, parser)
+        raw_attributes = slippers_token_kwargs(all_bits, parser)
 
         # Allow component fragment to be assigned to a variable
         target_var = None
         if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
             target_var = remaining_bits[-1]
 
-        return ComponentNode(nodelist, template_path, extra_context, target_var)
+        return ComponentNode(
+            tag_name=tag_name,
+            nodelist=nodelist,
+            template_path=template_path,
+            raw_attributes=raw_attributes,
+            origin_template_name=parser.origin.template_name,
+            origin_lineno=token.lineno,
+            target_var=target_var,
+        )
 
     return do_component
 
 
+def extract_template_parts(code: str) -> Tuple[str, str]:
+    """Extract the front matter and template sections from a component's code"""
+
+    # Components that have front matter must start with `---`
+    if not code.strip().startswith("---"):
+        return "", code
+
+    # Split the code into front matter and template
+    parts = re.split(r"^---\s*$", code, maxsplit=2, flags=re.MULTILINE)
+
+    # Content only
+    if len(parts) == 1:
+        return "", parts[0]
+
+    # Front matter and content
+    if len(parts) == 3:
+        return parts[1].strip(), parts[2]  # Don't strip template
+
+    # Any other case, just render the template as is
+    return "", code
+
+
 class ComponentNode(template.Node):
-    def __init__(self, nodelist, template, extra_context, target_var=None):
+    def __init__(
+        self,
+        tag_name,
+        nodelist,
+        template_path,
+        raw_attributes,
+        origin_template_name,
+        origin_lineno,
+        target_var=None,
+    ):
+        self.tag_name = tag_name
         self.nodelist = nodelist
-        self.template = template
-        self.extra_context = extra_context
+        self.template_path = template_path
+        self.raw_attributes = raw_attributes
+        self.origin_template_name = origin_template_name
+        self.origin_lineno = origin_lineno
         self.target_var = target_var
 
     def render(self, context):
         children = self.nodelist.render(context) if self.nodelist else ""
 
-        values = {
-            key: value.resolve(context) for key, value in self.extra_context.items()
+        attributes = {
+            key: value.resolve(context) for key, value in self.raw_attributes.items()
         }
 
-        t = context.template.engine.get_template(self.template)
-        output = t.render(
-            Context({**values, "children": children}, autoescape=context.autoescape)
+        template = context.template.engine.get_template(self.template_path)
+
+        source_front_matter = extract_template_parts(template.source)[0]
+
+        prop_errors = None
+
+        # Stage 1: Prop checking
+        if source_front_matter:
+            props = Props.from_string(attributes, source_front_matter)
+
+            if settings.SLIPPERS_RUNTIME_TYPE_CHECKING:
+                prop_errors = check_prop_types(props=props)
+
+            if "shell" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
+                print_errors(
+                    errors=prop_errors,
+                    tag_name=self.tag_name,
+                    template_name=self.origin_template_name,
+                    lineno=self.origin_lineno,
+                )
+
+            # Load prop defaults into props
+            attributes = {**props}
+
+        # Stage 2: Render template
+        raw_output = template.render(
+            Context({**attributes, "children": children}, autoescape=context.autoescape)
         )
+
+        output_template_section = mark_safe(extract_template_parts(raw_output)[1])
+
+        if "browser_console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
+            # Append prop errors to output
+            output = output_template_section + render_error_html(  # type: ignore
+                errors=prop_errors,
+                tag_name=self.tag_name,
+                template_name=self.origin_template_name,
+                lineno=self.origin_lineno,
+            )
+        else:
+            output = output_template_section
 
         if self.target_var:
             context[self.target_var] = output
@@ -170,7 +253,7 @@ def do_match(match_key, mapping):
 
             values_map[key] = value
         except ValueError:
-            if settings.DEBUG:
+            if django_settings.DEBUG:
                 raise template.TemplateSyntaxError(error_message)
             continue
 
@@ -200,7 +283,7 @@ def do_fragment(parser, token):
         nodelist = parser.parse(("endfragment",))
         parser.delete_first_token()
     except ValueError:
-        if settings.DEBUG:
+        if django_settings.DEBUG:
             raise template.TemplateSyntaxError(error_message)
         return ""
 

@@ -1,0 +1,19 @@
+---
+props.types = {
+    'required_string': str,
+    'optional_number': Optional[int],
+    'default_number': int,
+}
+props.defaults = {
+    'default_number': 10,
+}
+
+props['new_number'] = props['default_number'] * 2
+---
+
+The context contains:
+
+Required string: {{ required_string }}
+Optional number: {{ optional_number }}
+Default number: {{ default_number }}
+New number: {{ new_number }}
