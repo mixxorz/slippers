@@ -106,7 +106,7 @@ const config = {
             prism: {
                 theme: prismTheme,
                 darkTheme: prismTheme,
-                additionalLanguages: ["django", "twig"],
+                additionalLanguages: ["twig"],
             },
         }),
 };
