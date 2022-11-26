@@ -58,7 +58,7 @@ const config = {
                 },
                 items: [
                     {
-                        href: "/docs/introduction/",
+                        href: "/docs/getting-started",
                         label: "Docs",
                     },
                     {
@@ -75,16 +75,12 @@ const config = {
                         title: "Docs",
                         items: [
                             {
-                                label: "Introduction",
-                                to: "/docs/introduction",
-                            },
-                            {
-                                label: "Installation",
-                                to: "/docs/installation",
-                            },
-                            {
                                 label: "Getting started",
                                 to: "/docs/getting-started",
+                            },
+                            {
+                                label: "Examples",
+                                to: "/docs/examples",
                             },
                         ],
                     },
