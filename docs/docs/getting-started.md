@@ -46,7 +46,7 @@ TEMPLATES = [
 
 This is how you can create a `Button` component with Slippers.
 
-```twig title="components/Button.html"
+```slippers title="Button.html"
 <button class="button button--{{ variant }}">{{ children }}</button>
 ```
 
@@ -57,7 +57,7 @@ Next create a `components.yaml` file to register your component.
 
 ```yaml
 components:
-  Button: "components/Button.html"
+  Button: "Button.html"
 ```
 
 The `components` object contains all of your registered components. The key is
@@ -65,13 +65,13 @@ what the component will be called and the value is the path to its template.
 
 You can use the `Button` component like this:
 
-```twig
+```slippers
 {% #Button variant="primary" %}Click me{% /Button %}
 ```
 
 The opening tag is the component name prefixed with a `#` and the closing tag is
 the component name prefixed with a `/`. Other props can be passed in as usual.
 
-```twig title="Output"
+```html title="Output"
 <button class="button button--primary">Click me</button>
 ```
