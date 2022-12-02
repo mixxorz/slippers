@@ -1,5 +1,10 @@
+from unittest.mock import patch
+
+from django.conf import settings as django_settings
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
+
+from typeguard import get_type_name
 
 
 class ComponentTest(TestCase):
@@ -106,6 +111,264 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_pass_boolean_flags_with_other_arguments(self):
+        template = """
+            {% #button disabled class="foo" %}I am button{% /button %}
+        """
+
+        expected = """
+            <button disabled class="foo">I am button</button>
+            """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_pass_special_symbols(self):
+        template = """
+            {% special_attributes x-data="controller" x-bind:class="bind-class" @click="myHandler" %}
+        """
+
+        expected = """
+            <div x-data="controller" x-bind:class="bind-class" @click="myHandler"></div>
+            """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+
+@override_settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True)
+class PropsTest(TestCase):
+    def test_strips_out_front_matter(self):
+        template = """
+            {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" %}
+        """
+
+        expected = """
+            <div>
+                String: Hello
+                Number: 10
+                List of numbers: [1, 2, 3]
+                Optional string:
+                String or number: ten
+            </div>
+        """
+
+        output = Template(template).render(Context({"numbers": [1, 2, 3]}))
+
+        self.assertInHTML(expected, output)
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_warning_for_invalid_prop_types(
+        self, mock_render_error_html, mock_print_errors
+    ):
+        mock_render_error_html.return_value = ""
+
+        template = """
+            {% type_checking string=10 number="ten" list_of_numbers=numbers string_or_number=10 %}
+        """
+        expected_errors = [
+            # (prop_name, expected_type, actual_type)
+            ("string", "str", "int"),
+            ("number", "int", "django.utils.safestring.SafeString"),
+            ("list_of_numbers", "List[int]", "list"),
+        ]
+
+        Template(template).render(Context({"numbers": [1, "two"]}))
+
+        # Check console errors
+        console_errors = mock_print_errors.call_args[1]["errors"]
+
+        self.assertEqual(len(expected_errors), len(console_errors))
+
+        for expected_error, actual_error in zip(expected_errors, console_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("invalid", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+        # Check browser errors
+        browser_errors = mock_render_error_html.call_args[1]["errors"]
+
+        self.assertEqual(len(expected_errors), len(browser_errors))
+
+        for expected_error, actual_error in zip(expected_errors, browser_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("invalid", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_warning_for_required_props(
+        self, mock_render_error_html, mock_print_errors
+    ):
+        mock_render_error_html.return_value = ""
+
+        template = """
+            {% type_checking string="Hello" number=10 %}
+        """
+        expected_errors = [
+            # (prop_name, expected_type, actual_type)
+            ("list_of_numbers", "List[int]", "NoneType"),
+            ("string_or_number", "Union[str, int]", "NoneType"),
+        ]
+
+        Template(template).render(Context())
+
+        # Check console errors
+        console_errors = mock_print_errors.call_args[1]["errors"]
+
+        self.assertEqual(len(expected_errors), len(console_errors))
+
+        for expected_error, actual_error in zip(expected_errors, console_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("missing", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+        # Check browser errors
+        browser_errors = mock_render_error_html.call_args[1]["errors"]
+
+        self.assertEqual(len(expected_errors), len(browser_errors))
+
+        for expected_error, actual_error in zip(expected_errors, browser_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("missing", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_warning_for_extra_props(self, mock_render_error_html, mock_print_errors):
+        mock_render_error_html.return_value = ""
+
+        template = """
+            {% type_checking string="Hello" number=10 list_of_numbers=numbers string_or_number="ten" extra="foo" %}
+        """
+        expected_errors = [
+            # (prop_name, expected_type, actual_type)
+            ("extra", "NoneType", "django.utils.safestring.SafeString"),
+        ]
+
+        Template(template).render(Context({"numbers": [1, 2, 3]}))
+
+        # Check console errors
+        console_errors = mock_print_errors.call_args[1]["errors"]
+
+        self.assertEqual(len(expected_errors), len(console_errors))
+
+        for expected_error, actual_error in zip(expected_errors, console_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("extra", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+        # Check browser errors
+        browser_errors = mock_render_error_html.call_args[1]["errors"]
+
+        self.assertEqual(len(expected_errors), len(browser_errors))
+
+        for expected_error, actual_error in zip(expected_errors, browser_errors):
+            with self.subTest(prop=expected_error[0]):
+                self.assertEqual("extra", actual_error.error)
+                self.assertEqual(expected_error[0], actual_error.name)
+                self.assertEqual(
+                    expected_error[1], get_type_name(actual_error.expected)
+                )
+                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+
+    @override_settings()
+    @patch("slippers.templatetags.slippers.check_prop_types")
+    def test_runtime_type_checking_settings(self, mock_check_prop_types):
+        template = """
+            {% type_checking string=10 number="ten" list_of_numbers=numbers string_or_number=10 %}
+        """
+        mock_check_prop_types.return_value = []
+
+        # Delete the setting set by override_settings on the class
+        del django_settings.SLIPPERS_RUNTIME_TYPE_CHECKING  # type: ignore
+
+        # SLIPPERS_RUNTIME_TYPE_CHECKING is set
+        with self.subTest(SLIPPERS_RUNTIME_TYPE_CHECKING=False), self.settings(
+            SLIPPERS_RUNTIME_TYPE_CHECKING=False
+        ):
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            self.assertFalse(mock_check_prop_types.called)
+
+        # SLIPPERS_RUNTIME_TYPE_CHECKING is not set, it should fallback to the value of DEBUG
+        with self.subTest(DEBUG=False), self.settings(DEBUG=False):
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            self.assertFalse(mock_check_prop_types.called)
+
+        with self.subTest(DEBUG=True), self.settings(DEBUG=True):
+            Template(template).render(Context({"numbers": [1, "two"]}))
+
+            self.assertTrue(mock_check_prop_types.called)
+
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_type_checking_output(self, mock_render_error_html, mock_print_errors):
+        mock_render_error_html.return_value = ""
+
+        template = """
+            {% type_checking %}
+        """
+
+        with self.subTest("shell"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["shell"]
+        ):
+            Template(template).render(Context())
+
+            self.assertTrue(mock_print_errors.called)
+            self.assertFalse(mock_render_error_html.called)
+
+        # Reset mock call count
+        mock_print_errors.reset_mock()
+
+        with self.subTest("browser_console"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["browser_console"]
+        ):
+            Template(template).render(Context())
+
+            self.assertFalse(mock_print_errors.called)
+            self.assertTrue(mock_render_error_html.called)
+
+
+class ComponentCodeTest(TestCase):
+    def test_component_code(self):
+        template = """
+            {% component_code required_string="Hello, World" %}
+        """
+
+        expected = """
+            The context contains:
+
+            Required string: Hello, World
+            Optional number:
+            Default number: 10
+            New number: 20
+        """
+
+        output = Template(template).render(Context())
+
+        self.assertHTMLEqual(expected, output)
+
 
 class AttrsTagTest(TestCase):
     def test_basic(self):
@@ -130,6 +393,23 @@ class AttrsTagTest(TestCase):
     def test_with_hyphens(self):
         context = Context(
             {
+                "aria-label": "Search",
+            }
+        )
+
+        template = """
+            <input {% attrs aria-label %}>
+        """
+
+        expected = """
+            <input aria-label="Search">
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_with_hyphens_legacy(self):
+        context = Context(
+            {
                 "aria_label": "Search",
             }
         )
@@ -140,6 +420,43 @@ class AttrsTagTest(TestCase):
 
         expected = """
             <input aria-label="Search">
+        """
+
+        with self.assertWarns(DeprecationWarning):
+            output = Template(template).render(context)
+
+        self.assertHTMLEqual(expected, output)
+
+    def test_with_colons(self):
+        context = Context(
+            {
+                "x-bind:class": "my-class",
+            }
+        )
+
+        template = """
+            <input {% attrs x-bind:class %}>
+        """
+
+        expected = """
+            <input x-bind:class="my-class">
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_with_at_symbol(self):
+        context = Context(
+            {
+                "@click": "myHandler",
+            }
+        )
+
+        template = """
+            <button {% attrs @click %}>Click me</button>
+        """
+
+        expected = """
+            <button @click="myHandler">Click me</button>
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
@@ -208,6 +525,21 @@ class VarTagTest(TestCase):
         expected = """
             <div>Default value</div>
             <div>HELLO, WORLD!</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_special_characters(self):
+        template = """
+            {% var title="My title" %}
+            {% var x-bind:class="foo" %}
+            {% var @click="myHandler" %}
+
+            <div {% attrs x-bind:class @click %}>{{ title }}</div>
+        """
+
+        expected = """
+        <div x-bind:class="foo" @click="myHandler">My title</div>
         """
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))

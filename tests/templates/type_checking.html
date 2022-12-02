@@ -1,0 +1,16 @@
+---
+props.types = {
+    'string': str,
+    'number': int,
+    'list_of_numbers': List[int],
+    'optional_string': Optional[str],
+    'string_or_number': Union[str, int],
+}
+---
+<div>
+    String: {{ string }}
+    Number: {{ number }}
+    List of numbers: {{ list_of_numbers }}
+    Optional string: {{ optional_string }}
+    String or number: {{ string_or_number }}
+</div>

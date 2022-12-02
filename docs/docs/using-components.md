@@ -59,6 +59,31 @@ This is a deliberate design decision to improve readability and reduce side-effe
 
 You can of course still use `{% include %}` if its behaviour is more convenient in specific circumstances.
 
+## Keyword arguments
+
+Unlike normal template tags, component template tags support special characters in keyword arguments. Specifically `_`, `-`, `@`, and `:`.
+
+This can be used in conjunction with the [`attrs`](/docs/template-tags-filters#attrs) tag.
+
+```twig
+{# button component #}
+<button {% attrs aria-role x-bind:class @click %}>{{ children }}</button>
+
+{# Usage #}
+{% #button aria-role="button" x-bind:class="!open ? 'hidden': ''" @click="myHandler" %}Hello{% /button %}
+
+{# Output #}
+<button aria-role="button" x-bind:class="!open ? 'hidden': ''" @click="myHandler">Hello</button>
+```
+
+This makes keyword arguments work more like HTML attributes.
+
+:::tip New in Slippers 0.5.0
+
+Added support for special characters in keyword arguments.
+
+:::
+
 ## Assigning output to a variable
 
 Similar to a [`fragment`](/docs/template-tags-filters#fragment) tag, a component's output can be assigned to a variable.
