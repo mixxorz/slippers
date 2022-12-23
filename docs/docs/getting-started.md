@@ -61,7 +61,7 @@ components:
 ```
 
 The `components` object contains all of your registered components. The key is
-what the component will be called and the value is the path to its template.
+the component's name and the value is the path to its template.
 
 You can use the `Button` component like this:
 
@@ -70,7 +70,8 @@ You can use the `Button` component like this:
 ```
 
 The opening tag is the component name prefixed with a `#` and the closing tag is
-the component name prefixed with a `/`. Other props can be passed in as usual.
+the component name prefixed with a `/`. The code within the block is passed to
+the component as `children`. Other props can be passed in as usual.
 
 ```html title="Output"
 <button class="button button--primary">Click me</button>

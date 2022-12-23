@@ -13,7 +13,7 @@ normal template tag.
 <h1>Hello, {{ name }}!</h1>
 ```
 
-```slippers title="Template"
+```slippers title="Usage"
 {% Greeting name="World" %}
 ```
 
@@ -32,12 +32,13 @@ into the component block.
 </div>
 ```
 
-```slippers title="Template"
+```slippers title="Usage"
 {% #Alert severity="error" %}This is an error message{% /Alert %}
 ```
 
 The opening tag is the component name prefixed with a `#` and the closing tag is
-the component name prefixed with a `/`. Other props can be passed in as usual.
+the component name prefixed with a `/`. The code within the block is passed to
+the component as `children`. Other props can be passed in as usual.
 
 ```html title="Output"
 <div class="alert alert--error">
@@ -61,7 +62,7 @@ props['answer'] = props['number'] * 42
 `props` is a special object that you can use to access the props passed to your
 component. It can also be used to modify the props available in the template.
 
-```slippers title="Template"
+```slippers title="Usage"
 {% Answer number=7 %}
 ```
 
@@ -71,8 +72,7 @@ component. It can also be used to modify the props available in the template.
 
 ### Default values
 
-Default values for your props can be specified using the `props.defaults`
-dictionary.
+Default values for props can be specified using the `props.defaults` dictionary.
 
 ```slippers title='Button: "button.html"'
 ---
@@ -84,7 +84,7 @@ props.defaults = {
 <button class="button button-{{ variant }}">{{ children }}</button>
 ```
 
-```slippers title="Template"
+```slippers title="Usage"
 {% #Button %}Primary button{% /Button %}
 {% #Button variant="secondary" %}Secondary button{% /Button %}
 ```
@@ -96,14 +96,18 @@ props.defaults = {
 
 ### Prop types
 
-Slippers can also type check your props at runtime. By default this is only
-enabled when `DEBUG` is `True`. The error messages will appear in your terminal
-and browser console.
+Expected props and their types can be declared in the `props.types` dictionary.
+Python's `typing` module is in scope which allows you to declare more complex
+types.
+
+Aside from documentation purposes, these prop types can be checked at runtime.
+By default this is only enabled when `DEBUG` is `True`. The error messages
+appear in the terminal and browser console.
 
 ```slippers title='Icon: "icon.html"'
 ---
 props.types = {
-    'name': Literal['error', 'warning'],
+    'name': Literal['checkmark', 'cross'],
     'variant': Literal['light', 'dark'],
     'size': int,
 }
@@ -115,14 +119,14 @@ props.defaults = {
 
 <span class="icon icon--{{ variant }}">
   {% if name == 'checkmark' %}
-  <svg width="{{ size }}" height="{{ size }}">...checkmark svg...</svg>
+    <svg width="{{ size }}" height="{{ size }}">...checkmark svg...</svg>
   {% elif name == 'cross' %}
-  <svg width="{{ size }}" height="{{ size }}">...cross svg...</svg>
+    <svg width="{{ size }}" height="{{ size }}">...cross svg...</svg>
   {% endif %}
 </span>
 ```
 
-```slippers title="Template"
+```slippers title="Usage"
 {% Icon name="checkmark" %}
 {% Icon name="cross" variant="dark" size=24 %}
 ```
