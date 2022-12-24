@@ -110,7 +110,11 @@ class ComponentNode(template.Node):
             props = Props.from_string(attributes, source_front_matter)
 
             if settings.SLIPPERS_RUNTIME_TYPE_CHECKING:
-                prop_errors = check_prop_types(props=props)
+                prop_errors = check_prop_types(
+                    attributes=attributes,
+                    types=props.types,
+                    defaults=props.defaults,
+                )
 
             if "shell" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
                 print_errors(
