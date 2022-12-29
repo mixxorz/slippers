@@ -1,46 +1,69 @@
-# Getting Started with Create React App
+# Error UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This directory contains the React app that display the prop errors.
 
-## Available Scripts
+## Development
 
-In the project directory, you can run:
+Install the dependencies
 
-### `npm start`
+```
+npm install
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Start the dev server
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```
+npm start
+```
 
-### `npm test`
+You will see a blank page because this is the behaviour when there are no
+errors.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+To work on errors, manually add some test errors to index.tsx.
 
-### `npm run build`
+```tsx
+const testErrors = [
+  {
+    tag_name: "Button",
+    template_name: "pattern-library/pages/home_page/home_page.html",
+    lineno: 23,
+    errors: [
+      {
+        error: "invalid" as "invalid",
+        name: "color",
+        expected: "string",
+        actual: "number",
+      },
+      {
+        error: "missing" as "missing",
+        name: "href",
+        expected: "string",
+      },
+    ],
+  },
+  {
+    tag_name: "CardLink",
+    template_name: "pattern-library/pages/home_page/home_page.html",
+    lineno: 24,
+    errors: [
+      {
+        error: "extra" as "extra",
+        name: "variant",
+        actual: "string",
+      },
+    ],
+  },
+];
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+root.render(
+  <React.StrictMode>
+    <App errors={testErrors} />
+  </React.StrictMode>
+);
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Release
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+The release process is automated. When `npm run build` is run, the toolchain
+compiles an optimized bundle and drops it in `slippers/static/slippers/`. The
+`main.js` and `main.css` are then included in the Python bundle when `poetry build` is run.
