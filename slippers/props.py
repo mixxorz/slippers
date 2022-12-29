@@ -191,7 +191,7 @@ def render_error_html(
 
     error_message += "\\n  ".join(error_messages)
 
-    warnings_html = f"<script>console.error('{error_message}')</script>"
+    warnings_html = f'<script>console.error("{error_message}")</script>'
 
     # Output the error as JSON
     data = json.dumps(

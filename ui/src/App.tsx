@@ -111,11 +111,7 @@ const ErrorModal = () => {
 };
 
 function App() {
-    return (
-        <div id="slippers_errors_ui_root">
-            <ErrorModal />
-        </div>
-    );
+    return <ErrorModal />;
 }
 
 export default App;

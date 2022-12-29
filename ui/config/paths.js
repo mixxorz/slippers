@@ -19,7 +19,7 @@ const publicUrlOrPath = getPublicUrlOrPath(
     process.env.PUBLIC_URL
 );
 
-const buildPath = process.env.BUILD_PATH || "../slippers/static";
+const buildPath = process.env.BUILD_PATH || "../slippers/static/slippers";
 
 const moduleFileExtensions = [
     "web.mjs",

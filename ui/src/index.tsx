@@ -4,7 +4,7 @@ import "./tailwind.css";
 import App from "./App";
 
 const root = ReactDOM.createRoot(
-    document.getElementById("root") as HTMLElement
+    document.getElementById("slippers_errors_ui_root") as HTMLElement
 );
 root.render(
     <React.StrictMode>
