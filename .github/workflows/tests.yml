@@ -24,6 +24,30 @@ jobs:
       - name: Install dependencies
         run: |
           pip install tox tox-gh-actions
+
       - name: Run tests
         run: |
           tox
+
+  ui-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./ui
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install Node.js dependencies
+        run: npm ci --no-option --no-audit --progress=false
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build error UI
+        run: npm run build

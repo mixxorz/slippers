@@ -292,3 +292,10 @@ def do_fragment(parser, token):
         return ""
 
     return FragmentNode(nodelist, target_var)
+
+
+##
+# slippers errors UI
+@register.inclusion_tag("slippers/errors.html")
+def slippers_errors():
+    return

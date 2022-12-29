@@ -1,3 +1,4 @@
+import json
 import sys
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -174,6 +175,9 @@ def render_error_html(
 ) -> SafeString:
     """Output errors to the browser console"""
 
+    # Remove # from tag name
+    tag_name = tag_name.lstrip("#")
+
     error_messages = [
         error_message_templates[error.error].format(
             name=error.name,
@@ -190,4 +194,31 @@ def render_error_html(
 
     error_message += "\\n  ".join(error_messages)
 
-    return mark_safe(f"""<script>console.error("{error_message}")</script>""")  # type: ignore
+    warnings_html = f'<script>console.error("{error_message}")</script>'
+
+    # Output the error as JSON
+    data = json.dumps(
+        {
+            "tag_name": tag_name,
+            "template_name": template_name,
+            "lineno": lineno,
+            "errors": [
+                {
+                    "error": error.error,
+                    "name": error.name,
+                    "expected": get_type_name(error.expected),
+                    "actual": get_type_name(error.actual),
+                }
+                for error in errors
+            ],
+        }
+    )
+
+    data_html = f"""
+        <script>
+            window.slippersPropErrors = window.slippersPropErrors || [];
+            window.slippersPropErrors.push({data});
+        </script>
+    """
+
+    return mark_safe(warnings_html + data_html)  # type: ignore

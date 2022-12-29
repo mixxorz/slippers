@@ -20,6 +20,21 @@ jobs:
         run: |
           pip install poetry
 
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Install Node.js dependencies
+        run: |
+          cd ui
+          npm ci --no-option --no-audit --progress=false
+
+      - name: Build error UI
+        run: |
+          cd ui
+          npm run build
+
       - name: Build the distribution
         run: |
           poetry build
