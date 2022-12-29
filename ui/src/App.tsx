@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLockBodyScroll } from "react-use";
 
 declare global {
     interface Window {
@@ -82,10 +83,12 @@ const ErrorModal = () => {
         setShowModal(true);
     }, []);
 
+    useLockBodyScroll(showModal);
+
     return (
         <>
             {showModal && (
-                <div className="absolute inset-0 bg-black/90 text-white p-12 overflow-auto">
+                <div className="fixed inset-0 bg-black/90 text-white p-12 overflow-auto">
                     <div className="flex flex-col">
                         <div className="flex items-start">
                             <h1 className="text-2xl text-red-400 mb-8">
