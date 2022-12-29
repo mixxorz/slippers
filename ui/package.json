@@ -63,6 +63,7 @@
     "workbox-webpack-plugin": "^6.4.1"
   },
   "scripts": {
+    "build": "npm run build:css && npm run build:js",
     "start": "concurrently npm:start:js npm:start:css",
     "start:js": "node scripts/start.js",
     "build:js": "node scripts/build.js",
