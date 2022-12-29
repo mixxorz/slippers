@@ -79,8 +79,12 @@ const ErrorModal = () => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        setSlippersErrors(window.slippersPropErrors || []);
-        setShowModal(true);
+        const errors = window.slippersPropErrors || [];
+
+        if (errors.length > 0) {
+            setSlippersErrors(errors);
+            setShowModal(true);
+        }
     }, []);
 
     useLockBodyScroll(showModal);

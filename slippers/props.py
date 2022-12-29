@@ -175,6 +175,9 @@ def render_error_html(
 ) -> SafeString:
     """Output errors to the browser console"""
 
+    # Remove # from tag name
+    tag_name = tag_name.lstrip("#")
+
     error_messages = [
         error_message_templates[error.error].format(
             name=error.name,
