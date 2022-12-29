@@ -5,4 +5,5 @@ module.exports = {
         extend: {},
     },
     plugins: [],
+    important: "#slippers_errors_ui_root",
 };

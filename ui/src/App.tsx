@@ -39,10 +39,10 @@ const ErrorBox = ({
 }) => (
     <div>
         <p>{tag_name}</p>
-        <p className="text-zinc-400">
+        <p className="text-zinc-400 font-mono break-words">
             {template_name}:{lineno}
         </p>
-        <ul className="mt-4 pl-4">
+        <ul className="mt-4 p-4 bg-zinc-800 text-zinc-200">
             {errors.map((error, i) => (
                 <li key={i}>
                     {error.error === "invalid" && (
@@ -78,41 +78,7 @@ const ErrorModal = () => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        // setSlippersErrors(window.slippersPropErrors || []);
-        // Test errors
-        const testErrors = [
-            {
-                tag_name: "Button",
-                template_name: "pattern-library/pages/home_page/home_page.html",
-                lineno: 1,
-                errors: [
-                    {
-                        error: "invalid",
-                        name: "color",
-                        expected: "string",
-                        actual: "number",
-                    },
-                    {
-                        error: "missing",
-                        name: "size",
-                        expected: "string",
-                    },
-                ],
-            },
-            {
-                tag_name: "CardLink",
-                template_name: "pattern-library/pages/home_page/home_page.html",
-                lineno: 2,
-                errors: [
-                    {
-                        error: "extra",
-                        name: "size",
-                        actual: "string",
-                    },
-                ],
-            },
-        ];
-        setSlippersErrors([].concat(...Array(10).fill(testErrors)));
+        setSlippersErrors(window.slippersPropErrors || []);
         setShowModal(true);
     }, []);
 
@@ -121,21 +87,23 @@ const ErrorModal = () => {
             {showModal && (
                 <div className="absolute inset-0 bg-black/90 text-white p-12 overflow-auto">
                     <div className="flex flex-col">
-                        <h1 className="text-2xl text-red-400 mb-8">
-                            Slippers: Failed prop types
-                        </h1>
+                        <div className="flex items-start">
+                            <h1 className="text-2xl text-red-400 mb-8">
+                                Slippers: Failed prop types
+                            </h1>
+                            <button
+                                className="ml-auto px-4 py-2 bg-black"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Close
+                            </button>
+                        </div>
                         <div className="space-y-8">
                             {slippersErrors.map((error, i) => (
                                 <ErrorBox key={i} error={error} />
                             ))}
                         </div>
                     </div>
-                    <button
-                        className="absolute right-12 top-12 px-4 py-2 bg-black"
-                        onClick={() => setShowModal(false)}
-                    >
-                        Close
-                    </button>
                 </div>
             )}
         </>
@@ -144,10 +112,7 @@ const ErrorModal = () => {
 
 function App() {
     return (
-        <div className="flex items-center justify-center min-h-screen">
-            <div className="bg-zinc-200 p-20">
-                <h1 className="text-5xl font-bold">Hello, World</h1>
-            </div>
+        <div id="slippers_errors_ui_root">
             <ErrorModal />
         </div>
     );
