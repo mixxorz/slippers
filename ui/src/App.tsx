@@ -3,7 +3,7 @@ import { useLockBodyScroll } from "react-use";
 
 declare global {
     interface Window {
-        slippersPropErrors: [SlippersError];
+        slippersPropErrors: SlippersError[];
     }
 }
 
@@ -38,7 +38,7 @@ const ErrorBox = ({
 }: {
     error: SlippersError;
 }) => (
-    <div>
+    <div data-testid="error-box">
         <p>{tag_name}</p>
         <p className="text-zinc-400 font-mono break-words">
             {template_name}:{lineno}
@@ -74,18 +74,14 @@ const ErrorBox = ({
     </div>
 );
 
-const ErrorModal = () => {
-    const [slippersErrors, setSlippersErrors] = useState<SlippersError[]>([]);
+const ErrorModal = ({ errors }: { errors: SlippersError[] }) => {
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const errors = window.slippersPropErrors || [];
-
         if (errors.length > 0) {
-            setSlippersErrors(errors);
             setShowModal(true);
         }
-    }, []);
+    }, [errors.length]);
 
     useLockBodyScroll(showModal);
 
@@ -106,7 +102,7 @@ const ErrorModal = () => {
                             </button>
                         </div>
                         <div className="space-y-8">
-                            {slippersErrors.map((error, i) => (
+                            {errors.map((error, i) => (
                                 <ErrorBox key={i} error={error} />
                             ))}
                         </div>
@@ -117,8 +113,8 @@ const ErrorModal = () => {
     );
 };
 
-function App() {
-    return <ErrorModal />;
+function App({ errors }: { errors: SlippersError[] }) {
+    return <ErrorModal errors={errors} />;
 }
 
 export default App;
