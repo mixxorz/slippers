@@ -30,7 +30,7 @@ const ErrorBox = ({
         <p className="text-zinc-400 font-mono break-words">
             {template_name}:{lineno}
         </p>
-        <ul className="mt-4 p-4 bg-zinc-800 text-zinc-200">
+        <ul className="mt-4 p-4 bg-zinc-800 text-zinc-200 break-words">
             {errors.map((error, i) => (
                 <li key={i}>
                     {error.error === "invalid" && (
@@ -69,7 +69,7 @@ const ErrorModal = ({
     setShowModal: (show: boolean) => void;
 }) => {
     return (
-        <div className="fixed inset-0 bg-black/90 text-white p-12 overflow-auto">
+        <div className="fixed inset-0 bg-black/90 text-white p-4 md:p-12 overflow-auto">
             <div className="flex flex-col">
                 <div className="flex items-start">
                     <h1 className="text-2xl text-red-400 mb-8">
