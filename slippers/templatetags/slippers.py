@@ -8,7 +8,7 @@ from django.template import Context
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
-from slippers.props import Props, check_prop_types, print_errors, render_error_html
+from slippers.props import Props, check_prop_types, render_error_html
 from slippers.template import slippers_token_kwargs
 
 register = template.Library()
@@ -114,14 +114,6 @@ class ComponentNode(template.Node):
                     attributes=attributes,
                     types=props.types,
                     defaults=props.defaults,
-                )
-
-            if "shell" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
-                print_errors(
-                    errors=prop_errors,
-                    tag_name=self.tag_name,
-                    template_name=self.origin_template_name,
-                    lineno=self.origin_lineno,
                 )
 
             # Load prop defaults into props

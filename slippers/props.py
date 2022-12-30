@@ -12,11 +12,7 @@ else:
 from django.utils.html import SafeString
 from django.utils.safestring import mark_safe
 
-from rich.console import Console
-from rich.panel import Panel
 from typeguard import check_type, get_type_name
-
-console = Console()
 
 
 class Props(Mapping):
@@ -138,36 +134,6 @@ error_message_templates = {
     "missing": "Required prop '{name}' of type '{expected}' not set on '{component}'.",
     "extra": "Extra prop '{name}' of type '{actual}' set on '{component}'.",
 }
-
-
-def print_errors(
-    *, errors: List[PropError], tag_name: str, template_name: str, lineno: int
-):
-    """Print errors to the console"""
-
-    error_messages = [
-        error_message_templates[error.error].format(
-            name=error.name,
-            component=tag_name,
-            expected=get_type_name(error.expected),
-            actual=get_type_name(error.actual),
-        )
-        for error in errors
-    ]
-
-    console.print(
-        Panel(
-            "\n".join(error_messages),
-            style="yellow",
-            expand=False,
-            title=(
-                r"\[slippers] "
-                f"Failed prop types: {tag_name} at "
-                f"{template_name}:{lineno}"
-            ),
-            title_align="left",
-        )
-    )
 
 
 def render_error_html(
