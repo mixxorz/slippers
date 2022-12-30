@@ -297,5 +297,5 @@ def do_fragment(parser, token):
 ##
 # slippers errors UI
 @register.inclusion_tag("slippers/errors.html")
-def slippers_errors():
-    return
+def slippers_overlay():
+    return {"SLIPPERS_RUNTIME_TYPE_CHECKING": settings.SLIPPERS_RUNTIME_TYPE_CHECKING}
