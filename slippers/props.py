@@ -144,24 +144,6 @@ def render_error_html(
     # Remove # from tag name
     tag_name = tag_name.lstrip("#")
 
-    error_messages = [
-        error_message_templates[error.error].format(
-            name=error.name,
-            component=tag_name,
-            expected=get_type_name(error.expected),
-            actual=get_type_name(error.actual),
-        )
-        for error in errors
-    ]
-
-    error_message = (
-        f"[slippers] Failed prop types: {tag_name} at {template_name}:{lineno}\\n  "
-    )
-
-    error_message += "\\n  ".join(error_messages)
-
-    warnings_html = f'<script>console.error("{error_message}")</script>'
-
     # Output the error as JSON
     data = json.dumps(
         {
@@ -187,4 +169,4 @@ def render_error_html(
         </script>
     """
 
-    return mark_safe(warnings_html + data_html)  # type: ignore
+    return mark_safe(data_html)  # type: ignore

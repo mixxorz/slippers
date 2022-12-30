@@ -2,46 +2,46 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import App from "./App";
 
-test("does not render modal when there are no errors", () => {
+const testErrors = [
+    {
+        tag_name: "Button",
+        template_name: "pattern-library/pages/home_page/home_page.html",
+        lineno: 23,
+        errors: [
+            {
+                error: "invalid" as "invalid",
+                name: "color",
+                expected: "string",
+                actual: "number",
+            },
+            {
+                error: "missing" as "missing",
+                name: "href",
+                expected: "string",
+            },
+        ],
+    },
+    {
+        tag_name: "CardLink",
+        template_name: "pattern-library/pages/home_page/home_page.html",
+        lineno: 24,
+        errors: [
+            {
+                error: "extra" as "extra",
+                name: "variant",
+                actual: "string",
+            },
+        ],
+    },
+];
+
+test("Do not display overlay when there are no errors", () => {
     render(<App errors={[]} />);
     const header = screen.queryByText("Slippers: Failed prop types");
     expect(header).not.toBeInTheDocument();
 });
 
-test("error messages are displayed", () => {
-    const testErrors = [
-        {
-            tag_name: "Button",
-            template_name: "pattern-library/pages/home_page/home_page.html",
-            lineno: 23,
-            errors: [
-                {
-                    error: "invalid" as "invalid",
-                    name: "color",
-                    expected: "string",
-                    actual: "number",
-                },
-                {
-                    error: "missing" as "missing",
-                    name: "href",
-                    expected: "string",
-                },
-            ],
-        },
-        {
-            tag_name: "CardLink",
-            template_name: "pattern-library/pages/home_page/home_page.html",
-            lineno: 24,
-            errors: [
-                {
-                    error: "extra" as "extra",
-                    name: "variant",
-                    actual: "string",
-                },
-            ],
-        },
-    ];
-
+test("Display errors in overlay", () => {
     render(<App errors={testErrors} />);
     const header = screen.queryByText("Slippers: Failed prop types");
     expect(header).toBeInTheDocument();

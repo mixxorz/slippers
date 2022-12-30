@@ -18,12 +18,12 @@ class Settings:
     @property
     def SLIPPERS_TYPE_CHECKING_OUTPUT(
         self,
-    ) -> List[Literal["browser_console", "ui"]]:
+    ) -> List[Literal["console", "overlay"]]:
         """Where to output type checking errors"""
         return getattr(
             django_settings,
             "SLIPPERS_TYPE_CHECKING_OUTPUT",
-            ["browser_console", "ui"],
+            ["console", "overlay"],
         )
 
 

@@ -279,9 +279,17 @@ class PropsTest(TestCase):
         template = """
             {% type_checking %}
         """
+        with self.subTest("overlay"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["overlay"]
+        ):
+            Template(template).render(Context())
 
-        with self.subTest("browser_console"), self.settings(
-            SLIPPERS_TYPE_CHECKING_OUTPUT=["browser_console"]
+            self.assertTrue(mock_render_error_html.called)
+
+        mock_render_error_html.reset_mock()
+
+        with self.subTest("console"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["console"]
         ):
             Template(template).render(Context())
 
@@ -305,6 +313,14 @@ class ErrorUITest(TestCase):
         ):
             output = Template(template).render(Context())
             self.assertNotIn("slippers_errors_ui_root", output)
+
+    def test_type_checking_output(self):
+        template = """
+            {% slippers_overlay %}
+        """
+        with self.settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True):
+            output = Template(template).render(Context())
+            self.assertIn('["console", "overlay"]', output)
 
 
 @override_settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True)
