@@ -15,7 +15,7 @@ register = template.Library()
 
 # Monkey-patching the Django's `tag_re` regex used to "tokenize" template tags
 # in order to enable multiline template tags to be used project-wide.
-# See: <update-this-with-PR-url>
+# See: https://github.com/mixxorz/slippers/pull/31
 base.tag_re = re.compile(base.tag_re.pattern, re.DOTALL)
 
 ##
