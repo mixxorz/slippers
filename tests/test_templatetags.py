@@ -19,9 +19,38 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_render_inline_component_with_multiline_support(self):
+        template = """
+            {%
+                avatar
+                user="mixxorz"
+            %}
+        """
+
+        expected = """
+            <div>I am avatar for mixxorz</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
     def test_render_block_component(self):
         template = """
             {% #button %}I am button{% /button %}
+        """
+
+        expected = """
+            <button>I am button</button>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_render_block_component_with_multiline_support(self):
+        template = """
+            {%
+                #button
+            %}
+                I am button
+            {% /button %}
         """
 
         expected = """
@@ -61,6 +90,37 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_render_nested_with_multiline_support(self):
+        template = """
+            {%
+                #card
+                heading="I am heading"
+            %}
+            {%
+                #button
+            %}
+                I am button
+            {% /button %}
+            {%
+                #button
+            %}
+                I am button 2
+            {% /button %}
+            {% /card %}
+        """
+
+        expected = """
+            <div class="card">
+                <div class="card__header">I am heading</div>
+                <div class="card__body">
+                    <button>I am button</button>
+                    <button>I am button 2</button>
+                </div>
+            </div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
     def test_kwargs_with_filters(self):
         template = """
             {% #card heading="I am heading"|upper %}
@@ -83,6 +143,36 @@ class ComponentTest(TestCase):
         template = """
             {% avatar user="mixxorz" as my_avatar %}
             {% #button as my_button %}I am button{% /button %}
+
+
+            <div>
+                {{ my_avatar }}
+                {{ my_button }}
+            </div>
+        """
+
+        expected = """
+            <div>
+                <div>I am avatar for mixxorz</div>
+                <button>I am button</button>
+            </div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_render_as_variable_with_multiline_support(self):
+        template = """
+            {%
+                avatar
+                user="mixxorz"
+                as my_avatar
+            %}
+            {%
+                #button
+                as my_button
+            %}
+                I am button
+            {% /button %}
 
 
             <div>

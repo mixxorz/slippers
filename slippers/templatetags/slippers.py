@@ -4,7 +4,7 @@ from warnings import warn
 
 from django import template
 from django.conf import settings as django_settings
-from django.template import Context
+from django.template import Context, base
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
@@ -13,6 +13,10 @@ from slippers.template import slippers_token_kwargs
 
 register = template.Library()
 
+# Monkey-patching the Django's `tag_re` regex used to "tokenize" template tags
+# in order to enable multiline template tags to be used project-wide.
+# See: <update-this-with-PR-url>
+base.tag_re = re.compile(base.tag_re.pattern, re.DOTALL)
 
 ##
 # Component tags
