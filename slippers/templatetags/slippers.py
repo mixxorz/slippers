@@ -18,6 +18,7 @@ register = template.Library()
 # See: https://github.com/mixxorz/slippers/pull/31
 base.tag_re = re.compile(base.tag_re.pattern, re.DOTALL)
 
+
 ##
 # Component tags
 def create_component_tag(template_path):
