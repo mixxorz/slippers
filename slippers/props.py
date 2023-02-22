@@ -1,3 +1,4 @@
+import json
 import sys
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -27,13 +28,13 @@ class Props(Mapping):
         types: Dict[str, type],
         defaults: Dict[str, Any],
     ):
-        self.attributes = attributes
+        self._attributes = {**attributes}
         self.types = types
         self.defaults = defaults
 
     def __getitem__(self, key: str) -> Any:
-        if key in self.attributes:
-            return self.attributes[key]
+        if key in self._attributes:
+            return self._attributes[key]
 
         if key in self.defaults:
             return self.defaults[key]
@@ -41,13 +42,13 @@ class Props(Mapping):
         return None
 
     def __setitem__(self, key: str, value: Any) -> None:
-        self.attributes[key] = value
+        self._attributes[key] = value
 
     def __iter__(self):
-        return iter({**self.attributes, **self.defaults})
+        return iter({**self._attributes, **self.defaults})
 
     def __len__(self):
-        return len({**self.attributes, **self.defaults})
+        return len({**self._attributes, **self.defaults})
 
     @classmethod
     def from_string(cls, attributes: Dict[str, Any], code: str) -> "Props":
@@ -71,18 +72,23 @@ class PropError:
     actual: Optional[type]
 
 
-def check_prop_types(*, props: Props):
+def check_prop_types(
+    *,
+    attributes: Dict[str, Any],
+    types: Dict[str, type],
+    defaults: Dict[str, Any],
+) -> List[PropError]:
     """Check that props are of the correct type"""
 
     errors = []
 
     # Check for missing props
-    for name, expected in props.types.items():
-        if name not in props.attributes:
+    for name, expected in types.items():
+        if name not in attributes:
             if get_origin(expected) is Union and type(None) in get_args(expected):
                 # Props with Optional types are not required
                 continue
-            elif name in props.defaults:
+            elif name in defaults:
                 # Props with defaults are not required
                 continue
             else:
@@ -97,9 +103,9 @@ def check_prop_types(*, props: Props):
                 )
 
     # Check for invalid props
-    for name, actual in props.attributes.items():
-        if name in props.types:
-            expected = props.types[name]
+    for name, actual in attributes.items():
+        if name in types:
+            expected = types[name]
             try:
                 check_type(name, actual, expected)
             except TypeError:
@@ -113,8 +119,8 @@ def check_prop_types(*, props: Props):
                 )
 
     # Check for extra props
-    for name, actual in props.attributes.items():
-        if name not in props.types:
+    for name, actual in attributes.items():
+        if name not in types:
             errors.append(
                 PropError(
                     error="extra",
@@ -169,6 +175,9 @@ def render_error_html(
 ) -> SafeString:
     """Output errors to the browser console"""
 
+    # Remove # from tag name
+    tag_name = tag_name.lstrip("#")
+
     error_messages = [
         error_message_templates[error.error].format(
             name=error.name,
@@ -185,4 +194,31 @@ def render_error_html(
 
     error_message += "\\n  ".join(error_messages)
 
-    return mark_safe(f"""<script>console.error("{error_message}")</script>""")  # type: ignore
+    warnings_html = f'<script>console.error("{error_message}")</script>'
+
+    # Output the error as JSON
+    data = json.dumps(
+        {
+            "tag_name": tag_name,
+            "template_name": template_name,
+            "lineno": lineno,
+            "errors": [
+                {
+                    "error": error.error,
+                    "name": error.name,
+                    "expected": get_type_name(error.expected),
+                    "actual": get_type_name(error.actual),
+                }
+                for error in errors
+            ],
+        }
+    )
+
+    data_html = f"""
+        <script>
+            window.slippersPropErrors = window.slippersPropErrors || [];
+            window.slippersPropErrors.push({data});
+        </script>
+    """
+
+    return mark_safe(warnings_html + data_html)  # type: ignore

@@ -350,8 +350,13 @@ class PropsTest(TestCase):
             self.assertTrue(mock_render_error_html.called)
 
 
+@override_settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True)
 class ComponentCodeTest(TestCase):
-    def test_component_code(self):
+    @patch("slippers.templatetags.slippers.print_errors")
+    @patch("slippers.templatetags.slippers.render_error_html")
+    def test_component_code(self, mock_render_error_html, mock_print_errors):
+        mock_render_error_html.return_value = ""
+
         template = """
             {% component_code required_string="Hello, World" %}
         """
@@ -368,6 +373,12 @@ class ComponentCodeTest(TestCase):
         output = Template(template).render(Context())
 
         self.assertHTMLEqual(expected, output)
+
+        # Check that declaring new_number in front_matter doesn't trigger type errors
+        # new_number isn't in the type declaration, but it still shouldn't trigger an error as it was declared within
+        # the front_matter and not passed in externally
+        self.assertFalse(mock_print_errors.called)
+        self.assertFalse(mock_render_error_html.called)
 
 
 class AttrsTagTest(TestCase):
