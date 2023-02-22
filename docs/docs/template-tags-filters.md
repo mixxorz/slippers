@@ -61,7 +61,7 @@ It's possible to specify the default value of an attribute by declaring it with 
 
 ```twig
 {# image component #}
-{% var loading="lazy" %}
+{% var loading=loading|default:"lazy" %}
 <img {% attrs src loading alt %}>
 
 {# Usage #}
