@@ -8,7 +8,7 @@ from django.template import Context
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
-from slippers.props import Props, check_prop_types, print_errors, render_error_html
+from slippers.props import Props, check_prop_types, render_error_html
 from slippers.template import slippers_token_kwargs
 
 register = template.Library()
@@ -116,14 +116,6 @@ class ComponentNode(template.Node):
                     defaults=props.defaults,
                 )
 
-            if "shell" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
-                print_errors(
-                    errors=prop_errors,
-                    tag_name=self.tag_name,
-                    template_name=self.origin_template_name,
-                    lineno=self.origin_lineno,
-                )
-
             # Load prop defaults into props
             attributes = {**props}
 
@@ -134,7 +126,10 @@ class ComponentNode(template.Node):
 
         output_template_section = mark_safe(extract_template_parts(raw_output)[1])
 
-        if "browser_console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT and prop_errors:
+        if prop_errors and (
+            "console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT
+            or "overlay" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT
+        ):
             # Append prop errors to output
             output = output_template_section + render_error_html(  # type: ignore
                 errors=prop_errors,
@@ -296,6 +291,9 @@ def do_fragment(parser, token):
 
 ##
 # slippers errors UI
-@register.inclusion_tag("slippers/errors.html")
-def slippers_errors():
-    return
+@register.inclusion_tag("slippers/overlay.html")
+def slippers_overlay():
+    return {
+        "SLIPPERS_RUNTIME_TYPE_CHECKING": settings.SLIPPERS_RUNTIME_TYPE_CHECKING,
+        "SLIPPERS_TYPE_CHECKING_OUTPUT": settings.SLIPPERS_TYPE_CHECKING_OUTPUT,
+    }

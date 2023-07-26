@@ -155,11 +155,8 @@ class PropsTest(TestCase):
 
         self.assertInHTML(expected, output)
 
-    @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")
-    def test_warning_for_invalid_prop_types(
-        self, mock_render_error_html, mock_print_errors
-    ):
+    def test_warning_for_invalid_prop_types(self, mock_render_error_html):
         mock_render_error_html.return_value = ""
 
         template = """
@@ -174,20 +171,6 @@ class PropsTest(TestCase):
 
         Template(template).render(Context({"numbers": [1, "two"]}))
 
-        # Check console errors
-        console_errors = mock_print_errors.call_args[1]["errors"]
-
-        self.assertEqual(len(expected_errors), len(console_errors))
-
-        for expected_error, actual_error in zip(expected_errors, console_errors):
-            with self.subTest(prop=expected_error[0]):
-                self.assertEqual("invalid", actual_error.error)
-                self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(
-                    expected_error[1], get_type_name(actual_error.expected)
-                )
-                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
-
         # Check browser errors
         browser_errors = mock_render_error_html.call_args[1]["errors"]
 
@@ -202,11 +185,8 @@ class PropsTest(TestCase):
                 )
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
-    @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")
-    def test_warning_for_required_props(
-        self, mock_render_error_html, mock_print_errors
-    ):
+    def test_warning_for_required_props(self, mock_render_error_html):
         mock_render_error_html.return_value = ""
 
         template = """
@@ -220,20 +200,6 @@ class PropsTest(TestCase):
 
         Template(template).render(Context())
 
-        # Check console errors
-        console_errors = mock_print_errors.call_args[1]["errors"]
-
-        self.assertEqual(len(expected_errors), len(console_errors))
-
-        for expected_error, actual_error in zip(expected_errors, console_errors):
-            with self.subTest(prop=expected_error[0]):
-                self.assertEqual("missing", actual_error.error)
-                self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(
-                    expected_error[1], get_type_name(actual_error.expected)
-                )
-                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
-
         # Check browser errors
         browser_errors = mock_render_error_html.call_args[1]["errors"]
 
@@ -248,9 +214,8 @@ class PropsTest(TestCase):
                 )
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
-    @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")
-    def test_warning_for_extra_props(self, mock_render_error_html, mock_print_errors):
+    def test_warning_for_extra_props(self, mock_render_error_html):
         mock_render_error_html.return_value = ""
 
         template = """
@@ -262,20 +227,6 @@ class PropsTest(TestCase):
         ]
 
         Template(template).render(Context({"numbers": [1, 2, 3]}))
-
-        # Check console errors
-        console_errors = mock_print_errors.call_args[1]["errors"]
-
-        self.assertEqual(len(expected_errors), len(console_errors))
-
-        for expected_error, actual_error in zip(expected_errors, console_errors):
-            with self.subTest(prop=expected_error[0]):
-                self.assertEqual("extra", actual_error.error)
-                self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(
-                    expected_error[1], get_type_name(actual_error.expected)
-                )
-                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
         # Check browser errors
         browser_errors = mock_render_error_html.call_args[1]["errors"]
@@ -321,40 +272,61 @@ class PropsTest(TestCase):
 
             self.assertTrue(mock_check_prop_types.called)
 
-    @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")
-    def test_type_checking_output(self, mock_render_error_html, mock_print_errors):
+    def test_type_checking_output(self, mock_render_error_html):
         mock_render_error_html.return_value = ""
 
         template = """
             {% type_checking %}
         """
-
-        with self.subTest("shell"), self.settings(
-            SLIPPERS_TYPE_CHECKING_OUTPUT=["shell"]
+        with self.subTest("overlay"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["overlay"]
         ):
             Template(template).render(Context())
 
-            self.assertTrue(mock_print_errors.called)
-            self.assertFalse(mock_render_error_html.called)
-
-        # Reset mock call count
-        mock_print_errors.reset_mock()
-
-        with self.subTest("browser_console"), self.settings(
-            SLIPPERS_TYPE_CHECKING_OUTPUT=["browser_console"]
-        ):
-            Template(template).render(Context())
-
-            self.assertFalse(mock_print_errors.called)
             self.assertTrue(mock_render_error_html.called)
+
+        mock_render_error_html.reset_mock()
+
+        with self.subTest("console"), self.settings(
+            SLIPPERS_TYPE_CHECKING_OUTPUT=["console"]
+        ):
+            Template(template).render(Context())
+
+            self.assertTrue(mock_render_error_html.called)
+
+
+class ErrorUITest(TestCase):
+    def test_render_error_ui(self):
+        template = """
+            {% slippers_overlay %}
+        """
+
+        with self.subTest("Enabled"), self.settings(
+            SLIPPERS_RUNTIME_TYPE_CHECKING=True
+        ):
+            output = Template(template).render(Context())
+            self.assertIn("slippers_errors_ui_root", output)
+
+        with self.subTest("Disabled"), self.settings(
+            SLIPPERS_RUNTIME_TYPE_CHECKING=False
+        ):
+            output = Template(template).render(Context())
+            self.assertNotIn("slippers_errors_ui_root", output)
+
+    def test_type_checking_output(self):
+        template = """
+            {% slippers_overlay %}
+        """
+        with self.settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True):
+            output = Template(template).render(Context())
+            self.assertIn('["console", "overlay"]', output)
 
 
 @override_settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True)
 class ComponentCodeTest(TestCase):
-    @patch("slippers.templatetags.slippers.print_errors")
     @patch("slippers.templatetags.slippers.render_error_html")
-    def test_component_code(self, mock_render_error_html, mock_print_errors):
+    def test_component_code(self, mock_render_error_html):
         mock_render_error_html.return_value = ""
 
         template = """
@@ -377,7 +349,6 @@ class ComponentCodeTest(TestCase):
         # Check that declaring new_number in front_matter doesn't trigger type errors
         # new_number isn't in the type declaration, but it still shouldn't trigger an error as it was declared within
         # the front_matter and not passed in externally
-        self.assertFalse(mock_print_errors.called)
         self.assertFalse(mock_render_error_html.called)
 
 

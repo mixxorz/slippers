@@ -1,0 +1,7 @@
+{% load static %}
+{% if SLIPPERS_RUNTIME_TYPE_CHECKING %}
+    <div id="slippers_errors_ui_root"></div>
+    {{ SLIPPERS_TYPE_CHECKING_OUTPUT|json_script:"slippers_type_checking_output" }}
+    <link rel="stylesheet" href="{% static 'slippers/main.css' %}">
+    <script src="{% static "slippers/main.js" %}"></script>
+{% endif %}

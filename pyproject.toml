@@ -31,7 +31,6 @@ python = ">=3.7.0"
 Django = ">=3.2"
 PyYAML = ">=5.4.0"
 typeguard = "^2.13.3"
-rich = ">=12.6.0"
 typing-extensions = ">=4.4.0"
 
 [tool.poetry.dev-dependencies]
