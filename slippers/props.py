@@ -12,11 +12,7 @@ else:
 from django.utils.html import SafeString
 from django.utils.safestring import mark_safe
 
-from rich.console import Console
-from rich.panel import Panel
 from typeguard import check_type, get_type_name
-
-console = Console()
 
 
 class Props(Mapping):
@@ -140,36 +136,6 @@ error_message_templates = {
 }
 
 
-def print_errors(
-    *, errors: List[PropError], tag_name: str, template_name: str, lineno: int
-):
-    """Print errors to the console"""
-
-    error_messages = [
-        error_message_templates[error.error].format(
-            name=error.name,
-            component=tag_name,
-            expected=get_type_name(error.expected),
-            actual=get_type_name(error.actual),
-        )
-        for error in errors
-    ]
-
-    console.print(
-        Panel(
-            "\n".join(error_messages),
-            style="yellow",
-            expand=False,
-            title=(
-                r"\[slippers] "
-                f"Failed prop types: {tag_name} at "
-                f"{template_name}:{lineno}"
-            ),
-            title_align="left",
-        )
-    )
-
-
 def render_error_html(
     *, errors: List[PropError], tag_name: str, template_name: str, lineno: int
 ) -> SafeString:
@@ -177,24 +143,6 @@ def render_error_html(
 
     # Remove # from tag name
     tag_name = tag_name.lstrip("#")
-
-    error_messages = [
-        error_message_templates[error.error].format(
-            name=error.name,
-            component=tag_name,
-            expected=get_type_name(error.expected),
-            actual=get_type_name(error.actual),
-        )
-        for error in errors
-    ]
-
-    error_message = (
-        f"[slippers] Failed prop types: {tag_name} at {template_name}:{lineno}\\n  "
-    )
-
-    error_message += "\\n  ".join(error_messages)
-
-    warnings_html = f'<script>console.error("{error_message}")</script>'
 
     # Output the error as JSON
     data = json.dumps(
@@ -221,4 +169,4 @@ def render_error_html(
         </script>
     """
 
-    return mark_safe(warnings_html + data_html)  # type: ignore
+    return mark_safe(data_html)  # type: ignore
