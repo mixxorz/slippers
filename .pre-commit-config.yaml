@@ -9,7 +9,7 @@ repos:
     rev: v5.9.2
     hooks:
       - id: isort
-  - repo: https://gitlab.com/pycqa/flake8
+  - repo: https://github.com/pycqa/flake8
     # flake8 config is in setup.cfg
     rev: 3.9.2
     hooks:
