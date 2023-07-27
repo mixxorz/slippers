@@ -31,6 +31,8 @@ jobs:
           npm ci --no-option --no-audit --progress=false
 
       - name: Build error UI
+        env:
+          GENERATE_SOURCEMAP: "false"
         run: |
           cd ui
           npm run build
