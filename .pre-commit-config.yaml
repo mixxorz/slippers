@@ -1,9 +1,4 @@
 repos:
-  - repo: https://github.com/asottile/seed-isort-config
-    # adds/updates known_third_party isort config in setup.cfg
-    rev: v1.9.4
-    hooks:
-      - id: seed-isort-config
   - repo: https://github.com/pycqa/isort
     # isort config is in setup.cfg
     rev: 5.12.0
