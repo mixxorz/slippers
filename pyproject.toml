@@ -14,9 +14,7 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Framework :: Django",
-    "Framework :: Django :: 2.2",
     "Framework :: Django :: 3.2",
-    "Framework :: Django :: 4.0",
     "Framework :: Django :: 4.1",
     "Framework :: Django :: 4.2",
 ]
@@ -27,7 +25,7 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = ">=3.7.0"
+python = ">=3.8.0"
 Django = ">=3.2"
 PyYAML = ">=5.4.0"
 typeguard = "^2.13.3"
