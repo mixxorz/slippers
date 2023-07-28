@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+
+env:
+  FORCE_COLOR: "1" # Make tools pretty.
+  TOX_TESTENV_PASSENV: FORCE_COLOR
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_PYTHON_VERSION_WARNING: "1"
+
 jobs:
   code-checks:
     runs-on: ubuntu-latest
@@ -23,7 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install tox tox-gh-actions
+          python -Im pip install tox tox-gh-actions
 
       - name: Run tests
         run: |
