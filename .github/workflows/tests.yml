@@ -6,6 +6,13 @@ on:
   pull_request:
     branches: [main]
 
+
+env:
+  FORCE_COLOR: "1" # Make tools pretty.
+  TOX_TESTENV_PASSENV: FORCE_COLOR
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PIP_NO_PYTHON_VERSION_WARNING: "1"
+
 jobs:
   code-checks:
     runs-on: ubuntu-latest
@@ -14,16 +21,16 @@ jobs:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          pip install tox tox-gh-actions
+          python -Im pip install tox tox-gh-actions
 
       - name: Run tests
         run: |
@@ -36,10 +43,10 @@ jobs:
         working-directory: ./ui
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js 18
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: "18"
 
