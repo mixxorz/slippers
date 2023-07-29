@@ -1,13 +1,7 @@
 import json
-import sys
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Union
-
-if sys.version_info >= (3, 8):
-    from typing import Literal, get_args, get_origin
-else:
-    from typing_extensions import Literal, get_args, get_origin
+from typing import Any, Dict, List, Literal, Optional, Union, get_args, get_origin
 
 from django.utils.html import SafeString
 from django.utils.safestring import mark_safe

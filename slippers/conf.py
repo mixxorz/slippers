@@ -1,10 +1,4 @@
-import sys
-from typing import List
-
-if sys.version_info >= (3, 8):
-    from typing import Literal
-else:
-    from typing_extensions import Literal
+from typing import List, Literal
 
 from django.conf import settings as django_settings
 

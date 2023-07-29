@@ -21,25 +21,25 @@ from django.utils.regex_helper import _lazy_re_compile
 # characters: -, :, and @
 ########################################################################################################################
 filter_raw_string = r"""
-^(?P<constant>%(constant)s)|
-^(?P<var>[%(var_chars)s]+|%(num)s)|
- (?:\s*%(filter_sep)s\s*
+^(?P<constant>{constant})|
+^(?P<var>[{var_chars}]+|{num})|
+ (?:\s*{filter_sep}\s*
      (?P<filter_name>\w+)
-         (?:%(arg_sep)s
+         (?:{arg_sep}
              (?:
-              (?P<constant_arg>%(constant)s)|
-              (?P<var_arg>[%(var_chars)s]+|%(num)s)
+              (?P<constant_arg>{constant})|
+              (?P<var_arg>[{var_chars}]+|{num})
              )
          )?
- )""" % {
-    "constant": constant_string,
-    "num": r"[-+\.]?\d[\d\.e]*",
+ )""".format(
+    constant=constant_string,
+    num=r"[-+\.]?\d[\d\.e]*",
     # The following is the only difference from the original FilterExpression. We allow variable names to have extra
     # special characters: -, :, and @
-    "var_chars": r"\w\-\:\@\.",
-    "filter_sep": re.escape(FILTER_SEPARATOR),
-    "arg_sep": re.escape(FILTER_ARGUMENT_SEPARATOR),
-}
+    var_chars=r"\w\-\:\@\.",
+    filter_sep=re.escape(FILTER_SEPARATOR),
+    arg_sep=re.escape(FILTER_ARGUMENT_SEPARATOR),
+)
 
 filter_re = _lazy_re_compile(filter_raw_string, re.VERBOSE)
 
