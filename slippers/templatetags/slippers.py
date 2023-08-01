@@ -4,7 +4,7 @@ from warnings import warn
 
 from django import template
 from django.conf import settings as django_settings
-from django.template import Context
+from django.template import Context, NodeList
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
@@ -26,7 +26,7 @@ def create_component_tag(template_path):
             nodelist = parser.parse((f"/{tag_name[1:]}",))
             parser.delete_first_token()
         else:
-            nodelist = None
+            nodelist = NodeList()
 
         # Bits that are not keyword args are interpreted as `True` values
         all_bits = [bit if "=" in bit else f"{bit}=True" for bit in remaining_bits]
