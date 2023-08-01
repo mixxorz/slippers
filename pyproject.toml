@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slippers"
-version = "0.6.1"
+version = "0.6.2"
 description = "Build reusable components in Django without writing a single line of Python."
 authors = ["Mitchel Cabuloy <mixxorz@gmail.com>"]
 keywords = ["django", "components"]
