@@ -100,11 +100,13 @@ class ComponentNode(template.Node):
         if not self.nodelist:
             children = ""
         else:
-            # I'd like to avoid the copy, but render() won't work with e.g. a ChainMap
-            import copy
-            copied = copy.copy(context)
-            copied.update(attributes)
-            children = self.nodelist.render(copied)
+            # Append the attributes to the context's dict stack. This avoids
+            # copying it. Make sure to pop it off afterwards.
+            context.dicts.append(attributes)
+            try:
+                children = self.nodelist.render(context)
+            finally:
+                context.dicts.pop()
 
         template = context.template.engine.get_template(self.template_path)
 
