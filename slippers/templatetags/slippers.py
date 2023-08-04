@@ -93,11 +93,18 @@ class ComponentNode(template.Node):
         self.target_var = target_var
 
     def render(self, context):
-        children = self.nodelist.render(context) if self.nodelist else ""
-
         attributes = {
             key: value.resolve(context) for key, value in self.raw_attributes.items()
         }
+
+        if not self.nodelist:
+            children = ""
+        else:
+            # I'd like to avoid the copy, but render() won't work with e.g. a ChainMap
+            import copy
+            copied = copy.copy(context)
+            copied.update(attributes)
+            children = self.nodelist.render(copied)
 
         template = context.template.engine.get_template(self.template_path)
 
