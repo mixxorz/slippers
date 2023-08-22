@@ -20,5 +20,14 @@ class Settings:
             ["console", "overlay"],
         )
 
+    @property
+    def SLIPPERS_PARAMS_VISIBLE_IN_CHILDREN(self) -> bool:
+        """Make component parameters visible in children"""
+        return getattr(django_settings, "SLIPPERS_PARAMS_VISIBLE_IN_CHILDREN", False)  # type: ignore
+
+    @property
+    def SLIPPERS_VARS_VISIBLE_IN_CHILDREN(self) -> bool:
+        """Make component var declarations visible in children"""
+        return getattr(django_settings, "SLIPPERS_VARS_VISIBLE_IN_CHILDREN", False)  # type: ignore
 
 settings = Settings()

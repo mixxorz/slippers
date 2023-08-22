@@ -5,6 +5,7 @@ from warnings import warn
 from django import template
 from django.conf import settings as django_settings
 from django.template import Context, NodeList
+from django.template.base import VariableNode
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
@@ -97,18 +98,37 @@ class ComponentNode(template.Node):
             key: value.resolve(context) for key, value in self.raw_attributes.items()
         }
 
+        template = context.template.engine.get_template(self.template_path)
+
         if not self.nodelist:
             children = ""
         else:
             # Append the attributes to the context's dict stack. This avoids
             # copying it. Make sure to pop it off afterwards.
-            context.dicts.append(attributes)
+            # template.nodelist contains var declarations which we can use, too.
+            want_params = settings.SLIPPERS_PARAMS_VISIBLE_IN_CHILDREN
+            want_vars = settings.SLIPPERS_VARS_VISIBLE_IN_CHILDREN
+
+            # if 'test_component' in self.template_path: import pdb; pdb.set_trace()
+            if want_params:
+                context.dicts.append(attributes)
+            if want_vars:
+                variables = {}
+                context.dicts.append(variables)
+                for node in template.nodelist:
+                    if isinstance(node, VarNode):
+                        variables.update({name: value.resolve(context) for name, value in node.var_map.items()})
+                    elif isinstance(node, VariableNode):
+                        fe = node.filter_expression
+                        if fe.is_var and fe.var.var == 'children':
+                            break
             try:
                 children = self.nodelist.render(context)
             finally:
-                context.dicts.pop()
-
-        template = context.template.engine.get_template(self.template_path)
+                if want_vars:
+                    context.dicts.pop()
+                if want_params:
+                    context.dicts.pop()
 
         source_front_matter = extract_template_parts(template.source)[0]
 
