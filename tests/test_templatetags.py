@@ -8,76 +8,46 @@ from typeguard import get_type_name
 
 
 class ComponentTest(TestCase):
-    def test_render_named_inline_component(self):
-        template = """
-            {% avatar user="mixxorz" %}
-        """
-
-        expected = """
-            <div>I am avatar for mixxorz</div>
-        """
-
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
-
-    def test_render_named_block_component(self):
-        template = """
-            {% #button %}I am button{% /button %}
-        """
-
-        expected = """
-            <button>I am button</button>
-        """
-
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
 
     def test_render_inline_component(self):
-        template = """
-            {% inline-component "avatar" user="mixxorz" %}
+        inline_template = """
+            {{% {component} user="mixxorz" %}}
         """
 
         expected = """
             <div>I am avatar for mixxorz</div>
         """
 
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
+        for component, context in (
+            ('avatar', {}),
+            ('inline-component "avatar"', {}),
+            ('inline-component c_name', {'c_name': 'avatar'}),
+        ):
+            template = inline_template.format(component=component)
+            try:
+                self.assertHTMLEqual(expected, Template(template).render(Context(context)))
+            except Exception as e:
+                self.fail(f'{template}\n---\n{e}')
 
     def test_render_block_component(self):
-        template = """
-            {% component "button" %}I am button{% /component %}
+        block_template = """
+            {{% {component_open} %}}I am button{{% {component_close} %}}
         """
 
         expected = """
             <button>I am button</button>
         """
 
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
-
-
-    def test_render_inline_component_from_var(self):
-        template = """
-            {% inline-component component_name user="mixxorz" %}
-        """
-
-        expected = """
-            <div>I am avatar for mixxorz</div>
-        """
-
-        self.assertHTMLEqual(expected, Template(template).render(Context({
-            "component_name": "avatar",
-        })))
-
-    def test_render_block_component_from_var(self):
-        template = """
-            {% component component_name %}I am button{% /component %}
-        """
-
-        expected = """
-            <button>I am button</button>
-        """
-
-        self.assertHTMLEqual(expected, Template(template).render(Context({
-            "component_name": "button"
-        })))
+        for component_open, component_close, context in (
+            ('#button', '/button', {}),
+            ('component "button"', '/component', {}),
+            ('component c_name', '/component', {'c_name': 'button'}),
+        ):
+            template = block_template.format(component_open=component_open, component_close=component_close)
+            try:
+                self.assertHTMLEqual(expected, Template(template).render(Context((context))))
+            except Exception as e:
+                self.fail(f'{template}\n---\n{e}')
 
     def test_render_without_children(self):
         template = """
