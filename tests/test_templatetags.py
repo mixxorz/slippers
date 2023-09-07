@@ -8,7 +8,7 @@ from typeguard import get_type_name
 
 
 class ComponentTest(TestCase):
-    def test_render_inline_component(self):
+    def test_render_named_inline_component(self):
         template = """
             {% avatar user="mixxorz" %}
         """
@@ -19,7 +19,7 @@ class ComponentTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
-    def test_render_block_component(self):
+    def test_render_named_block_component(self):
         template = """
             {% #button %}I am button{% /button %}
         """
@@ -29,6 +29,55 @@ class ComponentTest(TestCase):
         """
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_render_inline_component(self):
+        template = """
+            {% inline-component "avatar" user="mixxorz" %}
+        """
+
+        expected = """
+            <div>I am avatar for mixxorz</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_render_block_component(self):
+        template = """
+            {% component "button" %}I am button{% /component %}
+        """
+
+        expected = """
+            <button>I am button</button>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+
+    def test_render_inline_component_from_var(self):
+        template = """
+            {% inline-component component_name user="mixxorz" %}
+        """
+
+        expected = """
+            <div>I am avatar for mixxorz</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context({
+            "component_name": "avatar",
+        })))
+
+    def test_render_block_component_from_var(self):
+        template = """
+            {% component component_name %}I am button{% /component %}
+        """
+
+        expected = """
+            <button>I am button</button>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context({
+            "component_name": "button"
+        })))
 
     def test_render_without_children(self):
         template = """
