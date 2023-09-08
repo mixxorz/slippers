@@ -44,7 +44,7 @@ def create_component_tag(components_dict, inline=False):
     def do_component(parser, token):
         _, tag_expr, *remaining_bits = token.split_contents()
 
-        # faking block notation even if {% component %} tag does not adhere it
+        # faking block notation even if {% component %} tag does not adhere to it
         nodelist = get_nodelist("{}component".format('inline-' if inline else '#'), parser, ends_with_slash=False)
         tag_name = SlippersFilterExpression(tag_expr, parser)
 
