@@ -50,9 +50,9 @@ class ComponentTest(TestCase):
                 self.fail(f'{template}\n---\n{e}')
 
     def test_render_without_children(self):
-        template = """
-            {% icon_button icon="envelope" %}
-            {% #icon_button icon="envelope" %}Submit{% /icon_button %}
+        no_child_template = """
+            {{% {component1} icon="envelope" %}}
+            {{% {component2_open} icon="envelope" %}}Submit{{% {component2_close} %}}
         """
 
         expected = """
@@ -60,13 +60,22 @@ class ComponentTest(TestCase):
             <button class="icon-button envelope">Submit</button>
         """
 
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
+        for c1, c2_open, c2_close, context in (
+            ('icon_button', '#icon_button', '/icon_button', {}),
+            ('inline-component "icon_button"', 'component "icon_button"', 'endcomponent', {}),
+            ('inline-component c_name', 'component c_name', 'endcomponent', {'c_name': 'icon_button'}),
+        ):
+            template = no_child_template.format(component1=c1, component2_open=c2_open, component2_close=c2_close)
+            try:
+                self.assertHTMLEqual(expected, Template(template).render(Context(context)))
+            except Exception as e:
+                self.fail(f'{template}\n---\n{e}')
 
     def test_render_nested(self):
-        template = """
-            {% #card heading="I am heading" %}
-            {% #button %}I am button{% /button %}
-            {% /card %}
+        nested_template = """
+            {{% {component1_open} heading="I am heading" %}}
+            {{% {component2_open} %}}I am button{{% {component2_close} %}}
+            {{% {component1_close} %}}
         """
 
         expected = """
@@ -78,7 +87,21 @@ class ComponentTest(TestCase):
             </div>
         """
 
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
+        for c1_open, c2_open, context in (
+            ('#card', '#button', {}),
+            ('component "card"', 'component "button"', {}),
+            ('component c1', 'component c2', {'c1': 'card', 'c2': 'button'}),
+        ):
+            kwargs = {}
+            for i in (1, 2):
+                c_open = locals()[f'c{i}_open']
+                kwargs[f'component{i}_close'] = f'/{c_open[1:]}' if c_open[0] == '#' else 'endcomponent'
+
+            template = nested_template.format(component1_open=c1_open, component2_open=c2_open, **kwargs)
+            try:
+                self.assertHTMLEqual(expected, Template(template).render(Context(context)))
+            except Exception as e:
+                self.fail(f'{template}\n---\n{e}')
 
     def test_kwargs_with_filters(self):
         template = """
