@@ -16,11 +16,11 @@ register = template.Library()
 
 ##
 # Component tags
-def get_nodelist(tag_name, parser):
+def get_nodelist(tag_name, parser, ends_with_slash=True):
     # Block components start with `#`
     # Expect a closing tag
     if tag_name[0] == "#":
-        nodelist = parser.parse((f"/{tag_name[1:]}",))
+        nodelist = parser.parse((f"{'/' if ends_with_slash else 'end'}{tag_name[1:]}",))
         parser.delete_first_token()
     else:
         nodelist = NodeList()
@@ -45,7 +45,7 @@ def create_component_tag(components_dict, inline=False):
         _, tag_expr, *remaining_bits = token.split_contents()
 
         # faking block notation even if {% component %} tag does not adhere it
-        nodelist = get_nodelist("{}component".format('inline-' if inline else '#'), parser)
+        nodelist = get_nodelist("{}component".format('inline-' if inline else '#'), parser, ends_with_slash=False)
         tag_name = SlippersFilterExpression(tag_expr, parser)
 
         return any_component(tag_name, nodelist, remaining_bits, parser, token, None, components_dict)

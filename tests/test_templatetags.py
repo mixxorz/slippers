@@ -40,8 +40,8 @@ class ComponentTest(TestCase):
 
         for component_open, component_close, context in (
             ('#button', '/button', {}),
-            ('component "button"', '/component', {}),
-            ('component c_name', '/component', {'c_name': 'button'}),
+            ('component "button"', 'endcomponent', {}),
+            ('component c_name', 'endcomponent', {'c_name': 'button'}),
         ):
             template = block_template.format(component_open=component_open, component_close=component_close)
             try:
