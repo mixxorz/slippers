@@ -6,3 +6,4 @@ components:
   special_attributes: "special_attributes.html"
   type_checking: "type_checking.html"
   component_code: "component_code.html"
+  movie: "movie.html"

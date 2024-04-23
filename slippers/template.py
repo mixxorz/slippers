@@ -1,6 +1,7 @@
 """
 Overrides for the Django Template system to allow finer control over template parsing.
 """
+
 import re
 
 from django.template.base import (

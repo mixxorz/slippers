@@ -1,8 +1,10 @@
 from unittest.mock import patch
 
 from django.conf import settings as django_settings
+from django.contrib.auth.models import User
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
+from django.urls import reverse
 
 from typeguard import get_type_name
 
@@ -617,3 +619,14 @@ class FragmentTagTest(TestCase):
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
+
+
+class RequestPassingTest(TestCase):
+    def test_request_may_be_passed_to_component(self):
+        user = User.objects.create_user("_", last_name="Monocle")
+        self.client.force_login(user)
+        response = self.client.get(reverse("movie_detail"))
+        self.assertEqual(
+            response.content.decode().strip(),
+            "<span>Movie: Monsters - Reviewer: Monocle</span>",
+        )
