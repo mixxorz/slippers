@@ -120,9 +120,10 @@ class ComponentNode(template.Node):
             attributes = {**props}
 
         # Stage 2: Render template
-        raw_output = template.render(
-            Context({**attributes, "children": children}, autoescape=context.autoescape)
-        )
+        ctx_dict = {**attributes, "children": children}
+        if request := context.get("request"):
+            ctx_dict["request"] = request
+        raw_output = template.render(Context(ctx_dict, autoescape=context.autoescape))
 
         output_template_section = mark_safe(extract_template_parts(raw_output)[1])
 
