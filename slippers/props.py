@@ -136,7 +136,7 @@ def render_error_html(
     """Output errors to the browser console"""
 
     # Remove # from tag name
-    tag_name = tag_name.lstrip("#")
+    tag_name = tag_name.lstrip(settings.SLIPPERS_OPEN_TAG_PREFIX)
 
     # Output the error as JSON
     data = json.dumps(

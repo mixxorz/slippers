@@ -10,6 +10,16 @@ class Settings:
         return getattr(django_settings, "SLIPPERS_RUNTIME_TYPE_CHECKING", django_settings.DEBUG)  # type: ignore
 
     @property
+    def SLIPPERS_OPEN_TAG_PREFIX(self) -> bool:
+        """Enable runtime type checking of props"""
+        return getattr(django_settings, "SLIPPERS_OPEN_TAG_PREFIX", "qr-")
+
+    @property
+    def SLIPPERS_CLOSE_TAG_PREFIX(self) -> bool:
+        """Enable runtime type checking of props"""
+        return getattr(django_settings, "SLIPPERS_CLOSE_TAG_PREFIX", "end_qr-")
+
+    @property
     def SLIPPERS_TYPE_CHECKING_OUTPUT(
         self,
     ) -> List[Literal["console", "overlay"]]:
