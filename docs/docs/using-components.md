@@ -38,6 +38,28 @@ The inline syntax just uses the plain component name. No `#` or `/`.
 <button><svg>...</svg></button>
 ```
 
+## Named component syntax
+
+Components can also be accessed using their name as a string or variable.
+
+For inline coponents, you may use
+
+```twig
+{% inline-component "icon_button" icon="heart" %}
+{% inline-component var_containing_component_name %}
+```
+
+And similarly for block components
+
+```twig
+{% component "icon_button" icon="star" %}
+  Hello
+{% endcomponent %}
+{% component var_containing_component_name icon="heart" %}
+  World
+{% endcomponent %}
+```
+
 ## Component context
 
 Unlike the `include` tag, component template tags **do not** pass the current context to the child component. Variables need to be passed in explicitly.

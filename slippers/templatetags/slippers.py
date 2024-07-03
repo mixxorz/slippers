@@ -9,46 +9,72 @@ from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
 from slippers.props import Props, check_prop_types, render_error_html
-from slippers.template import slippers_token_kwargs
+from slippers.template import slippers_token_kwargs, SlippersFilterExpression
 
 register = template.Library()
 
 
 ##
 # Component tags
-def create_component_tag(template_path):
+def get_nodelist(tag_name, parser, ends_with_slash=True):
+    # Block components start with `#`
+    # Expect a closing tag
+    if tag_name[0] == "#":
+        nodelist = parser.parse((f"{'/' if ends_with_slash else 'end'}{tag_name[1:]}",))
+        parser.delete_first_token()
+    else:
+        nodelist = NodeList()
+
+    return nodelist
+
+
+def create_named_component_tag(template_path):
+
     def do_component(parser, token):
         tag_name, *remaining_bits = token.split_contents()
+        nodelist = get_nodelist(tag_name, parser)
 
-        # Block components start with `#`
-        # Expect a closing tag
-        if tag_name[0] == "#":
-            nodelist = parser.parse((f"/{tag_name[1:]}",))
-            parser.delete_first_token()
-        else:
-            nodelist = NodeList()
-
-        # Bits that are not keyword args are interpreted as `True` values
-        all_bits = [bit if "=" in bit else f"{bit}=True" for bit in remaining_bits]
-
-        raw_attributes = slippers_token_kwargs(all_bits, parser)
-
-        # Allow component fragment to be assigned to a variable
-        target_var = None
-        if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
-            target_var = remaining_bits[-1]
-
-        return ComponentNode(
-            tag_name=tag_name,
-            nodelist=nodelist,
-            template_path=template_path,
-            raw_attributes=raw_attributes,
-            origin_template_name=parser.origin.template_name,
-            origin_lineno=token.lineno,
-            target_var=target_var,
-        )
+        return any_component(tag_name, nodelist, remaining_bits, parser, token, template_path, None)
 
     return do_component
+
+
+def create_component_tag(components_dict, inline=False):
+
+    def do_component(parser, token):
+        _, tag_expr, *remaining_bits = token.split_contents()
+
+        # faking block notation even if {% component %} tag does not adhere to it
+        nodelist = get_nodelist("{}component".format('inline-' if inline else '#'), parser, ends_with_slash=False)
+        tag_name = SlippersFilterExpression(tag_expr, parser)
+
+        return any_component(tag_name, nodelist, remaining_bits, parser, token, None, components_dict)
+
+    return do_component
+
+
+def any_component(tag_name, nodelist, remaining_bits, parser, token, template_path, template_dict):
+
+    # Bits that are not keyword args are interpreted as `True` values
+    all_bits = [bit if "=" in bit else f"{bit}=True" for bit in remaining_bits]
+
+    raw_attributes = slippers_token_kwargs(all_bits, parser)
+
+    # Allow component fragment to be assigned to a variable
+    target_var = None
+    if len(remaining_bits) >= 2 and remaining_bits[-2] == "as":
+        target_var = remaining_bits[-1]
+
+    return ComponentNode(
+        tag_name=tag_name,
+        nodelist=nodelist,
+        template_path=template_path,
+        template_dict=template_dict,
+        raw_attributes=raw_attributes,
+        origin_template_name=parser.origin.template_name,
+        origin_lineno=token.lineno,
+        target_var=target_var,
+    )
 
 
 def extract_template_parts(code: str) -> Tuple[str, str]:
@@ -78,15 +104,19 @@ class ComponentNode(template.Node):
         self,
         tag_name,
         nodelist,
-        template_path,
         raw_attributes,
         origin_template_name,
         origin_lineno,
+        template_path=None,
+        template_dict=None,
         target_var=None,
     ):
+        assert template_path is not None or template_dict is not None, \
+            "Please provide either a template_name or a template_dict"
         self.tag_name = tag_name
         self.nodelist = nodelist
         self.template_path = template_path
+        self.template_dict = template_dict
         self.raw_attributes = raw_attributes
         self.origin_template_name = origin_template_name
         self.origin_lineno = origin_lineno
@@ -99,7 +129,11 @@ class ComponentNode(template.Node):
             key: value.resolve(context) for key, value in self.raw_attributes.items()
         }
 
-        template = context.template.engine.get_template(self.template_path)
+        template_path = self.template_path
+        if template_path is None:  # this is a dynamic component or inline-component tag
+            tag_name = self.tag_name.resolve(context)
+            template_path = self.template_dict[tag_name]
+        template = context.template.engine.get_template(template_path)
 
         source_front_matter = extract_template_parts(template.source)[0]
 
@@ -154,10 +188,12 @@ def register_components(
         target_register = register
     for tag_name, template_path in components.items():
         # Inline component
-        target_register.tag(f"{tag_name}", create_component_tag(template_path))
+        target_register.tag(f"{tag_name}", create_named_component_tag(template_path))
 
         # Block component
-        target_register.tag(f"#{tag_name}", create_component_tag(template_path))
+        target_register.tag(f"#{tag_name}", create_named_component_tag(template_path))
+    target_register.tag("inline-component", create_component_tag(components, inline=True))
+    target_register.tag("component", create_component_tag(components))
 
 
 ##
