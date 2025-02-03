@@ -161,7 +161,7 @@ The `var` tag is intended to be used inside component templates as a means to do
 
 The `var`tag can be used to assign multiple values in one tag, separated by spaces (note, not commas).
 
-```twig title="button.html"
+```twig
 {% var hello="Hello," world="World!" %}
 
 {{ hello }} {{ world }}
