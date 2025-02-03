@@ -526,6 +526,19 @@ class VarTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_multiple_vars(self):
+        template = """
+            {% var foo="Hello," bar="World!" %}
+
+            <div>{{ foo }} {{ bar }}</div>
+        """
+
+        expected = """
+            <div>Hello, World!</div>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
 
 class MatchFilterTest(TestCase):
     def test_basic(self):
