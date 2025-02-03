@@ -117,10 +117,15 @@ class ComponentNode(template.Node):
                 context.dicts.append(variables)
                 for node in template.nodelist:
                     if isinstance(node, VarNode):
-                        variables.update({name: value.resolve(context) for name, value in node.var_map.items()})
+                        variables.update(
+                            {
+                                name: value.resolve(context)
+                                for name, value in node.var_map.items()
+                            }
+                        )
                     elif isinstance(node, VariableNode):
                         fe = node.filter_expression
-                        if fe.is_var and fe.var.var == 'children':
+                        if fe.is_var and fe.var.var == "children":
                             break
             try:
                 children = self.nodelist.render(context)

@@ -30,4 +30,5 @@ class Settings:
         """Make component var declarations visible in children"""
         return getattr(django_settings, "SLIPPERS_VARS_VISIBLE_IN_CHILDREN", False)  # type: ignore
 
+
 settings = Settings()
