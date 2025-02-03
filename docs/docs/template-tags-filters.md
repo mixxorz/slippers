@@ -159,6 +159,17 @@ The `var` tag is intended to be used inside component templates as a means to do
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>
 ```
 
+The `var`tag can be used to assign multiple values in one tag, separated by spaces (note, not commas).
+
+```twig
+{% var hello="Hello," world="World!" %}
+
+{{ hello }} {{ world }}
+
+{# Output #}
+<div>Hello, World!</div>
+```
+
 :::note
 
 `var` can't be used inside of a `with` block.

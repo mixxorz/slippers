@@ -223,11 +223,12 @@ def do_var(parser, token):
         f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
     )
     try:
-        tag_name, var = token.split_contents()
+        parts = token.split_contents()
+        parts.pop(0)  # lose tag name
+        var_map = slippers_token_kwargs(parts, parser)
     except ValueError:
         raise template.TemplateSyntaxError(error_message)
 
-    var_map = slippers_token_kwargs([var], parser)
     return VarNode(var_map)
 
 
