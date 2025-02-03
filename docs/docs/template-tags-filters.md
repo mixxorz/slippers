@@ -165,6 +165,9 @@ The `var`tag can be used to assign multiple values in one tag, separated by spac
 {% var hello="Hello," world="World!" %}
 
 {{ hello }} {{ world }}
+
+{# Output #}
+<div>Hello, World!</div>
 ```
 
 :::note
