@@ -16,14 +16,13 @@ register = template.Library()
 
 ##
 # Component tags
-def create_component_tag(template_path):
+def create_component_tag(template_path, closing_tag):
     def do_component(parser, token):
         tag_name, *remaining_bits = token.split_contents()
 
-        # Block components start with `#`
-        # Expect a closing tag
-        if tag_name[0] == "#":
-            nodelist = parser.parse((f"/{tag_name[1:]}",))
+        if closing_tag:
+            # Expect a closing tag
+            nodelist = parser.parse((closing_tag,))
             parser.delete_first_token()
         else:
             nodelist = NodeList()
@@ -154,10 +153,15 @@ def register_components(
         target_register = register
     for tag_name, template_path in components.items():
         # Inline component
-        target_register.tag(f"{tag_name}", create_component_tag(template_path))
+        target_register.tag(
+            f"{tag_name}", create_component_tag(template_path, closing_tag=None)
+        )
 
         # Block component
-        target_register.tag(f"#{tag_name}", create_component_tag(template_path))
+        target_register.tag(
+            f"#{tag_name}",
+            create_component_tag(template_path, closing_tag=f"/{tag_name}"),
+        )
 
 
 ##

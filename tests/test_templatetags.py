@@ -617,3 +617,20 @@ class FragmentTagTest(TestCase):
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
+
+
+class CustomRegisterTest(TestCase):
+    def test_basic(self):
+        template = """
+            {% load custom_tag %}
+            {% custom_component some_value="foobar" %}
+            Hello kids
+            {% endcustom_component %}
+        """
+
+        expected = """
+            <div>This is a custom tag: foobar</div>
+            <span>Hello kids</span>
+        """
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
