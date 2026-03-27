@@ -1,13 +1,15 @@
-[tool.poetry]
+[project]
 name = "slippers"
 version = "0.6.2"
 description = "Build reusable components in Django without writing a single line of Python."
-authors = ["Mitchel Cabuloy <mixxorz@gmail.com>"]
-keywords = ["django", "components"]
+authors = [{ name = "Mitchel Cabuloy", email = "mixxorz@gmail.com" }]
+requires-python = ">=3.8.0"
 readme = "README.md"
 license = "MIT"
-homepage = "https://github.com/mixxorz/slippers"
-repository = "https://github.com/mixxorz/slippers"
+keywords = [
+    "django",
+    "components",
+]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Web Environment",
@@ -18,28 +20,45 @@ classifiers = [
     "Framework :: Django :: 5.0",
     "Framework :: Django :: 5.1",
     "Framework :: Django :: 5.2",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
-include = [
+dependencies = [
+    "Django>=3.2",
+    "PyYAML>=5.4.0",
+    "typeguard>=2.13.3,<3",
+    "typing-extensions>=4.4.0",
+]
+
+[project.urls]
+homepage = "https://github.com/mixxorz/slippers"
+repository = "https://github.com/mixxorz/slippers"
+documentation = "https://mitchel.me/slippers"
+
+[dependency-groups]
+dev = [
+    "black>=23.7.0,<24",
+    "isort>=5.12.0,<6",
+    "flake8>=3.0.0,<4",
+    "ipdb>=0.13.13,<0.14",
+    "tox>=4.6.4,<5",
+    "twine>=4.0.2,<5",
+]
+
+[tool.uv.build-backend]
+module-root = ""
+source-include = [
     "LICENSE",
     "slippers/static/slippers/main.js",
     "slippers/static/slippers/main.css",
 ]
 
-[tool.poetry.dependencies]
-python = ">=3.8.0"
-Django = ">=3.2"
-PyYAML = ">=5.4.0"
-typeguard = "^2.13.3"
-typing-extensions = ">=4.4.0"
-
-[tool.poetry.dev-dependencies]
-black = "^23.7.0"
-isort = "^5.12.0"
-flake8 = "^6.0.0"
-ipdb = "^0.13.13"
-tox = "^4.6.4"
-twine = "^4.0.2"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.10.12,<0.11.0"]
+build-backend = "uv_build"

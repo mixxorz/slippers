@@ -11,14 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install Poetry
-        run: |
-          pip install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
 
       - name: Set up Node.js 18
         uses: actions/setup-node@v3
@@ -39,7 +33,7 @@ jobs:
 
       - name: Build the distribution
         run: |
-          poetry build
+          uv build
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
