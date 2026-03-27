@@ -37,8 +37,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/mixxorz/slippers"
-Repository = "https://github.com/mixxorz/slippers"
+homepage = "https://github.com/mixxorz/slippers"
+repository = "https://github.com/mixxorz/slippers"
+documentation = "https://mitchel.me/slippers"
 
 [dependency-groups]
 dev = [
