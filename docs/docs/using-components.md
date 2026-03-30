@@ -4,16 +4,16 @@
 
 Components can be used in two ways: block-level or inline-level.
 
-For example, given an `icon_button` component.
+For example, given an `IconButton` component.
 
-```twig title="icon_button.html"
-<button>{{ children }} {% icon name=icon %}</button>
+```twig title="IconButton.html"
+<button>{{ children }} {% Icon name=icon %}</button>
 ```
 
 We can use the block syntax to pass the label of the button as `children.`
 
 ```twig
-{% #icon_button icon="star" %}Favorite{% /icon_button %}
+{% #IconButton icon="star" %}Favorite{% /IconButton %}
 ```
 
 Note that `#` denotes the opening tag and `/` denotes the closing tag.
@@ -25,7 +25,7 @@ Note that `#` denotes the opening tag and `/` denotes the closing tag.
 If we didn't need to pass a label, or if the component itself doesn't use `{{ children }}`, we can use the inline syntax instead.
 
 ```twig
-{% icon_button icon="heart" %}
+{% IconButton icon="heart" %}
 ```
 
 The inline syntax just uses the plain component name. No `#` or `/`.
@@ -39,7 +39,7 @@ The inline syntax just uses the plain component name. No `#` or `/`.
 Unlike the `include` tag, component template tags **do not** pass the current context to the child component. Variables need to be passed in explicitly.
 
 ```twig
-{% #button variant="primary" size="large" %}Hello{% /button %}
+{% #Button variant="primary" size="large" %}Hello{% /Button %}
 ```
 
 In addition, any variable set inside of a component template does not leak out to to the global context.
@@ -62,11 +62,11 @@ Unlike normal template tags, component template tags support special characters 
 This can be used in conjunction with the [`attrs`](template-tags-filters.md#attrs) tag.
 
 ```twig
-{# button component #}
+{# Button component #}
 <button {% attrs aria-role x-bind:class @click %}>{{ children }}</button>
 
 {# Usage #}
-{% #button aria-role="button" x-bind:class="!open ? 'hidden': ''" @click="myHandler" %}Hello{% /button %}
+{% #Button aria-role="button" x-bind:class="!open ? 'hidden': ''" @click="myHandler" %}Hello{% /Button %}
 
 {# Output #}
 <button aria-role="button" x-bind:class="!open ? 'hidden': ''" @click="myHandler">Hello</button>
@@ -83,13 +83,13 @@ This makes keyword arguments work more like HTML attributes.
 Similar to a [`fragment`](template-tags-filters.md#fragment) tag, a component's output can be assigned to a variable.
 
 ```twig
-{% #heading variant="large" as my_heading %}Hello, World{% /heading %}
+{% #Heading variant="large" as my_heading %}Hello, World{% /Heading %}
 
 {# Render it like a normal variable #}
 {{ my_heading }}
 
 {# Or pass to to another component #}
-{% card_heading heading=my_heading %}
+{% CardHeading heading=my_heading %}
 ```
 
 !!! note
@@ -175,12 +175,12 @@ And used as:
 
 ```twig
 {# Usage #}
-{% button %}
+{% Button %}
 {# Output #}
 <button class="btn btn-primary"></button>
 
 {# Usage #}
-{% button class="btn btn-secondary" %}
+{% Button class="btn btn-secondary" %}
 {# Output #}
 <button class="btn btn-secondary"></button>
 ```

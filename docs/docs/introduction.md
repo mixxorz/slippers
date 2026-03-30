@@ -9,7 +9,7 @@ Slippers aims to augment DTL, adding just enough functionality to make building 
 It includes additional template tags and filters, but its headline feature is **reusable components**.
 
 ```twig
-{% #button variant="primary" %}See how it works{% /button %}
+{% #Button variant="primary" %}See how it works{% /Button %}
 ```
 
 [See how it works](getting-started.md)

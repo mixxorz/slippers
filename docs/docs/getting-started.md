@@ -21,19 +21,19 @@ Before we can use our new component, we need to register it. The easiest way to 
 
 ```yaml title="myapp/templates/components.yaml"
 components:
-  card: "myapp/card.html"
+  Card: "myapp/card.html"
 ```
 
-The name of the component in `components.yaml` becomes the template tag for that component. In this case, we're registering the `myapp/card.html` template as the `card` component.
+The name of the component in `components.yaml` becomes the template tag for that component. In this case, we're registering the `myapp/card.html` template as the `Card` component.
 
-Now we can use our new `card` component.
+Now we can use our new `Card` component.
 
 ```twig
 {% load slippers %}
 
-{% #card heading="I am the heading" %}
+{% #Card heading="I am the heading" %}
   <span>Hello {{ name|title }}!</span>
-{% /card %}
+{% /Card %}
 ```
 
 Notice that we use `#` to denote the opening tag of a component and `/` to denote the closing tag. Anything within the opening and closing tags is passed to the component as `children`.

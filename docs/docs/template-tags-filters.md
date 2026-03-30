@@ -7,11 +7,11 @@ Slippers includes a number of extra template tags and filters to help template a
 The `attrs` tag is a handy shortcut that outputs template variables as element attributes.
 
 ```twig
-{# input_field component #}
+{# InputField component #}
 <input {% attrs type id name x-bind:class %}>
 
 {# Usage #}
-{% input_field type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" %}
+{% InputField type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" %}
 
 {# Output #}
 <input type="text" id="first_name" name="first_name" x-bind:class="!isValid ? 'error': ''" />
@@ -26,12 +26,12 @@ The parameters passed to `attrs` are used as both the "key" of the attribute and
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 
 ```twig
-{# button component #}
+{# Button component #}
 <button {% attrs disabled %}>{{ children }}</button>
 
 {# Usage #}
-{% #button disabled=True %}Can't click me{% /button %}
-{% #button disabled=False %}Click me{% /button %}
+{% #Button disabled=True %}Can't click me{% /Button %}
+{% #Button disabled=False %}Click me{% /Button %}
 
 {# Output #}
 <button disabled>Can't click me</button>
@@ -41,11 +41,11 @@ Boolean values are treated differently. `True` values become empty attributes, a
 It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.
 
 ```twig
-{# input_field component #}
+{# InputField component #}
 <input {% attrs type id=field_id name %}>
 
 {# Usage #}
-{% input_field type="text" field_id="first_name" name="first_name" %}
+{% InputField type="text" field_id="first_name" name="first_name" %}
 
 {# Output #}
 <input type="text" id="first_name" name="first_name" />
@@ -54,12 +54,12 @@ It's possible to specify the source of the attribute value by writing it as a ke
 It's possible to specify the default value of an attribute by declaring it with the [`var`](#var) tag
 
 ```twig
-{# image component #}
+{# Image component #}
 {% var loading=loading|default:"lazy" %}
 <img {% attrs src loading alt %}>
 
 {# Usage #}
-{% image src="..." alt="..." %}
+{% Image src="..." alt="..." %}
 
 {# Output #}
 <img src="..." alt="..." loading="lazy" />
@@ -78,7 +78,7 @@ The `fragment` tag allows template fragments to be assigned to variables.
 {{ my_fragment }}
 
 {# Pass it around #}
-{% my_component content=my_fragment %}
+{% MyComponent content=my_fragment %}
 {% include "my_app/my_other_component.html" with content=my_fragment %}
 ```
 
@@ -89,7 +89,7 @@ One handy use for `fragment` is string interpolation using DTL.
 {{ items|floatformat:2 }} items found.
 {% endfragment %}
 
-{% list_item title=title %}
+{% ListItem title=title %}
 ```
 
 !!! note

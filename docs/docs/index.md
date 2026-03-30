@@ -22,20 +22,20 @@ hide:
     <div class="sl-hero__right">
 
 ```twig
-{% #quote %}
-  {% quote_photo src="/project-hail-mary.jpg" %}
+{% #Quote %}
+  {% QuotePhoto src="/project-hail-mary.jpg" %}
 
-  {% #quote_text %}
+  {% #QuoteText %}
     "I penetrated the outer cell membrane with a nanosyringe."
     "You poked it with a stick?"
     "No!" I said. "Well. Yes. But it was a scientific poke
     with a very scientific stick."
-  {% /quote_text %}
+  {% /QuoteText %}
 
-  {% #quote_attribution %}
+  {% #QuoteAttribution %}
     Andy Weir, Project Hail Mary
-  {% /quote_attribution %}
-{% /quote %}
+  {% /QuoteAttribution %}
+{% /Quote %}
 ```
 
 </div>
