@@ -38,7 +38,6 @@ dependencies = [
 
 [project.entry-points."pygments.lexers"]
 SlippersLexer = "pygments_slippers:SlippersLexer"
-SlippersComponentLexer = "pygments_slippers:SlippersComponentLexer"
 
 [project.urls]
 homepage = "https://github.com/mixxorz/slippers"

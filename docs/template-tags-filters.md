@@ -145,7 +145,7 @@ The `var` tag allows for assigning values to variables.
 
 The `var` tag is intended to be used inside component templates as a means to document the variables it requires and specify defaults.
 
-```slippers title="button.html"
+```slippers title="Button.html"
 {% var variant=variant|default:"outline" %}
 
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>

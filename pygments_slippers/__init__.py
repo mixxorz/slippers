@@ -124,33 +124,28 @@ class SlippersTemplateLexer(RegexLexer):
     }
 
 
-class SlippersLexer(DelegatingLexer):
-    """
-    Lexer for Django/HTML templates with Slippers component syntax.
+class SlippersHtmlLexer(DelegatingLexer):
+    """Internal lexer: HTML + Slippers template tags, used by SlippersLexer."""
 
-    Highlights HTML with nested Django template tags, plus Slippers'
-    ``{% #ComponentName %}`` (open) and ``{% /ComponentName %}`` (close) tags.
-    """
-
-    name = "Slippers"
-    aliases = ["slippers"]
-    mimetypes = ["application/x-slippers-templating"]
+    name = "Slippers HTML"
+    aliases = []
+    mimetypes = []
 
     def __init__(self, **options):
         super().__init__(HtmlLexer, SlippersTemplateLexer, **options)
 
 
-class SlippersComponentLexer(RegexLexer):
+class SlippersLexer(RegexLexer):
     """
-    Lexer for Slippers component files (.html files with optional Python front matter).
+    Lexer for Slippers component files.
 
     Highlights an optional ``---`` delimited Python front matter block at the top,
-    followed by the rest of the file as a Slippers template.
+    followed by the rest of the file as a Slippers/Django HTML template.
     """
 
-    name = "Slippers Component"
-    aliases = ["slippers-component"]
-    mimetypes = []
+    name = "Slippers"
+    aliases = ["slippers"]
+    mimetypes = ["application/x-slippers-templating"]
 
     flags = re.M | re.S
 
@@ -161,7 +156,7 @@ class SlippersComponentLexer(RegexLexer):
                 r"(^---\n)(.*?)(^---\n)",
                 bygroups(Comment.Preproc, using(PythonLexer), Comment.Preproc),
             ),
-            # Rest of file is a Slippers template
-            (r".+", using(SlippersLexer)),
+            # Rest of file is a Slippers/Django HTML template
+            (r".+", using(SlippersHtmlLexer)),
         ],
     }

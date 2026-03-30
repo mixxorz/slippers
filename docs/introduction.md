@@ -20,7 +20,7 @@ On the projects I work on, we usually build the front-end using [Atomic Design](
 
 ```slippers
 {% url "project:add_data" as add_data_url %}
-{% include "patterns/molecules/button/button.html" with label="Add data" href=add_data_url %}
+{% include "patterns/molecules/button/Button.html" with label="Add data" href=add_data_url %}
 ```
 
 As you can see, the syntax for this is quite verbose. You can just imagine how this would be like if we had a template that used many components.
@@ -31,7 +31,7 @@ What's more, we can't pass HTML down to these components with `{% include %}`.
 <p>I want this to be my content.</p>
 
 {# How do I pass the HTML to the component?? #}
-{% include "patterns/molecules/card/card.html" %}
+{% include "patterns/molecules/card/Card.html" %}
 ```
 
 We can work around this by creating custom template tags. This, however, requires the developer to know Python, and specifically, how to create [advanced custom template tags](https://docs.djangoproject.com/en/3.2/howto/custom-template-tags/#advanced-custom-template-tags). This isn't something we can always assume.

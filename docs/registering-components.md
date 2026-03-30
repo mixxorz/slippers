@@ -4,10 +4,10 @@ Components can be registered through the `components.yaml` file. This file shoul
 
 ```yaml title="myapp/templates/components.yaml"
 components:
-  Card: "myapp/card.html"
-  Button: "myapp/button.html"
-  Icon: "myapp/icon.html"
-  IconButton: "myapp/icon_button.html"
+  Card: "myapp/Card.html"
+  Button: "myapp/Button.html"
+  Icon: "myapp/Icon.html"
+  IconButton: "myapp/IconButton.html"
 ```
 
 The key is used as the name of the component, and the value is the path to the component template.
@@ -20,8 +20,8 @@ If you have special requirements, or simply prefer an alternative way of registe
 from slippers.templatetags.slippers import register_components
 
 register_components({
-  "Card": "myapp/card.html",
-  "Button": "myapp/button.html",
+  "Card": "myapp/Card.html",
+  "Button": "myapp/Button.html",
 })
 ```
 
@@ -39,8 +39,8 @@ from django import template
 register = template.Library()
 
 register_components({
-  "Card": "my_library/card.html",
-  "Button": "my_library/button.html",
+  "Card": "my_library/Card.html",
+  "Button": "my_library/Button.html",
 }, register)
 ```
 

@@ -6,7 +6,7 @@ Before we start, first make sure to [install slippers](installation.md).
 
 Let's create a card component that accepts a `heading` parameter and child elements.
 
-```slippers title="myapp/templates/myapp/card.html"
+```slippers title="myapp/templates/myapp/Card.html"
 <div class="card">
   <h1 class="card__header">{{ heading }}</h1>
   <div class="card__body">
@@ -21,7 +21,7 @@ Before we can use our new component, we need to register it. The easiest way to 
 
 ```yaml title="myapp/templates/components.yaml"
 components:
-  Card: "myapp/card.html"
+  Card: "myapp/Card.html"
 ```
 
 The name of the component in `components.yaml` becomes the template tag for that component. In this case, we're registering the `myapp/card.html` template as the `Card` component.

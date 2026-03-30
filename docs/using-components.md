@@ -101,7 +101,7 @@ Similar to a [`fragment`](template-tags-filters.md#fragment) tag, a component's 
 As [shown in Component context](#component-context) you can define
 default values by using the `var` tag:
 
-```slippers title="button.html"
+```slippers title="Button.html"
 {% var class=class|default:"btn btn-primary" %}
 <button {% attrs class %}>{{ children }}</button>
 ```
@@ -114,7 +114,7 @@ In these cases, you can add a front matter with custom Python code to define the
 
 Front matter is a block of code at the beginning of the file, which starts and ends with lines with 3 dashes:
 
-```slippers-component
+```slippers
 ---
 props.types = {
     'required_string': str,
@@ -162,7 +162,7 @@ from typing import *
 
 So the button example from [Component context](#component-context) can be rewritten as:
 
-```slippers-component title="button.html"
+```slippers title="Button.html"
 ---
 props.defaults = {
     'class': 'btn btn-primary'
@@ -203,7 +203,7 @@ like a static set of items in a menu.
 
 Normally, you'd have to define the items one by one:
 
-```slippers title="menu.html"
+```slippers title="Menu.html"
 <div class="menu">
   <h3>Menu</h3>
   <div class="menu-item">
@@ -216,12 +216,12 @@ Normally, you'd have to define the items one by one:
 
 Or pass them as props:
 
-```slippers title="menu.html"
+```slippers title="Menu.html"
 <div class="menu">
   <h3>Menu</h3>
   <div class="menu-item">
     {% for name, href in items %}
-    <a href="{{href}}">{{ name }}</a>
+    <a href="{{ href }}">{{ name }}</a>
     {% endfor %}
   </div>
 </div>
@@ -235,14 +235,14 @@ to pass in all "static" variables every time you use the component:
 
 ```slippers
 {# You have to provide `items` every single time #}
-{% menu items=items %}
-{% menu items=items class="my_class" %}
+{% Menu items=items %}
+{% Menu items=items class="my_class" %}
 ```
 
 Instead, you can make use of the front matter again, this time to
 preprocess, define, or even import variables:
 
-```slippers-component title="menu.html"
+```slippers title="Menu.html"
 ---
 from my_app.constants.icons import icon_bars_3
 
@@ -262,11 +262,11 @@ props['items'] = [
 props['title_tag'] = f'h{props['title_level']}'
 ---
 <div class="menu">
-  {{icon_bars_3}}
-  <{{title_tag}}>Menu</{{title_tag}}>
+  {{ icon_bars_3 }}
+  <{{ title_tag }}>Menu</{{ title_tag }}>
   <div class="menu-item">
     {% for name, href in items %}
-    <a href="{{href}}">{{ name }}</a>
+    <a href="{{ href }}">{{ name }}</a>
     {% endfor %}
   </div>
 </div>
@@ -276,7 +276,7 @@ Which can be used as:
 
 ```slippers
 {# Usage #}
-{% menu title_tag=5 %}
+{% Menu title_level=5 %}
 
 {# Output #}
 <div class="menu">
