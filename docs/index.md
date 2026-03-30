@@ -21,7 +21,7 @@ hide:
     </div>
     <div class="sl-hero__right">
 
-```twig
+```slippers
 {% #Quote %}
   {% QuotePhoto src="/project-hail-mary.jpg" %}
 

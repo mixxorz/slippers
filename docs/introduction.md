@@ -8,7 +8,7 @@ Slippers aims to augment DTL, adding just enough functionality to make building 
 
 It includes additional template tags and filters, but its headline feature is **reusable components**.
 
-```twig
+```slippers
 {% #Button variant="primary" %}See how it works{% /Button %}
 ```
 
@@ -18,7 +18,7 @@ It includes additional template tags and filters, but its headline feature is **
 
 On the projects I work on, we usually build the front-end using [Atomic Design](https://bradfrost.com/blog/post/atomic-web-design/) principles and [django-pattern-library](https://github.com/torchbox/django-pattern-library). Templates for buttons, icons, form fields, etc., are built and then included wherever they are needed.
 
-```twig
+```slippers
 {% url "project:add_data" as add_data_url %}
 {% include "patterns/molecules/button/button.html" with label="Add data" href=add_data_url %}
 ```
@@ -27,7 +27,7 @@ As you can see, the syntax for this is quite verbose. You can just imagine how t
 
 What's more, we can't pass HTML down to these components with `{% include %}`.
 
-```twig
+```slippers
 <p>I want this to be my content.</p>
 
 {# How do I pass the HTML to the component?? #}

@@ -6,13 +6,13 @@ Components can be used in two ways: block-level or inline-level.
 
 For example, given an `IconButton` component.
 
-```twig title="IconButton.html"
+```slippers title="IconButton.html"
 <button>{{ children }} {% Icon name=icon %}</button>
 ```
 
 We can use the block syntax to pass the label of the button as `children.`
 
-```twig
+```slippers
 {% #IconButton icon="star" %}Favorite{% /IconButton %}
 ```
 
@@ -24,7 +24,7 @@ Note that `#` denotes the opening tag and `/` denotes the closing tag.
 
 If we didn't need to pass a label, or if the component itself doesn't use `{{ children }}`, we can use the inline syntax instead.
 
-```twig
+```slippers
 {% IconButton icon="heart" %}
 ```
 
@@ -38,13 +38,13 @@ The inline syntax just uses the plain component name. No `#` or `/`.
 
 Unlike the `include` tag, component template tags **do not** pass the current context to the child component. Variables need to be passed in explicitly.
 
-```twig
+```slippers
 {% #Button variant="primary" size="large" %}Hello{% /Button %}
 ```
 
 In addition, any variable set inside of a component template does not leak out to to the global context.
 
-```twig button.html
+```slippers title="Button.html"
 {% var class=class|default:"btn btn-primary" %}
 <button {% attrs class %}>{{ children }}</button>
 
@@ -61,7 +61,7 @@ Unlike normal template tags, component template tags support special characters 
 
 This can be used in conjunction with the [`attrs`](template-tags-filters.md#attrs) tag.
 
-```twig
+```slippers
 {# Button component #}
 <button {% attrs aria-role x-bind:class @click %}>{{ children }}</button>
 
@@ -82,7 +82,7 @@ This makes keyword arguments work more like HTML attributes.
 
 Similar to a [`fragment`](template-tags-filters.md#fragment) tag, a component's output can be assigned to a variable.
 
-```twig
+```slippers
 {% #Heading variant="large" as my_heading %}Hello, World{% /Heading %}
 
 {# Render it like a normal variable #}
@@ -101,7 +101,7 @@ Similar to a [`fragment`](template-tags-filters.md#fragment) tag, a component's 
 As [shown in Component context](#component-context) you can define
 default values by using the `var` tag:
 
-```twig title="button.html"
+```slippers title="button.html"
 {% var class=class|default:"btn btn-primary" %}
 <button {% attrs class %}>{{ children }}</button>
 ```
@@ -114,7 +114,7 @@ In these cases, you can add a front matter with custom Python code to define the
 
 Front matter is a block of code at the beginning of the file, which starts and ends with lines with 3 dashes:
 
-```twig
+```slippers
 ---
 props.types = {
     'required_string': str,
@@ -162,7 +162,7 @@ from typing import *
 
 So the button example from [Component context](#component-context) can be rewritten as:
 
-```twig title="button.html"
+```slippers title="button.html"
 ---
 props.defaults = {
     'class': 'btn btn-primary'
@@ -173,7 +173,7 @@ props.defaults = {
 
 And used as:
 
-```twig
+```slippers
 {# Usage #}
 {% Button %}
 {# Output #}
@@ -188,6 +188,7 @@ And used as:
 ### 3. Props mapping - Add or modify props with `props['prop_name']`
 
 To assign variables to the component's context, simply use:
+
 ```python
 props['var_name'] = my_value
 ```
@@ -202,7 +203,7 @@ like a static set of items in a menu.
 
 Normally, you'd have to define the items one by one:
 
-```twig title="menu.html"
+```slippers title="menu.html"
 <div class="menu">
   <h3>Menu</h3>
   <div class="menu-item">
@@ -215,7 +216,7 @@ Normally, you'd have to define the items one by one:
 
 Or pass them as props:
 
-```twig title="menu.html"
+```slippers title="menu.html"
 <div class="menu">
   <h3>Menu</h3>
   <div class="menu-item">
@@ -232,7 +233,7 @@ doesn't make sense, as they will always be the same.
 It would clutter the component's interface, and make a room for error, as you now have to make sure
 to pass in all "static" variables every time you use the component:
 
-```twig
+```slippers
 {# You have to provide `items` every single time #}
 {% menu items=items %}
 {% menu items=items class="my_class" %}
@@ -241,7 +242,7 @@ to pass in all "static" variables every time you use the component:
 Instead, you can make use of the front matter again, this time to
 preprocess, define, or even import variables:
 
-```twig title="menu.html"
+```slippers title="menu.html"
 ---
 from my_app.constants.icons import icon_bars_3
 
@@ -272,7 +273,8 @@ props['title_tag'] = f'h{props['title_level']}'
 ```
 
 Which can be used as:
-```twig
+
+```slippers
 {# Usage #}
 {% menu title_tag=5 %}
 
@@ -291,6 +293,7 @@ Which can be used as:
 ```
 
 To assign variables to the component's context, simply use:
+
 ```python
 props['var_name'] = my_value
 ```

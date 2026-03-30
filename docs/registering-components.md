@@ -46,7 +46,7 @@ register_components({
 
 Now you can use the components by loading the `my_components` template tags.
 
-```twig
+```slippers
 {% load my_components %}
 
 {% #Button %}My button{% /Button %}

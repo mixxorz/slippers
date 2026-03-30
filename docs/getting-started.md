@@ -6,7 +6,7 @@ Before we start, first make sure to [install slippers](installation.md).
 
 Let's create a card component that accepts a `heading` parameter and child elements.
 
-```twig title="myapp/templates/myapp/card.html"
+```slippers title="myapp/templates/myapp/card.html"
 <div class="card">
   <h1 class="card__header">{{ heading }}</h1>
   <div class="card__body">
@@ -28,7 +28,7 @@ The name of the component in `components.yaml` becomes the template tag for that
 
 Now we can use our new `Card` component.
 
-```twig
+```slippers
 {% load slippers %}
 
 {% #Card heading="I am the heading" %}

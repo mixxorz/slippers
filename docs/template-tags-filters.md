@@ -6,7 +6,7 @@ Slippers includes a number of extra template tags and filters to help template a
 
 The `attrs` tag is a handy shortcut that outputs template variables as element attributes.
 
-```twig
+```slippers
 {# InputField component #}
 <input {% attrs type id name x-bind:class %}>
 
@@ -25,7 +25,7 @@ The parameters passed to `attrs` are used as both the "key" of the attribute and
 
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 
-```twig
+```slippers
 {# Button component #}
 <button {% attrs disabled %}>{{ children }}</button>
 
@@ -40,7 +40,7 @@ Boolean values are treated differently. `True` values become empty attributes, a
 
 It's possible to specify the source of the attribute value by writing it as a keyword argument. This is useful if the attribute name is different from the variable you want to get it from.
 
-```twig
+```slippers
 {# InputField component #}
 <input {% attrs type id=field_id name %}>
 
@@ -53,7 +53,7 @@ It's possible to specify the source of the attribute value by writing it as a ke
 
 It's possible to specify the default value of an attribute by declaring it with the [`var`](#var) tag
 
-```twig
+```slippers
 {# Image component #}
 {% var loading=loading|default:"lazy" %}
 <img {% attrs src loading alt %}>
@@ -69,7 +69,7 @@ It's possible to specify the default value of an attribute by declaring it with 
 
 The `fragment` tag allows template fragments to be assigned to variables.
 
-```twig
+```slippers
 {% fragment as my_fragment %}
   <p>Hello, World!</p>
 {% endfragment %}
@@ -84,7 +84,7 @@ The `fragment` tag allows template fragments to be assigned to variables.
 
 One handy use for `fragment` is string interpolation using DTL.
 
-```twig
+```slippers
 {% fragment as title %}
 {{ items|floatformat:2 }} items found.
 {% endfragment %}
@@ -100,7 +100,7 @@ One handy use for `fragment` is string interpolation using DTL.
 
 The `match` filter outputs a string whose key matches the variable's value.
 
-```twig
+```slippers
 {% with first="outline" second="ghost" third="square" %}
   <button class="{{ first|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
   <button class="{{ second|match:"outline:btn-outline,ghost:btn-ghost" }}">Click me</button>
@@ -115,13 +115,13 @@ The `match` filter outputs a string whose key matches the variable's value.
 
 The syntax is:
 
-```twig
+```slippers
 {{ variable|match:"key1:value1,key2:value2,key3:value3" }}
 ```
 
 Tip: You can use the `default` filter to set a default value if there are no matches.
 
-```twig
+```slippers
 {% with my_variable="nomatch" %}
   <button class="{{ my_variable|match:"outline:btn-outline,ghost:btn-ghost"|default:"btn" }}">Click me</button>
 {% endwith %}
@@ -134,7 +134,7 @@ Tip: You can use the `default` filter to set a default value if there are no mat
 
 The `var` tag allows for assigning values to variables.
 
-```twig
+```slippers
 {% var foo="Hello, World!" %}
 
 <div>{{ foo }}</div>
@@ -145,7 +145,7 @@ The `var` tag allows for assigning values to variables.
 
 The `var` tag is intended to be used inside component templates as a means to document the variables it requires and specify defaults.
 
-```twig title="button.html"
+```slippers title="button.html"
 {% var variant=variant|default:"outline" %}
 
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>
