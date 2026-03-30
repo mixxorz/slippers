@@ -1,7 +1,3 @@
----
-sidebar_position: 5
----
-
 # Using components
 
 ## Block and inline component syntax
@@ -63,7 +59,7 @@ You can of course still use `{% include %}` if its behaviour is more convenient 
 
 Unlike normal template tags, component template tags support special characters in keyword arguments. Specifically `_`, `-`, `@`, and `:`.
 
-This can be used in conjunction with the [`attrs`](/docs/template-tags-filters#attrs) tag.
+This can be used in conjunction with the [`attrs`](template-tags-filters.md#attrs) tag.
 
 ```twig
 {# button component #}
@@ -78,15 +74,13 @@ This can be used in conjunction with the [`attrs`](/docs/template-tags-filters#a
 
 This makes keyword arguments work more like HTML attributes.
 
-:::tip New in Slippers 0.5.0
+!!! tip "New in Slippers 0.5.0"
 
-Added support for special characters in keyword arguments.
-
-:::
+    Added support for special characters in keyword arguments.
 
 ## Assigning output to a variable
 
-Similar to a [`fragment`](/docs/template-tags-filters#fragment) tag, a component's output can be assigned to a variable.
+Similar to a [`fragment`](template-tags-filters.md#fragment) tag, a component's output can be assigned to a variable.
 
 ```twig
 {% #heading variant="large" as my_heading %}Hello, World{% /heading %}
@@ -98,11 +92,9 @@ Similar to a [`fragment`](/docs/template-tags-filters#fragment) tag, a component
 {% card_heading heading=my_heading %}
 ```
 
-:::note
+!!! note
 
-Assigning component output to a variable cannot be done inside a `with` block.
-
-:::
+    Assigning component output to a variable cannot be done inside a `with` block.
 
 ## Define types and defaults with front matter
 

@@ -1,7 +1,3 @@
----
-sidebar_position: 4
----
-
 # Registering components
 
 Components can be registered through the `components.yaml` file. This file should be placed at the root template directory.

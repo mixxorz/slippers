@@ -1,10 +1,6 @@
----
-sidebar_position: 3
----
-
 # Getting started
 
-Before we start, first make sure to [install slippers](/docs/installation/).
+Before we start, first make sure to [install slippers](installation.md).
 
 ## Creating our first component
 

@@ -48,6 +48,9 @@ dev = [
     "tox>=4.6.4,<5",
     "twine>=4.0.2,<5",
 ]
+docs = [
+    "mkdocs-material>=9.0",
+]
 
 [tool.uv.build-backend]
 module-root = ""

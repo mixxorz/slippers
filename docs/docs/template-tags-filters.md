@@ -1,7 +1,3 @@
----
-sidebar_position: 6
----
-
 # Template tags and filters
 
 Slippers includes a number of extra template tags and filters to help template authors build reusable components.
@@ -23,11 +19,9 @@ The `attrs` tag is a handy shortcut that outputs template variables as element a
 
 The parameters passed to `attrs` are used as both the "key" of the attribute and the name of the variable to source its value from.
 
-:::tip New in Slippers 0.5.0
+!!! tip "New in Slippers 0.5.0"
 
-Added support for special characters in keyword arguments.
-
-:::
+    Added support for special characters in keyword arguments.
 
 Boolean values are treated differently. `True` values become empty attributes, and `False` values aren't returned at all.
 
@@ -98,11 +92,9 @@ One handy use for `fragment` is string interpolation using DTL.
 {% list_item title=title %}
 ```
 
-:::note
+!!! note
 
-`fragment` can't be used inside of a `with` block.
-
-:::
+    `fragment` can't be used inside of a `with` block.
 
 ## match
 
@@ -159,14 +151,10 @@ The `var` tag is intended to be used inside component templates as a means to do
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>
 ```
 
-:::note
+!!! note
 
-`var` can't be used inside of a `with` block.
+    `var` can't be used inside of a `with` block.
 
-:::
+!!! note
 
-:::note
-
-The `var` tag can be used outside a component's context, however, it is not recommended since it would pollute the global context.
-
-:::
+    The `var` tag can be used outside a component's context, however, it is not recommended since it would pollute the global context.

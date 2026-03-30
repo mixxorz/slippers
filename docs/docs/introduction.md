@@ -1,9 +1,3 @@
----
-sidebar_position: 1
----
-
-import Link from "@docusaurus/Link";
-
 # Introduction
 
 ## What is Slippers?
@@ -18,7 +12,7 @@ It includes additional template tags and filters, but its headline feature is **
 {% #button variant="primary" %}See how it works{% /button %}
 ```
 
-<Link className="button button--primary" to="/docs/getting-started">See how it works </Link>
+[See how it works](getting-started.md)
 
 ## Motivation
 
