@@ -1,7 +1,8 @@
 import re
 
-from pygments.lexer import DelegatingLexer, RegexLexer, bygroups, include
+from pygments.lexer import DelegatingLexer, RegexLexer, bygroups, include, using
 from pygments.lexers.html import HtmlLexer
+from pygments.lexers.python import PythonLexer
 from pygments.token import Comment, Keyword, Name, Number, Operator, Other, Punctuation, String, Text
 
 
@@ -137,3 +138,30 @@ class SlippersLexer(DelegatingLexer):
 
     def __init__(self, **options):
         super().__init__(HtmlLexer, SlippersTemplateLexer, **options)
+
+
+class SlippersComponentLexer(RegexLexer):
+    """
+    Lexer for Slippers component files (.html files with optional Python front matter).
+
+    Highlights an optional ``---`` delimited Python front matter block at the top,
+    followed by the rest of the file as a Slippers template.
+    """
+
+    name = "Slippers Component"
+    aliases = ["slippers-component"]
+    mimetypes = []
+
+    flags = re.M | re.S
+
+    tokens = {
+        "root": [
+            # Optional Python front matter: --- ... ---
+            (
+                r"(^---\n)(.*?)(^---\n)",
+                bygroups(Comment.Preproc, using(PythonLexer), Comment.Preproc),
+            ),
+            # Rest of file is a Slippers template
+            (r".+", using(SlippersLexer)),
+        ],
+    }

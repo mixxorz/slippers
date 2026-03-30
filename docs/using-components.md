@@ -114,7 +114,7 @@ In these cases, you can add a front matter with custom Python code to define the
 
 Front matter is a block of code at the beginning of the file, which starts and ends with lines with 3 dashes:
 
-```slippers
+```slippers-component
 ---
 props.types = {
     'required_string': str,
@@ -162,7 +162,7 @@ from typing import *
 
 So the button example from [Component context](#component-context) can be rewritten as:
 
-```slippers title="button.html"
+```slippers-component title="button.html"
 ---
 props.defaults = {
     'class': 'btn btn-primary'
@@ -242,7 +242,7 @@ to pass in all "static" variables every time you use the component:
 Instead, you can make use of the front matter again, this time to
 preprocess, define, or even import variables:
 
-```slippers title="menu.html"
+```slippers-component title="menu.html"
 ---
 from my_app.constants.icons import icon_bars_3
 
