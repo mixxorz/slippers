@@ -1,4 +1,6 @@
 ---
+title: "slippers — Build reusable components in Django without writing a single line of Python."
+description: "Build reusable components in Django without writing a single line of Python."
 hide:
   - navigation
   - toc
@@ -7,7 +9,7 @@ hide:
 <div class="sl-hero">
   <div class="sl-hero__inner">
     <div class="sl-hero__left">
-      <img src="img/slippers.svg" alt="#slippers" class="sl-hero__logo">
+      <img src="img/slippers.svg" alt="Slippers logo" class="sl-hero__logo">
       <p class="sl-hero__tagline">Build reusable components in Django without writing a single line of Python.</p>
       <div class="sl-hero__buttons">
         <a href="getting-started/" class="md-button md-button--primary">Get started</a>
@@ -46,7 +48,15 @@ hide:
 }
 
 .md-content h1:first-child {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .md-main,
@@ -77,7 +87,6 @@ hide:
 @media screen and (max-width: 996px) {
   .sl-hero__inner {
     grid-template-columns: 1fr;
-    padding: 2rem;
   }
 }
 

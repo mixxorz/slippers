@@ -1,6 +1,7 @@
 site_name: slippers
 site_description: Build reusable components in Django without writing a single line of Python.
 site_url: https://mitchel.me/slippers/
+site_author: Mitchel Cabuloy
 repo_url: https://github.com/mixxorz/slippers
 repo_name: mixxorz/slippers
 
