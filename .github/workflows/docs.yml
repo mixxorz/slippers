@@ -11,9 +11,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v7
       - name: Build docs
-        run: uv run --group docs mkdocs build -f docs/mkdocs.yml
+        run: uv run --group docs mkdocs build
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
-          folder: docs/site
+          folder: site
