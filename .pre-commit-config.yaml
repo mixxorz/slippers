@@ -1,15 +1,9 @@
 repos:
-  - repo: https://github.com/pycqa/isort
-    # isort config is in setup.cfg
-    rev: 5.12.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.8.0"
     hooks:
-      - id: isort
-  - repo: https://github.com/pycqa/flake8
-    # flake8 config is in setup.cfg
-    rev: 6.0.0
-    hooks:
-      - id: flake8
-  - repo: https://github.com/python/black
-    rev: 23.7.0
-    hooks:
-      - id: black
+      # Run the linter.
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      # Run the formatter.
+      - id: ruff-format

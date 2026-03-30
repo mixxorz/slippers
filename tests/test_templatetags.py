@@ -3,7 +3,6 @@ from unittest.mock import patch
 from django.conf import settings as django_settings
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase, override_settings
-
 from typeguard import get_type_name
 
 
@@ -180,9 +179,7 @@ class PropsTest(TestCase):
             with self.subTest(prop=expected_error[0]):
                 self.assertEqual("invalid", actual_error.error)
                 self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(
-                    expected_error[1], get_type_name(actual_error.expected)
-                )
+                self.assertEqual(expected_error[1], get_type_name(actual_error.expected))
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
     @patch("slippers.templatetags.slippers.render_error_html")
@@ -209,9 +206,7 @@ class PropsTest(TestCase):
             with self.subTest(prop=expected_error[0]):
                 self.assertEqual("missing", actual_error.error)
                 self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(
-                    expected_error[1], get_type_name(actual_error.expected)
-                )
+                self.assertEqual(expected_error[1], get_type_name(actual_error.expected))
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
     @patch("slippers.templatetags.slippers.render_error_html")
@@ -237,9 +232,7 @@ class PropsTest(TestCase):
             with self.subTest(prop=expected_error[0]):
                 self.assertEqual("extra", actual_error.error)
                 self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(
-                    expected_error[1], get_type_name(actual_error.expected)
-                )
+                self.assertEqual(expected_error[1], get_type_name(actual_error.expected))
                 self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
 
     @override_settings()
@@ -254,9 +247,7 @@ class PropsTest(TestCase):
         del django_settings.SLIPPERS_RUNTIME_TYPE_CHECKING  # type: ignore
 
         # SLIPPERS_RUNTIME_TYPE_CHECKING is set
-        with self.subTest(SLIPPERS_RUNTIME_TYPE_CHECKING=False), self.settings(
-            SLIPPERS_RUNTIME_TYPE_CHECKING=False
-        ):
+        with self.subTest(SLIPPERS_RUNTIME_TYPE_CHECKING=False), self.settings(SLIPPERS_RUNTIME_TYPE_CHECKING=False):
             Template(template).render(Context({"numbers": [1, "two"]}))
 
             self.assertFalse(mock_check_prop_types.called)
@@ -279,18 +270,14 @@ class PropsTest(TestCase):
         template = """
             {% type_checking %}
         """
-        with self.subTest("overlay"), self.settings(
-            SLIPPERS_TYPE_CHECKING_OUTPUT=["overlay"]
-        ):
+        with self.subTest("overlay"), self.settings(SLIPPERS_TYPE_CHECKING_OUTPUT=["overlay"]):
             Template(template).render(Context())
 
             self.assertTrue(mock_render_error_html.called)
 
         mock_render_error_html.reset_mock()
 
-        with self.subTest("console"), self.settings(
-            SLIPPERS_TYPE_CHECKING_OUTPUT=["console"]
-        ):
+        with self.subTest("console"), self.settings(SLIPPERS_TYPE_CHECKING_OUTPUT=["console"]):
             Template(template).render(Context())
 
             self.assertTrue(mock_render_error_html.called)
@@ -302,15 +289,11 @@ class ErrorUITest(TestCase):
             {% slippers_overlay %}
         """
 
-        with self.subTest("Enabled"), self.settings(
-            SLIPPERS_RUNTIME_TYPE_CHECKING=True
-        ):
+        with self.subTest("Enabled"), self.settings(SLIPPERS_RUNTIME_TYPE_CHECKING=True):
             output = Template(template).render(Context())
             self.assertIn("slippers_errors_ui_root", output)
 
-        with self.subTest("Disabled"), self.settings(
-            SLIPPERS_RUNTIME_TYPE_CHECKING=False
-        ):
+        with self.subTest("Disabled"), self.settings(SLIPPERS_RUNTIME_TYPE_CHECKING=False):
             output = Template(template).render(Context())
             self.assertNotIn("slippers_errors_ui_root", output)
 
