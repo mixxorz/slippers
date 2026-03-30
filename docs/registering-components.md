@@ -1,17 +1,13 @@
----
-sidebar_position: 4
----
-
 # Registering components
 
 Components can be registered through the `components.yaml` file. This file should be placed at the root template directory.
 
 ```yaml title="myapp/templates/components.yaml"
 components:
-  card: "myapp/card.html"
-  button: "myapp/button.html"
-  icon: "myapp/icon.html"
-  icon_button: "myapp/icon_button.html"
+  Card: "myapp/Card.html"
+  Button: "myapp/Button.html"
+  Icon: "myapp/Icon.html"
+  IconButton: "myapp/IconButton.html"
 ```
 
 The key is used as the name of the component, and the value is the path to the component template.
@@ -24,8 +20,8 @@ If you have special requirements, or simply prefer an alternative way of registe
 from slippers.templatetags.slippers import register_components
 
 register_components({
-  "card": "myapp/card.html",
-  "button": "myapp/button.html",
+  "Card": "myapp/Card.html",
+  "Button": "myapp/Button.html",
 })
 ```
 
@@ -43,15 +39,15 @@ from django import template
 register = template.Library()
 
 register_components({
-  "card": "my_library/card.html",
-  "button": "my_library/button.html",
+  "Card": "my_library/Card.html",
+  "Button": "my_library/Button.html",
 }, register)
 ```
 
 Now you can use the components by loading the `my_components` template tags.
 
-```twig
+```slippers
 {% load my_components %}
 
-{% #button %}My button{% /button %}
+{% #Button %}My button{% /Button %}
 ```

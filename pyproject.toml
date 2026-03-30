@@ -36,6 +36,9 @@ dependencies = [
     "typing-extensions>=4.4.0",
 ]
 
+[project.entry-points."pygments.lexers"]
+SlippersLexer = "pygments_slippers:SlippersLexer"
+
 [project.urls]
 homepage = "https://github.com/mixxorz/slippers"
 repository = "https://github.com/mixxorz/slippers"
@@ -47,6 +50,9 @@ dev = [
     "ipdb>=0.13.13,<0.14",
     "tox>=4.6.4,<5",
     "twine>=4.0.2,<5",
+]
+docs = [
+    "mkdocs-material>=9.0",
 ]
 
 [tool.uv.build-backend]
