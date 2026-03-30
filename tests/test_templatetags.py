@@ -480,6 +480,25 @@ class AttrsTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(context))
 
+    def test_string_escaping(self):
+        context = Context(
+            {
+                "placeholder": '" onmouseover="alert(document.cookie)" x="',
+            }
+        )
+
+        template = """
+            <input {% attrs placeholder %}>
+        """
+
+        output = Template(template).render(context)
+
+        # The quote is escaped so the injected attribute cannot break out
+        self.assertIn(
+            'placeholder="&quot; onmouseover=&quot;alert(document.cookie)&quot; x=&quot;"',
+            output,
+        )
+
 
 class VarTagTest(TestCase):
     def test_basic(self):

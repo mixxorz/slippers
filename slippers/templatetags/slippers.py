@@ -5,6 +5,7 @@ from warnings import warn
 from django import template
 from django.conf import settings as django_settings
 from django.template import Context, NodeList
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
@@ -179,7 +180,7 @@ def attr_string(key: str, value: Any):
         )
     key = key.replace("_", "-")
 
-    return f'{key}="{value}"'
+    return format_html('{}="{}"', key, value)
 
 
 class AttrsNode(template.Node):
