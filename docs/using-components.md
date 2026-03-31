@@ -55,6 +55,25 @@ This is a deliberate design decision to improve readability and reduce side-effe
 
 You can of course still use `{% include %}` if its behaviour is more convenient in specific circumstances.
 
+## Automatic request passing
+
+If a `request` object is present in the parent template's context, it is automatically made available inside component templates as `{{ request }}`.
+
+```slippers
+{# No need to pass request explicitly #}
+{% MyComponent %}
+```
+
+```slippers title="MyComponent.html"
+<div>Hello, {{ request.user }}</div>
+```
+
+If you pass `request` explicitly, the explicit value takes precedence over the automatically injected one.
+
+```slippers
+{% MyComponent request=other_request %}
+```
+
 ## Keyword arguments
 
 Unlike normal template tags, component template tags support special characters in keyword arguments. Specifically `_`, `-`, `@`, and `:`.
