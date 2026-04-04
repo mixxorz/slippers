@@ -532,6 +532,10 @@ class VarTagTest(TestCase):
         with self.assertRaises(TemplateSyntaxError):
             Template("{% load slippers %}{% var %}")
 
+    def test_invalid_syntax_raises_error(self):
+        with self.assertRaises(TemplateSyntaxError):
+            Template("{% load slippers %}{% var foo %}")
+
     def test_single_var(self):
         template = """
             {% var foo="bar" %}
