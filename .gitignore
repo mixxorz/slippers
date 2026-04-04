@@ -142,4 +142,3 @@ cython_debug/
 .vim
 .nvimrc
 Session.vim
-slippers/static
