@@ -222,6 +222,9 @@ def do_var(parser, token):
     except ValueError as e:
         raise template.TemplateSyntaxError(error_message) from e
 
+    if not var_map:
+        raise template.TemplateSyntaxError(error_message)
+
     return VarNode(var_map)
 
 
