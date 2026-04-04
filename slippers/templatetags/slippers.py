@@ -118,6 +118,11 @@ class ComponentNode(template.Node):
             # Load prop defaults into props
             attributes = {**props}
 
+        # Inject request from parent context if available and not already passed explicitly
+        request = context.get("request")
+        if request is not None and "request" not in attributes:
+            attributes["request"] = request
+
         # Stage 2: Render template
         raw_output = template.render(Context({**attributes, "children": children}, autoescape=context.autoescape))
 

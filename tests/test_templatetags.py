@@ -1,8 +1,8 @@
 from unittest.mock import patch
 
 from django.conf import settings as django_settings
-from django.template import Context, Template, TemplateSyntaxError
-from django.test import TestCase, override_settings
+from django.template import Context, RequestContext, Template, TemplateSyntaxError
+from django.test import RequestFactory, TestCase, override_settings
 from typeguard import get_type_name
 
 
@@ -619,3 +619,45 @@ class FragmentTagTest(TestCase):
         """
 
         self.assertHTMLEqual(expected, Template(template).render(context))
+
+
+class RequestContextTest(TestCase):
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_request_is_auto_passed(self):
+        request = self.factory.get("/test-path/")
+        context = RequestContext(request)
+
+        template = """{% request_component %}"""
+        expected = """<div>/test-path/</div>"""
+
+        self.assertHTMLEqual(expected, Template(template).render(context))
+
+    def test_request_not_passed_without_request_context(self):
+        template = """{% request_component %}"""
+        expected = """<div></div>"""
+
+        self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_explicit_request_overrides_auto_pass(self):
+        explicit_request = self.factory.get("/explicit-path/")
+
+        template = """{% request_component request=explicit_request %}"""
+
+        self.assertHTMLEqual(
+            """<div>/explicit-path/</div>""",
+            Template(template).render(Context({"explicit_request": explicit_request})),
+        )
+
+    def test_auto_request_not_overwritten_by_explicit(self):
+        auto_request = self.factory.get("/auto-path/")
+        explicit_request = self.factory.get("/explicit-path/")
+        context = RequestContext(auto_request, {"explicit_request": explicit_request})
+
+        template = """{% request_component request=explicit_request %}"""
+
+        self.assertHTMLEqual(
+            """<div>/explicit-path/</div>""",
+            Template(template).render(context),
+        )
