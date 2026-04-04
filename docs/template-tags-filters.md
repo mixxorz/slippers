@@ -151,14 +151,14 @@ The `var` tag is intended to be used inside component templates as a means to do
 <button class="{{ variant|match:"outline:btn-outline,ghost:btn-ghost" }}">{{ children }}</button>
 ```
 
-The `var` tag can be used to assign multiple values in one tag, separated by spaces (note, not commas).
+The `var` tag can also be used to assign multiple values in one tag, separated by spaces.
 
 ```slippers
-{% var hello="Hello," world="World!" %}
+{% var foo="First" bar="Second" %}
 
-{{ hello }} {{ world }}
+{{ foo }} {{ bar }}
 
-{# Output: Hello, World! #}
+{# Output: First Second #}
 ```
 
 !!! note
