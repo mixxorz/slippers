@@ -1,6 +1,6 @@
 [project]
 name = "slippers"
-version = "0.6.3"
+version = "0.7.0"
 description = "Build reusable components in Django without writing a single line of Python."
 authors = [{ name = "Mitchel Cabuloy", email = "mixxorz@gmail.com" }]
 requires-python = ">=3.8.0"
