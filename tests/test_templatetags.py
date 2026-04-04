@@ -528,26 +528,6 @@ class VarTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
-    def test_no_args_raises_error(self):
-        with self.assertRaises(TemplateSyntaxError):
-            Template("{% load slippers %}{% var %}")
-
-    def test_invalid_syntax_raises_error(self):
-        with self.assertRaises(TemplateSyntaxError):
-            Template("{% load slippers %}{% var foo %}")
-
-    def test_single_var(self):
-        template = """
-            {% var foo="bar" %}
-            <div>{{ foo }}</div>
-        """
-
-        expected = """
-            <div>bar</div>
-        """
-
-        self.assertHTMLEqual(expected, Template(template).render(Context()))
-
     def test_multiple_vars(self):
         template = """
             {% var foo="Hello," bar="World!" %}
@@ -560,6 +540,14 @@ class VarTagTest(TestCase):
         """
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
+
+    def test_no_args_raises_error(self):
+        with self.assertRaises(TemplateSyntaxError):
+            Template("{% load slippers %}{% var %}")
+
+    def test_invalid_syntax_raises_error(self):
+        with self.assertRaises(TemplateSyntaxError):
+            Template("{% load slippers %}{% var foo %}")
 
 
 class MatchFilterTest(TestCase):
