@@ -217,9 +217,7 @@ def do_var(parser, token):
     tag_name = token.contents.split()[0]
     error_message = f"The syntax for {tag_name} is {{% var var1=value1 var2=value2 %}}"
     try:
-        parts = token.split_contents()
-        parts.pop(0)  # lose tag name
-        var_map = slippers_token_kwargs(parts, parser)
+        var_map = slippers_token_kwargs(token.split_contents()[1:], parser)
     except ValueError as e:
         raise template.TemplateSyntaxError(error_message) from e
 
