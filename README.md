@@ -10,20 +10,20 @@
 Build reusable components in Django without writing a single line of Python.
 
 ```django
-{% #quote %}
-  {% quote_photo src="/project-hail-mary.jpg" %}
+{% #Quote %}
+  {% QuotePhoto src=”/project-hail-mary.jpg” %}
 
-  {% #quote_text %}
-    “I penetrated the outer cell membrane with a nanosyringe."
-    "You poked it with a stick?"
-    "No!" I said. "Well. Yes. But it was a scientific poke
+  {% #QuoteText %}
+    “I penetrated the outer cell membrane with a nanosyringe.”
+    “You poked it with a stick?”
+    “No!” I said. “Well. Yes. But it was a scientific poke
     with a very scientific stick.”
-  {% /quote_text %}
+  {% /QuoteText %}
 
-  {% #quote_attribution %}
+  {% #QuoteAttribution %}
     Andy Weir, Project Hail Mary
-  {% /quote_attribution %}
-{% /quote %}
+  {% /QuoteAttribution %}
+{% /Quote %}
 ```
 
 ## What is Slippers?
@@ -35,7 +35,7 @@ Slippers aims to augment DTL, adding just enough functionality to make building 
 It includes additional template tags and filters, but its headline feature is **reusable components**.
 
 ```django
-{% #button variant="primary" %}See how it works{% /button %}
+{% #Button variant="primary" %}See how it works{% /Button %}
 ```
 
 [See how it works](https://mitchel.me/slippers/docs/getting-started/)

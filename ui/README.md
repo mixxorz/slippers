@@ -66,4 +66,4 @@ root.render(
 
 The release process is automated. When `npm run build` is run, the toolchain
 compiles an optimized bundle and drops it in `slippers/static/slippers/`. The
-`main.js` and `main.css` are then included in the Python bundle when `poetry build` is run.
+`main.js` and `main.css` are then included in the Python bundle when `uv build` is run.

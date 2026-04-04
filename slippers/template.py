@@ -1,6 +1,7 @@
 """
 Overrides for the Django Template system to allow finer control over template parsing.
 """
+
 import re
 
 from django.template.base import (
@@ -57,8 +58,7 @@ class SlippersFilterExpression(FilterExpression):
             start = match.start()
             if upto != start:
                 raise TemplateSyntaxError(
-                    "Could not parse some characters: "
-                    "%s|%s|%s" % (token[:upto], token[upto:start], token[start:])
+                    "Could not parse some characters: %s|%s|%s" % (token[:upto], token[upto:start], token[start:])
                 )
             if var_obj is None:
                 var, constant = match["var"], match["constant"]
@@ -68,9 +68,7 @@ class SlippersFilterExpression(FilterExpression):
                     except VariableDoesNotExist:
                         var_obj = None
                 elif var is None:
-                    raise TemplateSyntaxError(
-                        "Could not find variable at " "start of %s." % token
-                    )
+                    raise TemplateSyntaxError("Could not find variable at start of %s." % token)
                 else:
                     var_obj = Variable(var)
             else:
@@ -86,10 +84,7 @@ class SlippersFilterExpression(FilterExpression):
                 filters.append((filter_func, args))
             upto = match.end()
         if upto != len(token):
-            raise TemplateSyntaxError(
-                "Could not parse the remainder: '%s' "
-                "from '%s'" % (token[upto:], token)
-            )
+            raise TemplateSyntaxError("Could not parse the remainder: '%s' from '%s'" % (token[upto:], token))
 
         self.filters = filters
         self.var = var_obj
@@ -106,7 +101,7 @@ class SlippersFilterExpression(FilterExpression):
 kwarg_re = _lazy_re_compile(r"(?:([\w\-\:\@]+)=)?(.+)")
 
 
-def slippers_token_kwargs(bits, parser, support_legacy=False):
+def slippers_token_kwargs(bits, parser, support_legacy=False):  # noqa: C901
     """
     Parse token keyword arguments and return a dictionary of the arguments
     retrieved from the ``bits`` token list.

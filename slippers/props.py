@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Literal, Optional, Union, get_args, get_orig
 
 from django.utils.html import SafeString
 from django.utils.safestring import mark_safe
-
 from typeguard import check_type, get_type_name
 
 
@@ -130,9 +129,7 @@ error_message_templates = {
 }
 
 
-def render_error_html(
-    *, errors: List[PropError], tag_name: str, template_name: str, lineno: int
-) -> SafeString:
+def render_error_html(*, errors: List[PropError], tag_name: str, template_name: str, lineno: int) -> SafeString:
     """Output errors to the browser console"""
 
     # Remove # from tag name

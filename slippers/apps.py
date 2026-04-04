@@ -1,12 +1,11 @@
 from pathlib import Path, PosixPath
 
+import yaml
 from django.apps import AppConfig
 from django.core.checks import Warning, register
 from django.template.exceptions import TemplateDoesNotExist
 from django.template.loader import select_template
 from django.utils.autoreload import autoreload_started, file_changed
-
-import yaml
 
 from slippers.templatetags.slippers import register_components
 

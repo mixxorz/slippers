@@ -1,7 +1,3 @@
----
-sidebar_position: 2
----
-
 # Installation
 
 You can get Slippers from PyPI.
@@ -29,7 +25,7 @@ You're done. :tada:
 
 Optionally, if you want Slippers to be available in all your templates without having to `{% load slippers %}` manually, you can add `slippers.templatetags.slippers` as a built-in in your template settings.
 
-```python title="settings.py" {13}
+```python title="settings.py"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

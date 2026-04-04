@@ -5,6 +5,7 @@ from warnings import warn
 from django import template
 from django.conf import settings as django_settings
 from django.template import Context, NodeList
+from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from slippers.conf import settings
@@ -95,9 +96,7 @@ class ComponentNode(template.Node):
     def render(self, context):
         children = self.nodelist.render(context) if self.nodelist else ""
 
-        attributes = {
-            key: value.resolve(context) for key, value in self.raw_attributes.items()
-        }
+        attributes = {key: value.resolve(context) for key, value in self.raw_attributes.items()}
 
         template = context.template.engine.get_template(self.template_path)
 
@@ -119,16 +118,18 @@ class ComponentNode(template.Node):
             # Load prop defaults into props
             attributes = {**props}
 
+        # Inject request from parent context if available and not already passed explicitly
+        request = context.get("request")
+        if request is not None and "request" not in attributes:
+            attributes["request"] = request
+
         # Stage 2: Render template
-        raw_output = template.render(
-            Context({**attributes, "children": children}, autoescape=context.autoescape)
-        )
+        raw_output = template.render(Context({**attributes, "children": children}, autoescape=context.autoescape))
 
         output_template_section = mark_safe(extract_template_parts(raw_output)[1])
 
         if prop_errors and (
-            "console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT
-            or "overlay" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT
+            "console" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT or "overlay" in settings.SLIPPERS_TYPE_CHECKING_OUTPUT
         ):
             # Append prop errors to output
             output = output_template_section + render_error_html(  # type: ignore
@@ -147,9 +148,7 @@ class ComponentNode(template.Node):
         return output
 
 
-def register_components(
-    components: Dict[str, str], target_register: template.Library = None
-) -> None:
+def register_components(components: Dict[str, str], target_register: template.Library = None) -> None:
     if target_register is None:
         target_register = register
     for tag_name, template_path in components.items():
@@ -179,7 +178,7 @@ def attr_string(key: str, value: Any):
         )
     key = key.replace("_", "-")
 
-    return f'{key}="{value}"'
+    return format_html('{}="{}"', key, value)
 
 
 class AttrsNode(template.Node):
@@ -188,9 +187,7 @@ class AttrsNode(template.Node):
 
     def render(self, context):
         values = {key: value.resolve(context) for key, value in self.attr_map.items()}
-        attr_strings = [
-            attr_string(key, value) for key, value in values.items() if value
-        ]
+        attr_strings = [attr_string(key, value) for key, value in values.items() if value]
         return " ".join(attr_strings)
 
 
@@ -211,23 +208,19 @@ class VarNode(template.Node):
         self.var_map = var_map
 
     def render(self, context):
-        context.update(
-            {name: value.resolve(context) for name, value in self.var_map.items()}
-        )
+        context.update({name: value.resolve(context) for name, value in self.var_map.items()})
         return ""
 
 
 @register.tag(name="var")
 def do_var(parser, token):
-    error_message = (
-        f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
-    )
+    error_message = f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
     try:
         parts = token.split_contents()
         parts.pop(0)  # lose tag name
         var_map = slippers_token_kwargs(parts, parser)
-    except ValueError:
-        raise template.TemplateSyntaxError(error_message)
+    except ValueError as e:
+        raise template.TemplateSyntaxError(error_message) from e
 
     return VarNode(var_map)
 
@@ -252,9 +245,9 @@ def do_match(match_key, mapping):
                 raise template.TemplateSyntaxError(error_message)
 
             values_map[key] = value
-        except ValueError:
+        except ValueError as e:
             if django_settings.DEBUG:
-                raise template.TemplateSyntaxError(error_message)
+                raise template.TemplateSyntaxError(error_message) from e
             continue
 
     return values_map.get(match_key, "")
@@ -282,9 +275,9 @@ def do_fragment(parser, token):
 
         nodelist = parser.parse(("endfragment",))
         parser.delete_first_token()
-    except ValueError:
+    except ValueError as e:
         if django_settings.DEBUG:
-            raise template.TemplateSyntaxError(error_message)
+            raise template.TemplateSyntaxError(error_message) from e
         return ""
 
     return FragmentNode(nodelist, target_var)
