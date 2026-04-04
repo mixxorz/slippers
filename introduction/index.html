@@ -12,29 +12,31 @@
         <meta name="author" content="Mitchel Cabuloy">
       
       
-        <link rel="canonical" href="https://mitchel.me/slippers/">
+        <link rel="canonical" href="https://mitchel.me/slippers/introduction/">
       
       
+        <link rel="prev" href="..">
       
-        <link rel="next" href="introduction/">
+      
+        <link rel="next" href="../installation/">
       
       
         
       
       
-      <link rel="icon" href="img/favicon.ico">
+      <link rel="icon" href="../img/favicon.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>slippers — Build reusable components in Django without writing a single line of Python. - slippers</title>
+        <title>Introduction - slippers</title>
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,9 +55,9 @@
       
     
     
-      <link rel="stylesheet" href="extra.css">
+      <link rel="stylesheet" href="../extra.css">
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -79,6 +81,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#introduction" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -91,9 +98,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="slippers" class="md-header__button md-logo" aria-label="slippers" data-md-component="logo">
+    <a href=".." title="slippers" class="md-header__button md-logo" aria-label="slippers" data-md-component="logo">
       
-  <img src="img/logo.svg" alt="logo">
+  <img src="../img/logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -110,7 +117,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              slippers — Build reusable components in Django without writing a single line of Python.
+              Introduction
             
           </span>
         </div>
@@ -217,9 +224,7 @@
           
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -228,9 +233,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="slippers" class="md-nav__button md-logo" aria-label="slippers" data-md-component="logo">
+    <a href=".." title="slippers" class="md-nav__button md-logo" aria-label="slippers" data-md-component="logo">
       
-  <img src="img/logo.svg" alt="logo">
+  <img src="../img/logo.svg" alt="logo">
 
     </a>
     slippers
@@ -254,17 +259,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="." class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
         
   
   
@@ -280,7 +278,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -289,10 +286,37 @@
       
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="introduction/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -308,6 +332,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-slippers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is Slippers?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -319,7 +385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="installation/" class="md-nav__link">
+      <a href="../installation/" class="md-nav__link">
         
   
   
@@ -346,7 +412,7 @@
   
   
     <li class="md-nav__item">
-      <a href="getting-started/" class="md-nav__link">
+      <a href="../getting-started/" class="md-nav__link">
         
   
   
@@ -373,7 +439,7 @@
   
   
     <li class="md-nav__item">
-      <a href="registering-components/" class="md-nav__link">
+      <a href="../registering-components/" class="md-nav__link">
         
   
   
@@ -400,7 +466,7 @@
   
   
     <li class="md-nav__item">
-      <a href="using-components/" class="md-nav__link">
+      <a href="../using-components/" class="md-nav__link">
         
   
   
@@ -427,7 +493,7 @@
   
   
     <li class="md-nav__item">
-      <a href="template-tags-filters/" class="md-nav__link">
+      <a href="../template-tags-filters/" class="md-nav__link">
         
   
   
@@ -455,9 +521,7 @@
             
             
               
-                
-              
-              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" hidden>
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -466,6 +530,38 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-slippers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is Slippers?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -479,173 +575,39 @@
               <article class="md-content__inner md-typeset">
                 
                   
-  
-
 
 
   
   
 
 
-  <h1>Home</h1>
-
-<div class="sl-hero">
-  <div class="sl-hero__inner">
-    <div class="sl-hero__left">
-      <img src="img/slippers.svg" alt="Slippers logo" class="sl-hero__logo">
-      <p class="sl-hero__tagline">Build reusable components in Django without writing a single line of Python.</p>
-      <div class="sl-hero__buttons">
-        <a href="getting-started/" class="md-button md-button--primary">Get started</a>
-        <a href="introduction/" class="md-button">Learn more</a>
-      </div>
-      <div class="sl-hero__install">
-        <code>$ pip install slippers</code>
-      </div>
-    </div>
-    <div class="sl-hero__right">
-
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">{%</span> <span class="nt">#Quote</span> <span class="cp">%}</span>
-<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  <span class="cp">{%</span> <span class="nt">QuotePhoto</span> <span class="nv">src</span><span class="o">=</span><span class="s2">&quot;/project-hail-mary.jpg&quot;</span> <span class="cp">%}</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  <span class="cp">{%</span> <span class="nt">#QuoteText</span> <span class="cp">%}</span>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    &quot;I penetrated the outer cell membrane with a nanosyringe.&quot;
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    &quot;You poked it with a stick?&quot;
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    &quot;No!&quot; I said. &quot;Well. Yes. But it was a scientific poke
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    with a very scientific stick.&quot;
-<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>  <span class="cp">{%</span> <span class="nt">/QuoteText</span> <span class="cp">%}</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
-<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>  <span class="cp">{%</span> <span class="nt">#QuoteAttribution</span> <span class="cp">%}</span>
-<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    Andy Weir, Project Hail Mary
-<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>  <span class="cp">{%</span> <span class="nt">/QuoteAttribution</span> <span class="cp">%}</span>
-<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="cp">{%</span> <span class="nt">/Quote</span> <span class="cp">%}</span>
+<h1 id="introduction">Introduction</h1>
+<h2 id="what-is-slippers">What is Slippers?</h2>
+<p>The Django Template Language is awesome. It's fast, rich in features, and overall pretty great to work with.</p>
+<p>Slippers aims to augment DTL, adding just enough functionality to make building interfaces just that bit more <em>comfortable</em>.</p>
+<p>It includes additional template tags and filters, but its headline feature is <strong>reusable components</strong>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">{%</span> <span class="nt">#Button</span> <span class="nv">variant</span><span class="o">=</span><span class="s2">&quot;primary&quot;</span> <span class="cp">%}</span>See how it works<span class="cp">{%</span> <span class="nt">/Button</span> <span class="cp">%}</span>
 </code></pre></div>
-
-</div>
-  </div>
-</div>
-
-<style>
-:root {
-  --sl-almost-black: #0d1117;
-}
-
-.md-content h1:first-child {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.md-main,
-.md-content,
-.md-content__inner {
-  background-color: var(--sl-almost-black) !important;
-}
-
-.sl-hero {
-  padding: 2rem 0;
-}
-
-@media screen and (min-width: 997px) {
-  .sl-hero {
-    padding: 8rem 0;
-  }
-}
-
-.sl-hero__inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: flex-end;
-}
-
-@media screen and (max-width: 996px) {
-  .sl-hero__inner {
-    grid-template-columns: 1fr;
-  }
-}
-
-.sl-hero__logo {
-  display: block;
-  width: 100%;
-  max-width: 480px;
-  margin-bottom: 1.5rem;
-}
-
-.sl-hero__tagline {
-  font-size: 1.1rem;
-  line-height: 1.25;
-  color: #fff;
-  margin-bottom: 1.5rem;
-  max-width: 480px;
-}
-
-.sl-hero__buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin-bottom: 1.5rem;
-}
-
-@media screen and (min-width: 480px) {
-  .sl-hero__buttons {
-    flex-direction: row;
-  }
-}
-
-.sl-hero__install {
-  display: inline-block;
-  background-color: #161b22;
-  border-radius: 4px;
-  padding: 0.75rem 1.25rem;
-  max-width: 480px;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.sl-hero__install code {
-  font-size: 0.9rem;
-  color: #ccc;
-  background: none;
-  padding: 0;
-}
-
-.sl-hero__right {
-  min-width: 0;
-  --md-hue: 232;
-  --md-code-fg-color: hsla(var(--md-hue), 18%, 86%, 0.82);
-  --md-code-bg-color: hsla(var(--md-hue), 15%, 18%, 1);
-  --md-default-fg-color--light: hsla(var(--md-hue), 15%, 90%, 0.56);
-  --md-code-hl-number-color: #e6695b;
-  --md-code-hl-special-color: #f06090;
-  --md-code-hl-function-color: #c973d9;
-  --md-code-hl-constant-color: #9383e2;
-  --md-code-hl-keyword-color: #6791e0;
-  --md-code-hl-string-color: #2fb170;
-  --md-code-hl-name-color: var(--md-code-fg-color);
-  --md-code-hl-operator-color: var(--md-default-fg-color--light);
-  --md-code-hl-punctuation-color: var(--md-default-fg-color--light);
-  --md-code-hl-comment-color: var(--md-default-fg-color--light);
-  --md-code-hl-generic-color: var(--md-default-fg-color--light);
-  --md-code-hl-variable-color: var(--md-default-fg-color--light);
-}
-
-.sl-hero__right .highlight {
-  margin: 0;
-}
-
-.sl-hero__right pre {
-  margin: 0 !important;
-  border-radius: 8px;
-}
-</style>
+<p><a href="../getting-started/">See how it works</a></p>
+<h2 id="motivation">Motivation</h2>
+<p>On the projects I work on, we usually build the front-end using <a href="https://bradfrost.com/blog/post/atomic-web-design/">Atomic Design</a> principles and <a href="https://github.com/torchbox/django-pattern-library">django-pattern-library</a>. Templates for buttons, icons, form fields, etc., are built and then included wherever they are needed.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="cp">{%</span> <span class="k">url</span> <span class="s2">&quot;project:add_data&quot;</span> <span class="k">as</span> <span class="nv">add_data_url</span> <span class="cp">%}</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="cp">{%</span> <span class="k">include</span> <span class="s2">&quot;patterns/molecules/button/Button.html&quot;</span> <span class="k">with</span> <span class="nv">label</span><span class="o">=</span><span class="s2">&quot;Add data&quot;</span> <span class="nv">href</span><span class="o">=</span><span class="nv">add_data_url</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>As you can see, the syntax for this is quite verbose. You can just imagine how this would be like if we had a template that used many components.</p>
+<p>What's more, we can't pass HTML down to these components with <code>{% include %}</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>I want this to be my content.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c">{# How do I pass the HTML to the component?? #}</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="cp">{%</span> <span class="k">include</span> <span class="s2">&quot;patterns/molecules/card/Card.html&quot;</span> <span class="cp">%}</span>
+</code></pre></div>
+<p>We can work around this by creating custom template tags. This, however, requires the developer to know Python, and specifically, how to create <a href="https://docs.djangoproject.com/en/3.2/howto/custom-template-tags/#advanced-custom-template-tags">advanced custom template tags</a>. This isn't something we can always assume.</p>
+<p>In fact, Django's design philosophy states:</p>
+<blockquote>
+<p>The Django template system recognizes that templates are most often written by designers, not programmers, and therefore should not assume Python knowledge.</p>
+</blockquote>
+<p>Moreover, the process of making reusable components by creating a custom template tag is also somewhat of a hassle.</p>
+<p>The best code is no code as they say. And so, Slippers to the rescue.</p>
 
 
 
@@ -653,13 +615,8 @@
 
 
 
-  
-  
 
 
-
-
-  
 
 
 
@@ -700,10 +657,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": [], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

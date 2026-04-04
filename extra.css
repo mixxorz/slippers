@@ -1,0 +1,32 @@
+:root > * {
+  --md-primary-fg-color: #08ffc8;
+  --md-primary-fg-color--light: #47ffd7;
+  --md-primary-fg-color--dark: #00e0b0;
+  --md-primary-bg-color: #0d1117;
+  --md-primary-bg-color--light: #0d111780;
+  --md-accent-fg-color: #00e0b0;
+  --md-accent-fg-color--transparent: #00e0b01a;
+  --md-accent-bg-color: #fff;
+}
+
+/* Navbar: always almost-black background with white text */
+.md-header,
+.md-nav__source,
+.md-nav--primary .md-nav__title[for=__drawer],
+.md-tabs {
+  --md-primary-fg-color: #0d1117;
+  --md-primary-fg-color--light: #0d111780;
+  --md-primary-fg-color--dark: #0d1117;
+  --md-primary-bg-color: #fff;
+  --md-primary-bg-color--light: #ffffffb3;
+}
+
+/* Light mode: slightly darker teal for readability on white */
+[data-md-color-scheme=default] > * {
+  --md-typeset-a-color: #00cca0;
+}
+
+/* Dark mode: full bright teal for readability on dark background */
+[data-md-color-scheme=slate] > * {
+  --md-typeset-a-color: #08ffc8;
+}
