@@ -214,7 +214,8 @@ class VarNode(template.Node):
 
 @register.tag(name="var")
 def do_var(parser, token):
-    error_message = f"The syntax for {token.contents.split()[0]} is {{% var var_name=var_value %}}"
+    tag_name = token.contents.split()[0]
+    error_message = f"The syntax for {tag_name} is {{% var var1=value1 var2=value2 %}}"
     try:
         parts = token.split_contents()
         parts.pop(0)  # lose tag name
