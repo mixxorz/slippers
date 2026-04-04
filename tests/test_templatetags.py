@@ -528,6 +528,10 @@ class VarTagTest(TestCase):
 
         self.assertHTMLEqual(expected, Template(template).render(Context()))
 
+    def test_no_args_raises_error(self):
+        with self.assertRaises(TemplateSyntaxError):
+            Template("{% load slippers %}{% var %}")
+
     def test_single_var(self):
         template = """
             {% var foo="bar" %}
