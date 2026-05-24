@@ -5,7 +5,23 @@ from typing import Any, Dict, List, Literal, Optional, Union, get_args, get_orig
 
 from django.utils.html import SafeString
 from django.utils.safestring import mark_safe
-from typeguard import check_type, get_type_name
+from typeguard import CollectionCheckStrategy, TypeCheckError, check_type
+
+
+def _get_type_name(type_: Any) -> str:
+    """Get a human-readable name for a type."""
+    if type_ is None:
+        return "NoneType"
+
+    # Use str() representation and clean it up
+    type_str = str(type_)
+
+    # Remove '<class ' prefix and '>' suffix for builtin types
+    if type_str.startswith("<class '") and type_str.endswith("'>"):
+        return type_str[8:-2]
+
+    # Remove 'typing.' prefix for typing module types
+    return type_str.replace("typing.", "")
 
 
 class Props(Mapping):
@@ -96,8 +112,12 @@ def check_prop_types(
         if name in types:
             expected = types[name]
             try:
-                check_type(name, actual, expected)
-            except TypeError:
+                check_type(
+                    actual,
+                    expected,
+                    collection_check_strategy=CollectionCheckStrategy.ALL_ITEMS,
+                )
+            except TypeCheckError:
                 errors.append(
                     PropError(
                         error="invalid",
@@ -145,8 +165,8 @@ def render_error_html(*, errors: List[PropError], tag_name: str, template_name: 
                 {
                     "error": error.error,
                     "name": error.name,
-                    "expected": get_type_name(error.expected),
-                    "actual": get_type_name(error.actual),
+                    "expected": _get_type_name(error.expected),
+                    "actual": _get_type_name(error.actual),
                 }
                 for error in errors
             ],

@@ -32,7 +32,7 @@ classifiers = [
 dependencies = [
     "Django>=3.2",
     "PyYAML>=5.4.0",
-    "typeguard>=2.13.3,<3",
+    "typeguard>=4.4.0",
     "typing-extensions>=4.4.0",
 ]
 

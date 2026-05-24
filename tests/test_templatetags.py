@@ -3,7 +3,8 @@ from unittest.mock import patch
 from django.conf import settings as django_settings
 from django.template import Context, RequestContext, Template, TemplateSyntaxError
 from django.test import RequestFactory, TestCase, override_settings
-from typeguard import get_type_name
+
+from slippers.props import _get_type_name
 
 
 class ComponentTest(TestCase):
@@ -179,8 +180,8 @@ class PropsTest(TestCase):
             with self.subTest(prop=expected_error[0]):
                 self.assertEqual("invalid", actual_error.error)
                 self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(expected_error[1], get_type_name(actual_error.expected))
-                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+                self.assertEqual(expected_error[1], _get_type_name(actual_error.expected))
+                self.assertEqual(expected_error[2], _get_type_name(actual_error.actual))
 
     @patch("slippers.templatetags.slippers.render_error_html")
     def test_warning_for_required_props(self, mock_render_error_html):
@@ -206,8 +207,8 @@ class PropsTest(TestCase):
             with self.subTest(prop=expected_error[0]):
                 self.assertEqual("missing", actual_error.error)
                 self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(expected_error[1], get_type_name(actual_error.expected))
-                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+                self.assertEqual(expected_error[1], _get_type_name(actual_error.expected))
+                self.assertEqual(expected_error[2], _get_type_name(actual_error.actual))
 
     @patch("slippers.templatetags.slippers.render_error_html")
     def test_warning_for_extra_props(self, mock_render_error_html):
@@ -232,8 +233,8 @@ class PropsTest(TestCase):
             with self.subTest(prop=expected_error[0]):
                 self.assertEqual("extra", actual_error.error)
                 self.assertEqual(expected_error[0], actual_error.name)
-                self.assertEqual(expected_error[1], get_type_name(actual_error.expected))
-                self.assertEqual(expected_error[2], get_type_name(actual_error.actual))
+                self.assertEqual(expected_error[1], _get_type_name(actual_error.expected))
+                self.assertEqual(expected_error[2], _get_type_name(actual_error.actual))
 
     @override_settings()
     @patch("slippers.templatetags.slippers.check_prop_types")
