@@ -47,3 +47,6 @@ extra_css:
 
 plugins:
   - search
+
+hooks:
+  - mkdocs_hooks.py
